@@ -1,10 +1,13 @@
 package org.bookie;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Observable;
+import java.util.Observer;
 
-import org.bookie.service.GetBookmarksRequest;
+import org.bookie.model.BookMark;
+import org.bookie.model.SystemNewest;
+import org.bookie.service.BookieService;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -35,32 +38,33 @@ public class AndroidBookieActivity extends ListActivity {
          	}
  	    	      });
 
+       SystemNewest systemNewest = SystemNewest.getSystemNewest();
+       List<BookMark> bmarks = systemNewest.getList();
+       List<String> urls = new ArrayList<String>(bmarks.size());
+       for(BookMark item : bmarks) urls.add(item.url);
 
-       List<String> lst = new LinkedList<String>();
-
-
-
-       lst.add("hello");
-
-       ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, lst);
+       ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, urls);
        setListAdapter(arrayAdapter);
 
-       GetBookmarksRequest getBookmarksRequest = new GetBookmarksRequest();
-       getBookmarksRequest.execute("http://bmark.us/api/v1/bmarks");
-       try {
-    	   lst = getBookmarksRequest.get();  // FIXME blocks UI
+       final ListActivity thiz = this;
 
+       Observer observer = new Observer() {
 
-    	   arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, lst);
-    	   setListAdapter(arrayAdapter);
-       } catch (InterruptedException e) {
-    	   e.printStackTrace();
-       } catch (ExecutionException e) {
-    	   e.printStackTrace();
-       }
+		@Override
+		public void update(Observable observable, Object data) {
+			List<BookMark> bmarks = ((SystemNewest)observable).getList();
+			List<String> urls = new ArrayList<String>(bmarks.size());
+			for(BookMark item : bmarks) urls.add(item.url);
 
+			ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(thiz,R.layout.list_item, urls);
+			setListAdapter(arrayAdapter);
 
+		}
 
+       };
+       systemNewest.addObserver(observer);
+
+       BookieService.getService().refreshSystemNewest();
 
     }
 

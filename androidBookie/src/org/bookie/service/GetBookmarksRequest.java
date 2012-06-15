@@ -11,18 +11,21 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.bookie.model.BookMark;
+import org.bookie.model.SystemNewest;
 import org.json.JSONException;
 
 import android.os.AsyncTask;
 
 public class GetBookmarksRequest extends AsyncTask<String, String, List<String>> {
 
+	private final String RESTPATH = "/api/v1/bmarks";
+
 	@Override
 	protected List<String> doInBackground(String... params) {
 		String uri = params[0];
 
        HttpClient client = new DefaultHttpClient();
-       HttpGet getRq = new HttpGet(uri);
+       HttpGet getRq = new HttpGet(uri + RESTPATH);
        List<String> lst = new LinkedList<String>();
 	try {
     	   HttpResponse response = client.execute(getRq);
@@ -30,11 +33,9 @@ public class GetBookmarksRequest extends AsyncTask<String, String, List<String>>
     	   response.getEntity().writeTo(out);
     	   out.close();
     	   String responseString = out.toString();
-    	   BookieService service = new BookieService();
+    	   BookieService service = BookieService.getService();
     	   List<BookMark> bmarks = service.parseBookmarkListResponse(responseString);
-    	   for(BookMark item: bmarks) {
-    		   lst .add(item.url);
-    	   }
+    	   SystemNewest.getSystemNewest().updateList(bmarks);
        } catch (ClientProtocolException e) {
     	   e.printStackTrace();
     	   lst.add("Protocol Error");
