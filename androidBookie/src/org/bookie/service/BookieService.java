@@ -13,8 +13,7 @@ import org.json.JSONObject;
  * Encapsulates knowledge of the bookie API
  */
 public class BookieService {
-
-	private static BookieService singleton;
+	private static BookieService singleton; // TODO find something better
 	private String uri;
 
 	public BookieService(String uri) {
@@ -38,14 +37,11 @@ public class BookieService {
 	}
 
 	public void refreshSystemNewest() {
-       GetBookmarksRequest getBookmarksRequest = new GetBookmarksRequest();
-       getBookmarksRequest.execute(uri);
-
-
+		GetBookmarksRequest getBookmarksRequest = new GetBookmarksRequest();
+		getBookmarksRequest.execute(uri);
 	}
 
 	public List<BookMark> parseBookmarkListResponse(String jsonString) throws JSONException {
-		// TODO replace exception
 		JSONObject jObj = new JSONObject(jsonString);
 		JSONArray jsonBmarks = jObj.getJSONArray("bmarks");
 		final int size = jsonBmarks.length();

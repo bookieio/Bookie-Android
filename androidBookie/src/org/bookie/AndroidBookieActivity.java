@@ -10,14 +10,14 @@ import org.bookie.model.SystemNewest;
 import org.bookie.service.BookieService;
 
 import android.app.ListActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class AndroidBookieActivity extends ListActivity {
     /** Called when the activity is first created. */
@@ -30,13 +30,15 @@ public class AndroidBookieActivity extends ListActivity {
        lv.setTextFilterEnabled(true);
 
        lv.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(AdapterView<?> parent, View view,
-             int position, long id) {
-           // When clicked, show a toast with the TextView text
-           Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
-               Toast.LENGTH_SHORT).show();
-         	}
- 	    	      });
+    	   public void onItemClick(AdapterView<?> parent, View view,
+    			   int position, long id) {
+    		   String url = (String) parent.getAdapter().getItem(position);
+    		   // open link in browser
+    		   Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    		   startActivity(browserIntent);
+
+    	   }
+       });
 
        SystemNewest systemNewest = SystemNewest.getSystemNewest();
        List<BookMark> bmarks = systemNewest.getList();
@@ -46,26 +48,21 @@ public class AndroidBookieActivity extends ListActivity {
        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, urls);
        setListAdapter(arrayAdapter);
 
-       final ListActivity thiz = this;
+       final ListActivity bmarkListActivity = this; // TODO best practice?
 
-       Observer observer = new Observer() {
-
+       systemNewest.addObserver(new Observer() {
 		@Override
 		public void update(Observable observable, Object data) {
 			List<BookMark> bmarks = ((SystemNewest)observable).getList();
 			List<String> urls = new ArrayList<String>(bmarks.size());
 			for(BookMark item : bmarks) urls.add(item.url);
 
-			ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(thiz,R.layout.list_item, urls);
+			ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(bmarkListActivity,R.layout.list_item, urls);
 			setListAdapter(arrayAdapter);
-
 		}
 
-       };
-       systemNewest.addObserver(observer);
+       });
 
        BookieService.getService().refreshSystemNewest();
-
     }
-
 }

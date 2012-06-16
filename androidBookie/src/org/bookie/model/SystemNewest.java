@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Observable;
 
 public class SystemNewest extends Observable {
-	private static SystemNewest singleton;
+	private static SystemNewest singleton; // TODO find something better
 
 	private List<BookMark> bmarks;
-
 
 	private SystemNewest() {
 		super();
@@ -22,7 +21,7 @@ public class SystemNewest extends Observable {
 
 	public void updateList(List<BookMark> updated) {
 		bmarks = new ArrayList<BookMark>(updated);
-		hasChanged();
+		setChanged();
 		notifyObservers();
 	}
 
