@@ -26,9 +26,38 @@ public class AndroidBookieActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		setUpListView();
+		ArrayAdapter<String> arrayAdapter = createPopulatedArrayAdapter();
+		setListAdapter(arrayAdapter);
+		setContentView(R.layout.main);		
+		setUpSettingsButton();
+		BookieService.getService().refreshSystemNewest();
+	}
 
+	private ArrayAdapter<String> createPopulatedArrayAdapter() {
+		SystemNewest systemNewest = SystemNewest.getSystemNewest();
+		List<BookMark> bmarks = systemNewest.getList();
+		List<String> urls = new ArrayList<String>(bmarks.size());
+		for(BookMark item : bmarks) urls.add(item.url);
 
+		systemNewest.addObserver(new Observer() {
+			@Override
+			public void update(Observable observable, Object data) {
+				List<BookMark> bmarks = ((SystemNewest)observable).getList();
+				List<String> urls = new ArrayList<String>(bmarks.size());
+				for(BookMark item : bmarks) urls.add(item.url);
+
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(AndroidBookieActivity.this,R.layout.list_item, urls);
+				setListAdapter(arrayAdapter);
+			}
+
+		});
+
+		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, urls);
+		return arrayAdapter;
+	}
+
+	private void setUpListView() {
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 
@@ -42,36 +71,6 @@ public class AndroidBookieActivity extends ListActivity {
 
 			}
 		});
-
-
-		SystemNewest systemNewest = SystemNewest.getSystemNewest();
-		List<BookMark> bmarks = systemNewest.getList();
-		List<String> urls = new ArrayList<String>(bmarks.size());
-		for(BookMark item : bmarks) urls.add(item.url);
-
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, urls);
-		setListAdapter(arrayAdapter);
-		setContentView(R.layout.main);
-		
-		
-		setUpSettingsButton();
-		
-		final ListActivity bmarkListActivity = this; // TODO best practice?
-
-		systemNewest.addObserver(new Observer() {
-			@Override
-			public void update(Observable observable, Object data) {
-				List<BookMark> bmarks = ((SystemNewest)observable).getList();
-				List<String> urls = new ArrayList<String>(bmarks.size());
-				for(BookMark item : bmarks) urls.add(item.url);
-
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(bmarkListActivity,R.layout.list_item, urls);
-				setListAdapter(arrayAdapter);
-			}
-
-		});
-
-		BookieService.getService().refreshSystemNewest();
 	}
 
 	private void setUpSettingsButton() {
