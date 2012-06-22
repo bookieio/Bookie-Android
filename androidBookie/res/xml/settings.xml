@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory 
+        android:title="User Info"
+        android:key="user_info">
+
+        <EditTextPreference
+            android:key="username"
+            android:title="User name" 
+            android:summary="Your Login Name for this Server"
+            android:dialogTitle="Replace this dialog title"
+            android:dialogMessage="Replace this dialog message"    
+             />
+        
+        <EditTextPreference
+            android:key="apikey"
+            android:title="API Key" 
+            android:summary="Your API key for this server"
+            android:dialogTitle="Replace this dialog title"
+            android:dialogMessage="Replace this dialog message"    
+           	 />
+
+    </PreferenceCategory>
+	<PreferenceCategory 
+        android:title="Server Info"
+        android:key="server_info">
+
+        <EditTextPreference
+            android:key="base_url"
+            android:title="Server URL" 
+            android:summary="Base URL for the Bookie server"
+            android:dialogTitle="Replace this dialog title"
+            android:dialogMessage="Replace this dialog message"    
+             />
+
+    </PreferenceCategory>
+    
+</PreferenceScreen>
