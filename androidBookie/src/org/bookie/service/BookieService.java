@@ -37,7 +37,7 @@ public class BookieService {
 	}
 
 	public void refreshSystemNewest() {
-		GetBookmarksRequest getBookmarksRequest = new GetBookmarksRequest();
+		AbstractBookieRequest getBookmarksRequest = new GetBookmarksRequest();
 		getBookmarksRequest.execute(uri);
 	}
 
