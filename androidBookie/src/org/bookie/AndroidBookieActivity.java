@@ -26,12 +26,12 @@ public class AndroidBookieActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setUpListView();
 		ArrayAdapter<String> arrayAdapter = createPopulatedArrayAdapter();
 		setListAdapter(arrayAdapter);
-		setContentView(R.layout.main);		
+		setContentView(R.layout.main);
 		setUpSettingsButton();
 		BookieService.getService().refreshSystemNewest();
+		setUpListView();
 	}
 
 	private ArrayAdapter<String> createPopulatedArrayAdapter() {
