@@ -17,6 +17,18 @@
         android:gravity="right" >
 
         <Button
+            android:id="@+id/newestGlobalButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latest" />
+
+<!--         <Button -->
+<!--             android:id="@+id/newestUser" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:text="My Latest" /> -->
+
+        <Button
             android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

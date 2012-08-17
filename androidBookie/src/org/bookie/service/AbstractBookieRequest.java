@@ -1,5 +1,6 @@
 package org.bookie.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.client.methods.HttpGet;
@@ -7,6 +8,7 @@ import org.bookie.model.BookMark;
 import org.json.JSONException;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public abstract class AbstractBookieRequest extends
 		AsyncTask<String, String, List<BookMark>> {
@@ -33,6 +35,10 @@ public abstract class AbstractBookieRequest extends
 
 	@Override
 	protected void onPostExecute(List<BookMark> bmarks) {
+		if(bmarks==null) {
+			Log.w(this.getClass().toString(), "bmarks was null after execute request");
+			bmarks = new ArrayList<BookMark>();
+		}
 		notifyInterestedParties(bmarks);
 	}
 

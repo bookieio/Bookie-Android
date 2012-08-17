@@ -13,6 +13,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -30,9 +31,16 @@ public class AndroidBookieActivity extends ListActivity {
 		setListAdapter(arrayAdapter);
 		setContentView(R.layout.main);
 		setUpSettingsButton();
-		BookieService.getService().refreshSystemNewest();
+		setUpNewestButton();
+		refreshWithNewestGlobal();
 		setUpListView();
 	}
+
+
+	private void refreshWithNewestGlobal() {
+		BookieService.getService().refreshSystemNewest();
+	}
+
 
 	private ArrayAdapter<String> createPopulatedArrayAdapter() {
 		SystemNewest systemNewest = SystemNewest.getSystemNewest();
@@ -81,6 +89,18 @@ public class AndroidBookieActivity extends ListActivity {
 			public void onClick(View v) {
 				Intent settingsIntent = new Intent(AndroidBookieActivity.this, Settings.class);
 				AndroidBookieActivity.this.startActivity(settingsIntent);
+			}
+		});
+	}
+
+
+	private void setUpNewestButton() {
+		Button newestGlobalButton = (Button) findViewById(R.id.newestGlobalButton);
+		newestGlobalButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("bookie","newestbuttonpressed");
+				refreshWithNewestGlobal();
 			}
 		});
 	}
