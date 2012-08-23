@@ -11,8 +11,10 @@ import org.bookie.service.BookieService;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,13 +39,14 @@ public class AndroidBookieActivity extends ListActivity {
 		setUpListView();
 	}
 
-
 	private void refreshWithNewestGlobal() {
 		BookieService.getService().refreshSystemNewest();
 	}
 
 	private void refreshWithNewestUser() {
-		BookieService.getService().refreshUserNewest();
+		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		String user = sharedPreferences.getString("username", null);
+		BookieService.getService().refreshUserNewest(user);
 	}
 
 	private ArrayAdapter<String> createPopulatedArrayAdapter() {
