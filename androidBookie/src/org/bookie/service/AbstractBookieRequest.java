@@ -13,6 +13,8 @@ import android.util.Log;
 public abstract class AbstractBookieRequest extends
 		AsyncTask<String, String, List<BookMark>> {
 
+	protected final String API_PATH_PREFIX = "/api/v1";
+
 	public AbstractBookieRequest() {
 		super();
 	}

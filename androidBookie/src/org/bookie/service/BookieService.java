@@ -15,10 +15,12 @@ import org.json.JSONObject;
 public class BookieService {
 	private static BookieService singleton; // TODO find something better
 	private String uri;
+	private String user;
 
-	public BookieService(String uri) {
+	public BookieService(String uri, String user) {
 		super();
 		this.uri = uri;
+		this.user = user;
 	}
 
 
@@ -32,12 +34,17 @@ public class BookieService {
 	}
 
 	public static BookieService getService() {
-		if(singleton==null) singleton = new BookieService("https://bmark.us");
+		if(singleton==null) singleton = new BookieService("https://bmark.us", "derek");
 		return singleton;
 	}
 
 	public void refreshSystemNewest() {
 		AbstractBookieRequest getBookmarksRequest = new GetBookmarksRequest();
+		getBookmarksRequest.execute(uri);
+	}
+
+	public void refreshUserNewest() {
+		AbstractBookieRequest getBookmarksRequest = new GetUserBookmarksRequest(user);
 		getBookmarksRequest.execute(uri);
 	}
 

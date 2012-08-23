@@ -15,7 +15,7 @@ import org.json.JSONException;
 
 public class GetBookmarksRequest extends AbstractBookieRequest {
 
-	protected final String RESTPATH = "/api/v1/bmarks";
+	protected final String RESTPATH = "/bmarks";
 
 	@Override
 	protected List<BookMark> executeRequest(String endpointUrl) {
@@ -31,7 +31,7 @@ public class GetBookmarksRequest extends AbstractBookieRequest {
 
 	@Override
 	protected String getEndpoint(String baseUrl) {
-		return baseUrl + RESTPATH;
+		return baseUrl + API_PATH_PREFIX + RESTPATH;
 	}
 
 

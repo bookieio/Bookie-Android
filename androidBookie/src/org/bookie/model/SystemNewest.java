@@ -20,6 +20,7 @@ public class SystemNewest extends Observable {
 	}
 
 	public void updateList(List<BookMark> updated) {
+
 		bmarks = new ArrayList<BookMark>(updated);
 		setChanged();
 		notifyObservers();

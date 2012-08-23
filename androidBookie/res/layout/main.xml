@@ -20,13 +20,13 @@
             android:id="@+id/newestGlobalButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Latest" />
+            android:text="All" />
 
-<!--         <Button -->
-<!--             android:id="@+id/newestUser" -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:text="My Latest" /> -->
+        <Button
+            android:id="@+id/newestUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mine" />
 
         <Button
             android:id="@+id/settingsButton"

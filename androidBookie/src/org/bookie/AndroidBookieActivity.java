@@ -31,7 +31,8 @@ public class AndroidBookieActivity extends ListActivity {
 		setListAdapter(arrayAdapter);
 		setContentView(R.layout.main);
 		setUpSettingsButton();
-		setUpNewestButton();
+		setUpNewestGlobalButton();
+		setUpNewestUserButton();
 		refreshWithNewestGlobal();
 		setUpListView();
 	}
@@ -41,6 +42,9 @@ public class AndroidBookieActivity extends ListActivity {
 		BookieService.getService().refreshSystemNewest();
 	}
 
+	private void refreshWithNewestUser() {
+		BookieService.getService().refreshUserNewest();
+	}
 
 	private ArrayAdapter<String> createPopulatedArrayAdapter() {
 		SystemNewest systemNewest = SystemNewest.getSystemNewest();
@@ -51,6 +55,7 @@ public class AndroidBookieActivity extends ListActivity {
 		systemNewest.addObserver(new Observer() {
 			@Override
 			public void update(Observable observable, Object data) {
+				Log.e("Android Bookie", "system newest observer activated");
 				List<BookMark> bmarks = ((SystemNewest)observable).getList();
 				List<String> urls = new ArrayList<String>(bmarks.size());
 				for(BookMark item : bmarks) urls.add(item.url);
@@ -94,13 +99,27 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 
-	private void setUpNewestButton() {
+	private void setUpNewestGlobalButton() {
 		Button newestGlobalButton = (Button) findViewById(R.id.newestGlobalButton);
 		newestGlobalButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("bookie","newestbuttonpressed");
+				Log.i("bookie","newest global button pressed");
 				refreshWithNewestGlobal();
+			}
+		});
+	}
+
+
+
+
+	private void setUpNewestUserButton() {
+		Button newestUserButton = (Button) findViewById(R.id.newestUserButton);
+		newestUserButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("bookie","newest User button pressed");
+				refreshWithNewestUser();
 			}
 		});
 	}
