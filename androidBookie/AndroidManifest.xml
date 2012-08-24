@@ -20,6 +20,15 @@
             </intent-filter>
         </activity>
         <activity android:theme="@android:style/Animation" android:name="Settings"></activity>
+        <activity android:name="NewBookmarkActivity"><intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

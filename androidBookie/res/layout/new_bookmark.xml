@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/newBookmarkTitleField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" android:hint="Title">
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/newBookmarkUrlField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" android:hint="URL"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" android:layout_gravity="right">
+
+        <Button
+            android:id="@+id/newBookmarkCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/newBookmarkSaveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK" />
+
+    </LinearLayout>
+
+</LinearLayout>
