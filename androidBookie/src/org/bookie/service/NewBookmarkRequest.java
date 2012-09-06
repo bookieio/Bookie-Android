@@ -48,9 +48,12 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 
 		try {
 
-			String json = "{\"url\":\""
+			String json =
+					"{\"url\":\""
 					+ bmark.url
-					+ "/\"}";
+					+ "/\",\"description\":\""
+					+ bmark.description
+					+ "\"}";
 			final StringEntity stringEntity = new StringEntity(json, "UTF8");
 
 	        postRq.setHeader("Content-type", "application/json");

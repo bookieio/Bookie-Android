@@ -19,7 +19,6 @@ public class NewBookmarkActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// blah blah blah
 
 		Log.d("NewBookemarkActivity", "A new NewBookmarkActivity is created");
 		setContentView(R.layout.new_bookmark);
@@ -48,6 +47,7 @@ public class NewBookmarkActivity extends Activity {
 				String apiKey = prefs.getString("apikey", ""); // TODO constants
 				BookMark bmark = new BookMark();
 				bmark.url = ((EditText) findViewById(id.newBookmarkUrlField)).getText().toString();
+				bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();
 				BookieService.getService().saveBookmark(user,apiKey,bmark);
 			}
 
