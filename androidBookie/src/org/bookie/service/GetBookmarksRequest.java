@@ -1,19 +1,17 @@
 package org.bookie.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.bookie.model.BookMark;
 import org.bookie.model.SystemNewest;
 import org.json.JSONException;
 
+import android.util.Log;
 
-public class GetBookmarksRequest extends AbstractBookieRequest {
+
+public class GetBookmarksRequest extends AbstractBookieRequest<List<BookMark>> {
 
 	protected final String RESTPATH = "/bmarks";
 
@@ -34,8 +32,6 @@ public class GetBookmarksRequest extends AbstractBookieRequest {
 		return baseUrl + API_PATH_PREFIX + RESTPATH;
 	}
 
-
-	@Override
 	protected List<BookMark> parseStringToGetBookmarkList(String responseString) {
 		List<BookMark> bmarks = null;
 		BookieService service = BookieService.getService();
@@ -49,19 +45,14 @@ public class GetBookmarksRequest extends AbstractBookieRequest {
 	}
 
 	@Override
-	protected String getResponseString(HttpGet getRq) {
-		HttpResponse response;
-		HttpClient client = new DefaultHttpClient();
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			response = client.execute(getRq);
-			response.getEntity().writeTo(out);
-			out.close();
-		} catch (IOException e) {
-			handleTroubleConnectingError(e);
+	protected List<BookMark> postProcess(final List<BookMark> data) {
+		List<BookMark>postprocessed;
+		if(data==null) {
+			Log.w(this.getClass().toString(), "bmarks was null after execute request");
+			postprocessed = new ArrayList<BookMark>();
+		} else {
+			postprocessed = data;
 		}
-
-		String responseString = out.toString();
-		return responseString;
+		return postprocessed;
 	}
 }

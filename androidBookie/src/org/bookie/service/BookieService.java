@@ -37,12 +37,12 @@ public class BookieService {
 	}
 
 	public void refreshSystemNewest() {
-		AbstractBookieRequest getBookmarksRequest = new GetBookmarksRequest();
+		GetBookmarksRequest getBookmarksRequest = new GetBookmarksRequest();
 		getBookmarksRequest.execute(uri);
 	}
 
 	public void refreshUserNewest(String user) {
-		AbstractBookieRequest getBookmarksRequest = new GetUserBookmarksRequest(user);
+		GetBookmarksRequest getBookmarksRequest = new GetUserBookmarksRequest(user);
 		getBookmarksRequest.execute(uri);
 	}
 
@@ -60,6 +60,12 @@ public class BookieService {
 			bmarks.add(item);
 		}
 		return bmarks;
+	}
+
+
+	public void saveBookmark(String user, String apiKey, BookMark bmark) {
+		NewBookmarkRequest request = new NewBookmarkRequest(user, apiKey, bmark);
+		request.execute(uri);
 	}
 
 }

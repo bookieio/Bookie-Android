@@ -1,48 +1,30 @@
 package org.bookie.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
-import org.apache.http.client.methods.HttpGet;
-import org.bookie.model.BookMark;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-public abstract class AbstractBookieRequest extends
-		AsyncTask<String, String, List<BookMark>> {
+public abstract class AbstractBookieRequest<T> extends
+		AsyncTask<String, String, T> {
 
+	protected static final String APIKEY_PARAM_KEY = "api_key";
 	protected final String API_PATH_PREFIX = "/api/v1";
 
 	public AbstractBookieRequest() {
 		super();
 	}
 
-	protected abstract String getResponseString(HttpGet getRq);
-
-	protected abstract List<BookMark> parseStringToGetBookmarkList(String responseString);
-
 	protected abstract String getEndpoint(String baseUrl);
-
-	protected abstract void notifyInterestedParties(List<BookMark> bmarks);
-
-	protected abstract List<BookMark> executeRequest(String uri);
-
-	@Override
-	protected List<BookMark> doInBackground(String... params) {
-		String uri = params[0];
-		return executeRequest(getEndpoint(uri));
-	}
-
-	@Override
-	protected void onPostExecute(List<BookMark> bmarks) {
-		if(bmarks==null) {
-			Log.w(this.getClass().toString(), "bmarks was null after execute request");
-			bmarks = new ArrayList<BookMark>();
-		}
-		notifyInterestedParties(bmarks);
-	}
+	protected abstract void notifyInterestedParties(T content);
+	protected abstract T executeRequest(String uri);
+	protected abstract T postProcess(T data);
 
 	protected void handleServerUnexpectedResponseError(JSONException e) {
 		e.printStackTrace();
@@ -51,5 +33,35 @@ public abstract class AbstractBookieRequest extends
 	protected void handleTroubleConnectingError(Exception e) {
 		e.printStackTrace();
 	}
+
+	protected String getResponseString(HttpUriRequest rq) {
+		HttpResponse response;
+		HttpClient client = new DefaultHttpClient();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			response = client.execute(rq);
+			response.getEntity().writeTo(out);
+			out.close();
+			response.getEntity().consumeContent();
+		} catch (IOException e) {
+			handleTroubleConnectingError(e);
+		}
+
+		String responseString = out.toString();
+		return responseString;
+	}
+
+	@Override
+	protected T doInBackground(String... params) {
+		String uri = params[0];
+		return executeRequest(getEndpoint(uri));
+	}
+
+	@Override
+	protected void onPostExecute(final T data) {
+		T postprocessedData = postProcess(data);
+		notifyInterestedParties(postprocessedData);
+	}
+
 
 }
