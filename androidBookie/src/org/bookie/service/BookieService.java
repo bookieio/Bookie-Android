@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bookie.model.BookMark;
+import org.bookie.service.NewBookmarkRequest.RequestSuccessListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,8 +64,9 @@ public class BookieService {
 	}
 
 
-	public void saveBookmark(String user, String apiKey, BookMark bmark) {
+	public void saveBookmark(String user, String apiKey, BookMark bmark, RequestSuccessListener listener) {
 		NewBookmarkRequest request = new NewBookmarkRequest(user, apiKey, bmark);
+		request.registerListener(listener);
 		request.execute(uri);
 	}
 

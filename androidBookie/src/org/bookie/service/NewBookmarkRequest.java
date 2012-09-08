@@ -2,6 +2,8 @@ package org.bookie.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -17,15 +19,28 @@ import android.util.Log;
 
 public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 
+	public interface RequestSuccessListener {
+		void notify(Boolean requestWasSuccessful);
+	}
+
 	private static final String RESTPATH = "bmark";
 	private String user;
 	private Object apiKey;
 	private BookMark bmark;
+	private Set<RequestSuccessListener> registeredSuccessListeners = new HashSet<RequestSuccessListener>();
 
 	public NewBookmarkRequest(String user, String apiKey, BookMark bmark) {
 		this.user = user;
 		this.apiKey = apiKey;
 		this.bmark = bmark;
+	}
+
+	public void registerListener(RequestSuccessListener listener) {
+		registeredSuccessListeners.add(listener);
+	}
+
+	public void unregisterListener(RequestSuccessListener listener) {
+		registeredSuccessListeners.remove(listener);
 	}
 
 	@Override
@@ -35,7 +50,9 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 
 	@Override
 	protected void notifyInterestedParties(Boolean success) {
-		// nothing to do
+		for(RequestSuccessListener listener : registeredSuccessListeners) {
+			listener.notify(success);
+		}
 	}
 
 	@Override
@@ -100,5 +117,6 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 	protected Boolean postProcess(Boolean data) {
 		return data;
 	}
+
 
 }
