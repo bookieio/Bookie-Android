@@ -49,7 +49,7 @@ public class NewBookmarkActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i(TAG,"Save Button Pressed");
-				UserSettings settings = new UserSettings(NewBookmarkActivity.this);
+				UserSettings settings = new SharedPrefsBackedUserSettings(NewBookmarkActivity.this);
 				String user = settings.getUsername();
 				String apiKey = settings.getApiKey();
 				BookMark bmark = new BookMark();
@@ -57,10 +57,7 @@ public class NewBookmarkActivity extends Activity {
 				bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();
 				BookieService.getService().saveBookmark(user,apiKey,bmark,NewBookmarkActivity.this.produceListenerForRequest());
 			}
-
-
 		});
-
 	}
 
 	private RequestSuccessListener produceListenerForRequest() {

@@ -44,7 +44,7 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 	private void refreshWithNewestUser() {
-		final UserSettings settings = new UserSettings(this);
+		final UserSettings settings = new SharedPrefsBackedUserSettings(this);
 		final String user = settings.getUsername();
 		BookieService.getService().refreshUserNewest(user);
 	}
