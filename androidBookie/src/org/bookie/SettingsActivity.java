@@ -3,7 +3,7 @@ package org.bookie;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class Settings extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {        

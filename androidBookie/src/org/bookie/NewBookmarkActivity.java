@@ -8,10 +8,8 @@ import org.bookie.service.NewBookmarkRequest.RequestSuccessListener;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,11 +20,6 @@ import android.widget.Toast;
 public class NewBookmarkActivity extends Activity {
 
 	private static final String TAG = NewBookmarkActivity.class.getSimpleName();
-	// TODO prefs "service"
-	private static final String USER_PREFS_DEFAULT_USERNAME = "";
-	private static final String USER_PREFS_DEFAULT_APIKEY = "";
-	private static final String USER_PREFS_KEY_USERNAME = "username";
-	private static final String USER_PREFS_KEY_APIKEY = "apikey";
 	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
 
 
@@ -56,9 +49,9 @@ public class NewBookmarkActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i(TAG,"Save Button Pressed");
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(NewBookmarkActivity.this);
-				String user = prefs.getString(USER_PREFS_KEY_USERNAME, USER_PREFS_DEFAULT_USERNAME);
-				String apiKey = prefs.getString(USER_PREFS_KEY_APIKEY, USER_PREFS_DEFAULT_APIKEY);
+				UserSettings settings = new UserSettings(NewBookmarkActivity.this);
+				String user = settings.getUsername();
+				String apiKey = settings.getApiKey();
 				BookMark bmark = new BookMark();
 				bmark.url = ((EditText) findViewById(id.newBookmarkUrlField)).getText().toString();
 				bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();

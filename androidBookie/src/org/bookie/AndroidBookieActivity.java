@@ -11,10 +11,8 @@ import org.bookie.service.BookieService;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,9 +24,6 @@ import android.widget.ListView;
 
 public class AndroidBookieActivity extends ListActivity {
 	private static final String TAG = AndroidBookieActivity.class.getSimpleName();
-
-
-
 
 	/** Called when the activity is first created. */
 	@Override
@@ -49,8 +44,8 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 	private void refreshWithNewestUser() {
-		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		String user = sharedPreferences.getString("username", null);
+		final UserSettings settings = new UserSettings(this);
+		final String user = settings.getUsername();
 		BookieService.getService().refreshUserNewest(user);
 	}
 
@@ -99,7 +94,7 @@ public class AndroidBookieActivity extends ListActivity {
 		settingsButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent settingsIntent = new Intent(AndroidBookieActivity.this, Settings.class);
+				Intent settingsIntent = new Intent(AndroidBookieActivity.this, SettingsActivity.class);
 				AndroidBookieActivity.this.startActivity(settingsIntent);
 			}
 		});
