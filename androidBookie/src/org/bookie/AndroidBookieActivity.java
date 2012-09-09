@@ -25,6 +25,11 @@ import android.widget.Button;
 import android.widget.ListView;
 
 public class AndroidBookieActivity extends ListActivity {
+	private static final String TAG = AndroidBookieActivity.class.getSimpleName();
+
+
+
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +63,7 @@ public class AndroidBookieActivity extends ListActivity {
 		systemNewest.addObserver(new Observer() {
 			@Override
 			public void update(Observable observable, Object data) {
-				Log.e("Android Bookie", "system newest observer activated");
+				Log.e(TAG, "system newest observer activated");
 				List<BookMark> bmarks = ((SystemNewest)observable).getList();
 				List<String> urls = new ArrayList<String>(bmarks.size());
 				for(BookMark item : bmarks) urls.add(item.url);
@@ -84,7 +89,6 @@ public class AndroidBookieActivity extends ListActivity {
 				// open link in browser
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				startActivity(browserIntent);
-
 			}
 		});
 	}
@@ -107,7 +111,7 @@ public class AndroidBookieActivity extends ListActivity {
 		newestGlobalButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("bookie","newest global button pressed");
+				Log.i(TAG,"newest global button pressed");
 				refreshWithNewestGlobal();
 			}
 		});
@@ -121,7 +125,7 @@ public class AndroidBookieActivity extends ListActivity {
 		newestUserButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("bookie","newest User button pressed");
+				Log.i(TAG,"newest User button pressed");
 				refreshWithNewestUser();
 			}
 		});

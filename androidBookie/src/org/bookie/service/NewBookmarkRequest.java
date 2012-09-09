@@ -19,6 +19,8 @@ import android.util.Log;
 
 public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 
+	private static final String TAG = NewBookmarkRequest.class.getSimpleName();
+
 	public interface RequestSuccessListener {
 		void notify(Boolean requestWasSuccessful);
 	}
@@ -60,7 +62,7 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 		boolean success = false;
 		final String urlForRequest = endpointUrl + "?api_key="+apiKey;
 		HttpPost postRq = new HttpPost(urlForRequest);
-		Log.v("NewBookmarkRequest", "request executing to " + urlForRequest);
+		Log.v(TAG, "request executing to " + urlForRequest);
 
 
 		try {
@@ -83,7 +85,7 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 		    // TODO Auto-generated catch block
 		}
 
-		Log.v("NewBookmarkRequest", postRq.toString());
+		Log.v(TAG, postRq.toString());
 		HttpResponse response;
 		AndroidHttpClient client =  AndroidHttpClient.newInstance("New Bookmark Request");
 		try {
@@ -97,10 +99,10 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 			} catch (IOException e) {
 				handleTroubleConnectingError(e);
 			};
-			Log.v("NewBookmarkRequest","response is " + out.toString() );
-			Log.v("NewBookmarkRequest","response code is " + response.getStatusLine().getStatusCode());
+			Log.v(TAG,"response is " + out.toString() );
+			Log.v(TAG,"response code is " + response.getStatusLine().getStatusCode());
 
-			Log.v("NewBookmarkRequest","response reason is " + response.getStatusLine().getReasonPhrase().toString() );
+			Log.v(TAG,"response reason is " + response.getStatusLine().getReasonPhrase().toString() );
 			success = response.getStatusLine().getStatusCode() == 200;
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block

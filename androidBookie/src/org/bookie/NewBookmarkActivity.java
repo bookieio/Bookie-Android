@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 public class NewBookmarkActivity extends Activity {
 
+	private static final String TAG = NewBookmarkActivity.class.getSimpleName();
 	// TODO prefs "service"
 	private static final String USER_PREFS_DEFAULT_USERNAME = "";
 	private static final String USER_PREFS_DEFAULT_APIKEY = "";
@@ -33,7 +34,7 @@ public class NewBookmarkActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Log.d("NewBookemarkActivity", "A new NewBookmarkActivity is created");
+		Log.d(TAG, "A new NewBookmarkActivity is created");
 		setContentView(R.layout.new_bookmark);
 
 	    Intent intent = getIntent();
@@ -54,7 +55,7 @@ public class NewBookmarkActivity extends Activity {
 		save.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("NewBookmarkActiviy","Save Button Pressed");
+				Log.i(TAG,"Save Button Pressed");
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(NewBookmarkActivity.this);
 				String user = prefs.getString(USER_PREFS_KEY_USERNAME, USER_PREFS_DEFAULT_USERNAME);
 				String apiKey = prefs.getString(USER_PREFS_KEY_APIKEY, USER_PREFS_DEFAULT_APIKEY);
