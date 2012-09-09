@@ -20,19 +20,19 @@
             android:id="@+id/newestGlobalButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All" />
+            android:text="@string/button_newest_global_text" />
 
         <Button
             android:id="@+id/newestUserButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mine" />
+            android:text="@string/button_newest_user_text" />
 
         <Button
             android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings" />
+            android:text="@string/button_settings_text" />
     </LinearLayout>
 
 </LinearLayout>

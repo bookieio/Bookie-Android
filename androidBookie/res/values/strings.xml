@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AndroidBookie</string>
+    <string name="button_newest_global_text">All</string>
+    <string name="button_newest_user_text">Mine</string>
+    <string name="button_settings_text">Settings</string>
+    <string name="field_new_bookmark_url_hint">URL</string>
+   	<string name="field_new_bookmark_title_hint">Title</string>
+   	<string name="button_new_bookmark_cancel_text">Cancel</string>
+   	<string name="button_new_bookmark_save_text">OK</string>
 </resources>

@@ -8,7 +8,8 @@
         android:id="@+id/newBookmarkTitleField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" android:hint="Title">
+        android:ems="10"
+        android:hint="@string/field_new_bookmark_title_hint">
 
         <requestFocus />
     </EditText>
@@ -17,24 +18,26 @@
         android:id="@+id/newBookmarkUrlField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" android:hint="URL"/>
+        android:ems="10" 
+        android:hint="@string/field_new_bookmark_url_hint"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" android:layout_gravity="right">
+        android:orientation="horizontal" 
+        android:layout_gravity="right">
 
         <Button
             android:id="@+id/newBookmarkCancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:text="@string/button_new_bookmark_cancel_text" />
 
         <Button
             android:id="@+id/newBookmarkSaveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK" />
+            android:text="@string/button_new_bookmark_save_text" />
 
     </LinearLayout>
 
