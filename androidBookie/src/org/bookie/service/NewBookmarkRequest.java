@@ -12,6 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.bookie.model.BookMark;
+import org.json.JSONObject;
 
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
@@ -66,21 +67,14 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 
 
 		try {
+			JSONObject jsonifiedBmark = BookieService.JSONifyBookmark(bmark);
+			final StringEntity stringEntity = new StringEntity(jsonifiedBmark.toString(), "UTF8");
 
-			String json =
-					"{\"url\":\""
-					+ bmark.url
-					+ "/\",\"description\":\""
-					+ bmark.description
-					+ "\"}";
-			final StringEntity stringEntity = new StringEntity(json, "UTF8");
-
-	        postRq.setHeader("Content-type", "application/json");
-
+			postRq.setHeader("Content-type", "application/json");
 	        postRq.setHeader("Accept", "application/json");
+
 	        stringEntity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
 			postRq.setEntity(stringEntity);
-
 		} catch (IOException e) {
 		    // TODO Auto-generated catch block
 		}

@@ -70,4 +70,17 @@ public class BookieService {
 		request.execute(uri);
 	}
 
+	public static JSONObject JSONifyBookmark(BookMark bmark) {
+		JSONObject json = new JSONObject();
+		if(bmark!=null) {
+			try {
+				json.put("url", bmark.url);
+				json.put("description", bmark.description);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return json;
+	}
+
 }
