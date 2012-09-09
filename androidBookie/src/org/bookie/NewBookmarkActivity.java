@@ -19,6 +19,32 @@ import android.widget.Toast;
 
 public class NewBookmarkActivity extends Activity {
 
+	private final class DismissLater implements Runnable {
+		public void run() {
+			final NewBookmarkActivity thisActivity = NewBookmarkActivity.this;
+			thisActivity.finish();
+		}
+	}
+
+	private final class RequestSuccessListenerImpl implements
+			RequestSuccessListener {
+		@Override
+		public void notify(Boolean requestWasSuccessful) {
+			if(requestWasSuccessful) {
+				NewBookmarkActivity.this.requestFinishedWithSuccess();
+			} else {
+				NewBookmarkActivity.this.requestFinishedWithFailure();
+			}
+		}
+	}
+
+	private final class SaveButtonListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			saveButtonWasClicked();
+		}
+	}
+
 	private static final String TAG = NewBookmarkActivity.class.getSimpleName();
 	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
 
@@ -26,52 +52,35 @@ public class NewBookmarkActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		Log.d(TAG, "A new NewBookmarkActivity is created");
 		setContentView(R.layout.new_bookmark);
-
-	    Intent intent = getIntent();
-	    String action = intent.getAction();
-	    String type = intent.getType();
-
-		if (Intent.ACTION_SEND.equals(action) && type != null) {
-	        if ("text/plain".equals(type)) {
-	            handleSendText(intent);
-	        }
-		}
-
+	    dealWithIntents();
 		setUpSaveButton();
 	}
 
+	private void dealWithIntents() {
+		Intent intent = getIntent();
+	    if (isIntentForUs(intent)) {
+	    	handleSendText(intent);
+	    }
+	}
+
+	private boolean isIntentForUs(Intent intent) {
+	    String action = intent.getAction();
+	    String type = intent.getType();
+		return Intent.ACTION_SEND.equals(action)
+				&& type != null
+				&& "text/plain".equals(type);
+	}
+
+
 	private void setUpSaveButton() {
 		Button save = (Button) findViewById(id.newBookmarkSaveButton);
-		save.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.i(TAG,"Save Button Pressed");
-				UserSettings settings = new SharedPrefsBackedUserSettings(NewBookmarkActivity.this);
-				String user = settings.getUsername();
-				String apiKey = settings.getApiKey();
-				BookMark bmark = new BookMark();
-				bmark.url = ((EditText) findViewById(id.newBookmarkUrlField)).getText().toString();
-				bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();
-				BookieService.getService().saveBookmark(user,apiKey,bmark,NewBookmarkActivity.this.produceListenerForRequest());
-			}
-		});
+		save.setOnClickListener(new SaveButtonListener());
 	}
 
 	private RequestSuccessListener produceListenerForRequest() {
-		return new RequestSuccessListener() {
-
-			@Override
-			public void notify(Boolean requestWasSuccessful) {
-				if(requestWasSuccessful) {
-					NewBookmarkActivity.this.requestFinishedWithSuccess();
-				} else {
-					NewBookmarkActivity.this.requestFinishedWithFailure();
-				}
-			}
-		};
+		return new RequestSuccessListenerImpl();
 	}
 
 	protected void requestFinishedWithFailure() {
@@ -100,15 +109,21 @@ public class NewBookmarkActivity extends Activity {
 	private void dismissThisActivity(int millisecDelay) {
 		if(millisecDelay>0) {
 			Handler handler = new Handler();
-			final Runnable dismissLater = new Runnable() {
-				public void run() {
-					final NewBookmarkActivity thisActivity = NewBookmarkActivity.this;
-					thisActivity.finish();
-				}
-			};
+			final Runnable dismissLater = new DismissLater();
 			handler.postDelayed(dismissLater, millisecDelay);
 		} else {
 			finish();
 		}
+	}
+
+	private void saveButtonWasClicked() {
+		Log.i(TAG,"Save Button Pressed");
+		UserSettings settings = new SharedPrefsBackedUserSettings(NewBookmarkActivity.this);
+		String user = settings.getUsername();
+		String apiKey = settings.getApiKey();
+		BookMark bmark = new BookMark();
+		bmark.url = ((EditText) findViewById(id.newBookmarkUrlField)).getText().toString();
+		bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();
+		BookieService.getService().saveBookmark(user,apiKey,bmark,NewBookmarkActivity.this.produceListenerForRequest());
 	}
 }
