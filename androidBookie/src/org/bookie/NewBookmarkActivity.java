@@ -20,7 +20,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class NewBookmarkActivity extends Activity {
+
+	// TODO prefs "service"
+	private static final String USER_PREFS_DEFAULT_USERNAME = "";
+	private static final String USER_PREFS_DEFAULT_APIKEY = "";
+	private static final String USER_PREFS_KEY_USERNAME = "username";
+	private static final String USER_PREFS_KEY_APIKEY = "apikey";
 	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +42,7 @@ public class NewBookmarkActivity extends Activity {
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 	        if ("text/plain".equals(type)) {
-	            handleSendText(intent); // Handle text being sent
+	            handleSendText(intent);
 	        }
 		}
 
@@ -49,8 +56,8 @@ public class NewBookmarkActivity extends Activity {
 			public void onClick(View v) {
 				Log.i("NewBookmarkActiviy","Save Button Pressed");
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(NewBookmarkActivity.this);
-				String user = prefs.getString("username", ""); // TODO default
-				String apiKey = prefs.getString("apikey", ""); // TODO constants
+				String user = prefs.getString(USER_PREFS_KEY_USERNAME, USER_PREFS_DEFAULT_USERNAME);
+				String apiKey = prefs.getString(USER_PREFS_KEY_APIKEY, USER_PREFS_DEFAULT_APIKEY);
 				BookMark bmark = new BookMark();
 				bmark.url = ((EditText) findViewById(id.newBookmarkUrlField)).getText().toString();
 				bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();
@@ -77,11 +84,13 @@ public class NewBookmarkActivity extends Activity {
 	}
 
 	protected void requestFinishedWithFailure() {
-		showMessageAboutResultsOfSave("Failed to update!");
+		final String message = getString( R.string.new_bookmark_save_failed );
+		showMessageAboutResultsOfSave(message);
 	}
 
 	protected void requestFinishedWithSuccess() {
-		showMessageAboutResultsOfSave("Saved OK");
+		final String message = getString( R.string.new_bookmark_save_success );
+		showMessageAboutResultsOfSave(message);
 		dismissThisActivity(RESULTS_MESSAGE_DURATION);
 	}
 
