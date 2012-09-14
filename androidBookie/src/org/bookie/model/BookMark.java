@@ -1,5 +1,6 @@
 package org.bookie.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,5 +11,5 @@ import java.util.List;
 public class BookMark {
 	public String url;
 	public String description;
-	public List<String> tags;
+	public List<String> tags = new LinkedList<String>();
 }

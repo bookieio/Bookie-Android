@@ -8,4 +8,5 @@
    	<string name="field_new_bookmark_title_hint">Title</string>
    	<string name="button_new_bookmark_cancel_text">Cancel</string>
    	<string name="button_new_bookmark_save_text">OK</string>
+   	<string name="button_new_bookmark_new_tag_text">Add Tag</string>
 </resources>

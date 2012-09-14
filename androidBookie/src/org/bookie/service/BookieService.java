@@ -9,11 +9,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
+
 
 /**
  * Encapsulates knowledge of the bookie API
  */
 public class BookieService {
+	private static final String TAGS_DELIMITER = " ";
 	private static BookieService singleton; // TODO find something better
 	private String uri;
 
@@ -76,11 +79,17 @@ public class BookieService {
 			try {
 				json.put("url", bmark.url);
 				json.put("description", bmark.description);
+				json.put("tags", makeTagsValue(bmark.tags));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 		return json;
+	}
+
+
+	private static String makeTagsValue(List<String> tags) {
+		return TextUtils.join(TAGS_DELIMITER,tags);
 	}
 
 }

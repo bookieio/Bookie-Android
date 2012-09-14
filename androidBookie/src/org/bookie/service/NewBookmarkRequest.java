@@ -18,6 +18,8 @@ import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
 
+// TODO make a sort of generalized "send json POST/PUT request"
+
 public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 
 	private static final String TAG = NewBookmarkRequest.class.getSimpleName();
@@ -95,7 +97,6 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 			};
 			Log.v(TAG,"response is " + out.toString() );
 			Log.v(TAG,"response code is " + response.getStatusLine().getStatusCode());
-
 			Log.v(TAG,"response reason is " + response.getStatusLine().getReasonPhrase().toString() );
 			success = response.getStatusLine().getStatusCode() == 200;
 		} catch (ClientProtocolException e) {
@@ -113,6 +114,4 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 	protected Boolean postProcess(Boolean data) {
 		return data;
 	}
-
-
 }

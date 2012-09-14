@@ -21,11 +21,23 @@
         android:ems="10" 
         android:hint="@string/field_new_bookmark_url_hint"/>
 
+    <Button
+        android:id="@+id/newBookmarkAddTagButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_new_bookmark_new_tag_text" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/newBookmarkTabTable" >
+    </TableLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" 
-        android:layout_gravity="right">
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/newBookmarkCancelButton"
@@ -38,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_new_bookmark_save_text" />
-
     </LinearLayout>
 
 </LinearLayout>
