@@ -21,6 +21,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class NewBookmarkActivity extends Activity {
@@ -152,7 +154,6 @@ public class NewBookmarkActivity extends Activity {
 
 	public void addTagButtonWasClicked() {
 		Log.i(TAG,"Add Tag button was pressed");
-		TableLayout table = (TableLayout) findViewById(id.newBookmarkTabTable);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 		alert.setTitle("Title");
@@ -165,7 +166,7 @@ public class NewBookmarkActivity extends Activity {
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String tagValue = aTextField.getText().toString();
-			NewBookmarkActivity.this.tags.add(tagValue);
+			addNewTag(tagValue);
 		  }
 		});
 
@@ -176,8 +177,23 @@ public class NewBookmarkActivity extends Activity {
 		});
 
 		alert.show();
-//		TableRow child = new TableRow(this);
-//		child.addView(aTextField);
-//		table.addView(child);
+	}
+
+	private void addNewTag(String tagValue) {
+		NewBookmarkActivity.this.tags.add(tagValue);
+		refreshTagsTable();
+	}
+
+	private void refreshTagsTable() {
+		final TableLayout table = (TableLayout) findViewById(id.newBookmarkTabTable);
+		table.removeAllViews();
+
+		for(String tagText: tags) {
+			final TableRow tagRow = new TableRow(this);
+			final TextView tagTextView = new TextView(this);
+			tagTextView.setText(tagText);
+			tagRow.addView(tagTextView);
+			table.addView(tagRow);
+		}
 	}
 }
