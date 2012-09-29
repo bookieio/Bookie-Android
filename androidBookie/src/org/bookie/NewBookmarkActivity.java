@@ -1,7 +1,8 @@
 package org.bookie;
 
-import java.util.LinkedList;
-import java.util.List;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.bookie.R.id;
 import org.bookie.model.BookMark;
@@ -26,7 +27,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class NewBookmarkActivity extends Activity {
-	private List<String> tags = new LinkedList<String>();
+	private Set<String> tags = new TreeSet<String>();
+
+	private final class RemoveTagButtonListener implements
+			OnClickListener {
+		@Override
+		public void onClick(View buttonClicked) {
+			final String tagText = (String) buttonClicked.getTag();
+			removeTag(tagText);
+		}
+	}
 
 	public class addTagButtonListener implements OnClickListener {
 		@Override
@@ -180,7 +190,13 @@ public class NewBookmarkActivity extends Activity {
 	}
 
 	private void addNewTag(String tagValue) {
-		NewBookmarkActivity.this.tags.add(tagValue);
+		tags.add(tagValue);
+		refreshTagsTable();
+	}
+
+
+	private void removeTag(String tagText) {
+		tags.remove(tagText);
 		refreshTagsTable();
 	}
 
@@ -189,11 +205,31 @@ public class NewBookmarkActivity extends Activity {
 		table.removeAllViews();
 
 		for(String tagText: tags) {
-			final TableRow tagRow = new TableRow(this);
-			final TextView tagTextView = new TextView(this);
-			tagTextView.setText(tagText);
-			tagRow.addView(tagTextView);
+			final TableRow tagRow = createTagRow(tagText);
 			table.addView(tagRow);
 		}
 	}
+
+	private TableRow createTagRow(String tagText) {
+		final TableRow tagRow = new TableRow(this);
+
+		final TextView tagTextView = new TextView(this);
+		tagTextView.setText(tagText);
+		tagTextView.setPadding(8, 8, 8, 8);
+		tagRow.addView(tagTextView);
+
+		final Button delButton = new Button(this);
+		delButton.setTag(tagText);
+		delButton.setOnClickListener(new RemoveTagButtonListener());
+		//delButton.setBackgroundColor(color.background_light);
+		delButton.setBackgroundResource(R.drawable.delete_button);
+		delButton.setText("X");
+		delButton.setPadding(8, 8, 8, 8);
+		tagRow.addView(delButton);
+
+		tagRow.setPadding(8, 8, 8, 8);
+		return tagRow;
+	}
+
+
 }
