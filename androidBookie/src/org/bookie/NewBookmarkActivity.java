@@ -27,6 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class NewBookmarkActivity extends Activity {
+
+	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
+	private static final String TAG = NewBookmarkActivity.class.getSimpleName();
+
 	private Set<String> tags = new TreeSet<String>();
 
 	private final class RemoveTagButtonListener implements
@@ -71,8 +75,14 @@ public class NewBookmarkActivity extends Activity {
 		}
 	}
 
-	private static final String TAG = NewBookmarkActivity.class.getSimpleName();
-	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
+	public class CancelButtonListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			cancelButtonWasClicked();
+		}
+
+	}
+
 
 
 	@Override
@@ -82,8 +92,11 @@ public class NewBookmarkActivity extends Activity {
 		setContentView(R.layout.new_bookmark);
 	    dealWithIntents();
 		setUpSaveButton();
+		setUpCancelButton();
 		setUpAddTagButton();
 	}
+
+
 
 	private void dealWithIntents() {
 		Intent intent = getIntent();
@@ -104,6 +117,11 @@ public class NewBookmarkActivity extends Activity {
 	private void setUpSaveButton() {
 		Button save = (Button) findViewById(id.newBookmarkSaveButton);
 		save.setOnClickListener(new SaveButtonListener());
+	}
+
+	private void setUpCancelButton() {
+		Button save = (Button) findViewById(id.newBookmarkCancelButton);
+		save.setOnClickListener(new CancelButtonListener());
 	}
 
 	private void setUpAddTagButton() {
@@ -160,7 +178,10 @@ public class NewBookmarkActivity extends Activity {
 		BookieService.getService().saveBookmark(user,apiKey,bmark,NewBookmarkActivity.this.produceListenerForRequest());
 	}
 
-
+	public void cancelButtonWasClicked() {
+		Log.i(TAG,"Save Button Pressed");
+		dismissThisActivity(0);
+	}
 
 	public void addTagButtonWasClicked() {
 		Log.i(TAG,"Add Tag button was pressed");
