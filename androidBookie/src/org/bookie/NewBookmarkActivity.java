@@ -1,6 +1,7 @@
 package org.bookie;
 
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -30,6 +31,7 @@ public class NewBookmarkActivity extends Activity {
 
 	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
 	private static final String TAG = NewBookmarkActivity.class.getSimpleName();
+	private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
 
 	private Set<String> tags = new TreeSet<String>();
 
@@ -96,7 +98,20 @@ public class NewBookmarkActivity extends Activity {
 		setUpAddTagButton();
 	}
 
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	 	ArrayList<String> tagsArrayList = new ArrayList<String>(tags);
+	    savedInstanceState.putStringArrayList(STATE_TAGS_KEY,  tagsArrayList);
+	    super.onSaveInstanceState(savedInstanceState);
+	}
 
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	    super.onRestoreInstanceState(savedInstanceState);
+	    ArrayList<String> tagsArrayList = savedInstanceState.getStringArrayList(STATE_TAGS_KEY);
+		tags.addAll(tagsArrayList);
+		refreshTagsTable();
+	}
 
 	private void dealWithIntents() {
 		Intent intent = getIntent();
