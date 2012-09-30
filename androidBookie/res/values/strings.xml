@@ -9,4 +9,8 @@
    	<string name="button_new_bookmark_cancel_text">Cancel</string>
    	<string name="button_new_bookmark_save_text">OK</string>
    	<string name="button_new_bookmark_new_tag_text">Add Tag</string>
+   	<string name="button_new_bookmark_new_tag_dialog_title">Add Tag</string>
+   	<string name="button_new_bookmark_new_tag_dialog_text">Enter tag (no spaces)</string>
+   	<string name="button_new_bookmark_new_tag_dialog_ok_button_text">OK</string>
+   	<string name="button_new_bookmark_new_tag_dialog_cancel_button_text">Cancel</string>
 </resources>

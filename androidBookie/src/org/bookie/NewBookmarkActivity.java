@@ -202,21 +202,23 @@ public class NewBookmarkActivity extends Activity {
 		Log.i(TAG,"Add Tag button was pressed");
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-		alert.setTitle("Title");
-		alert.setMessage("Message");
+		alert.setTitle(getString(R.string.button_new_bookmark_new_tag_dialog_title));
+		alert.setMessage(R.string.button_new_bookmark_new_tag_dialog_text);
 
 		// Set an EditText view to get user input
 		final EditText aTextField = new EditText(this);
 		alert.setView(aTextField);
 
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		alert.setPositiveButton(getString(R.string.button_new_bookmark_new_tag_dialog_ok_button_text),
+				new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String tagValue = aTextField.getText().toString();
 			addNewTag(tagValue);
 		  }
 		});
 
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		alert.setNegativeButton(getString(R.string.button_new_bookmark_new_tag_dialog_cancel_button_text),
+				new DialogInterface.OnClickListener() {
 		  public void onClick(DialogInterface dialog, int whichButton) {
 		    // Canceled -- nothing to do
 		  }
