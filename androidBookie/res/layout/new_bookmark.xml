@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/field_new_bookmark_title_hint">
+        android:hint="@string/field_new_bookmark_title_hint" >
 
         <requestFocus />
     </EditText>
@@ -18,8 +18,8 @@
         android:id="@+id/newBookmarkUrlField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" 
-        android:hint="@string/field_new_bookmark_url_hint"/>
+        android:ems="10"
+        android:hint="@string/field_new_bookmark_url_hint" />
 
     <Button
         android:id="@+id/newBookmarkAddTagButton"
@@ -28,27 +28,42 @@
         android:layout_height="wrap_content"
         android:text="@string/button_new_bookmark_new_tag_text" />
 
-    <TableLayout
+    <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/newBookmarkTabTable" >
-    </TableLayout>
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:scrollbars="vertical" >
+
+        <TableLayout
+            android:id="@+id/newBookmarkTabTable"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_gravity="center" >
+        </TableLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:baselineAligned="true"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/newBookmarkCancelButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_weight="1"
             android:text="@string/button_new_bookmark_cancel_text" />
 
         <Button
             android:id="@+id/newBookmarkSaveButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
             android:text="@string/button_new_bookmark_save_text" />
     </LinearLayout>
 
