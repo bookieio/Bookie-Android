@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
@@ -82,10 +83,7 @@ public class NewBookmarkActivity extends Activity {
 		public void onClick(View v) {
 			cancelButtonWasClicked();
 		}
-
 	}
-
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -214,17 +212,25 @@ public class NewBookmarkActivity extends Activity {
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String tagValue = aTextField.getText().toString();
 			addNewTag(tagValue);
+			dissmsissSoftKeyBoard(aTextField);
 		  }
 		});
 
 		alert.setNegativeButton(getString(R.string.button_new_bookmark_new_tag_dialog_cancel_button_text),
 				new DialogInterface.OnClickListener() {
 		  public void onClick(DialogInterface dialog, int whichButton) {
-		    // Canceled -- nothing to do
+		    dissmsissSoftKeyBoard(aTextField);
 		  }
 		});
 
+
+
 		alert.show();
+	}
+
+	protected void dissmsissSoftKeyBoard(EditText editText) {
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 	}
 
 	private void addNewTag(String tagValue) {
@@ -259,7 +265,6 @@ public class NewBookmarkActivity extends Activity {
 		final Button delButton = new Button(this);
 		delButton.setTag(tagText);
 		delButton.setOnClickListener(new RemoveTagButtonListener());
-		//delButton.setBackgroundColor(color.background_light);
 		delButton.setBackgroundResource(R.drawable.delete_button);
 		delButton.setText("X");
 		delButton.setPadding(8, 8, 8, 8);
