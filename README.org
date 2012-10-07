@@ -1,0 +1,12 @@
+
+* Bookie for Android
+** What is this? 
+   It is a native Android client for the bookie API.
+   It lets you see bookmarks from Bookie or save them.
+** What is bookie?
+   An open source bookmark storage server.
+   To understand better, see [[http://docs.bmark.us/en/latest/index.html][the docs]], [[https://github.com/mitechie/Bookie][the project on github]] or [[https://bmark.us][the live server]].
+
+** License / Copying
+   Licensed under GPLv3.
+   See the file COPYING, included with this source.
