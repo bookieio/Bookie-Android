@@ -1,4 +1,4 @@
-package org.bookie.service;
+package us.bmark.android.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,8 +11,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.bookie.model.BookMark;
 import org.json.JSONObject;
+
+import us.bmark.android.model.BookMark;
 
 import android.net.http.AndroidHttpClient;
 import android.util.Log;

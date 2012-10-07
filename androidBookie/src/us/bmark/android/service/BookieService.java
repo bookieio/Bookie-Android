@@ -1,13 +1,14 @@
-package org.bookie.service;
+package us.bmark.android.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bookie.model.BookMark;
-import org.bookie.service.NewBookmarkRequest.RequestSuccessListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import us.bmark.android.model.BookMark;
+import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
 
 import android.text.TextUtils;
 

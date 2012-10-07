@@ -1,14 +1,13 @@
-package org.bookie;
+package us.bmark.android;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.bookie.model.BookMark;
-import org.bookie.model.SystemNewest;
-import org.bookie.service.BookieService;
-
+import us.bmark.android.model.BookMark;
+import us.bmark.android.model.SystemNewest;
+import us.bmark.android.service.BookieService;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.net.Uri;

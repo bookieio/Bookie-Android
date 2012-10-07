@@ -1,12 +1,13 @@
-package org.bookie.service;
+package us.bmark.android.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.client.methods.HttpGet;
-import org.bookie.model.BookMark;
-import org.bookie.model.SystemNewest;
 import org.json.JSONException;
+
+import us.bmark.android.model.BookMark;
+import us.bmark.android.model.SystemNewest;
 
 import android.util.Log;
 

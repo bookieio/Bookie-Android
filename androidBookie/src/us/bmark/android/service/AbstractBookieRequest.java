@@ -1,4 +1,4 @@
-package org.bookie.service;
+package us.bmark.android.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

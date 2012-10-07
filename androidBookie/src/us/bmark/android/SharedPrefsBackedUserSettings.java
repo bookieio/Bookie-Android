@@ -1,4 +1,4 @@
-package org.bookie;
+package us.bmark.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,7 +18,7 @@ public class SharedPrefsBackedUserSettings implements UserSettings {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bookie.UserSetting#getUsername()
+	 * @see us.bmark.android.UserSetting#getUsername()
 	 */
 	@Override
 	public String getUsername() {
@@ -26,7 +26,7 @@ public class SharedPrefsBackedUserSettings implements UserSettings {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bookie.UserSetting#getApiKey()
+	 * @see us.bmark.android.UserSetting#getApiKey()
 	 */
 	@Override
 	public String getApiKey() {

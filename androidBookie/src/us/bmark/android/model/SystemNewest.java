@@ -1,4 +1,4 @@
-package org.bookie.model;
+package us.bmark.android.model;
 
 import java.util.ArrayList;
 import java.util.List;

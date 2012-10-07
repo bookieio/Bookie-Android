@@ -1,4 +1,4 @@
-package org.bookie;
+package us.bmark.android;
 
 public interface UserSettings {
 

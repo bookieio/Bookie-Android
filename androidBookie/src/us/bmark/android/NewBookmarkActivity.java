@@ -1,15 +1,14 @@
-package org.bookie;
+package us.bmark.android;
 
 
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.bookie.R.id;
-import org.bookie.model.BookMark;
-import org.bookie.service.BookieService;
-import org.bookie.service.NewBookmarkRequest.RequestSuccessListener;
-
+import us.bmark.android.R.id;
+import us.bmark.android.model.BookMark;
+import us.bmark.android.service.BookieService;
+import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
