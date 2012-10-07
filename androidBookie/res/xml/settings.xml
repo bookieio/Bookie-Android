@@ -8,16 +8,16 @@
             android:key="username"
             android:title="User name" 
             android:summary="Your Login Name for this Server"
-            android:dialogTitle="Replace this dialog title"
-            android:dialogMessage="Replace this dialog message"    
+            android:dialogTitle="@string/settings_username_dialog_title"
+            android:dialogMessage="@string/settings_username_dialog_message"
              />
         
         <EditTextPreference
             android:key="apikey"
             android:title="API Key" 
             android:summary="Your API key for this server"
-            android:dialogTitle="Replace this dialog title"
-            android:dialogMessage="Replace this dialog message"    
+            android:dialogTitle="@string/settings_apikey_dialog_title"
+            android:dialogMessage="@string/settings_apikey_dialog_message"    
            	 />
 
     </PreferenceCategory>
@@ -29,9 +29,9 @@
             android:key="base_url"
             android:title="Server URL" 
             android:summary="Base URL for the Bookie server"
-            android:dialogTitle="Replace this dialog title"
-            android:dialogMessage="Replace this dialog message"    
-             />
+            android:dialogTitle="@string/settings_baseurl_dialog_title"
+            android:dialogMessage="@string/settings_baseurl_dialog_message"
+             android:defaultValue="@string/settings_baseurl_defaultvalue"/>
 
     </PreferenceCategory>
     
