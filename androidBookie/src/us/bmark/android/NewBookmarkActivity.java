@@ -16,7 +16,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -30,7 +29,6 @@ import android.widget.Toast;
 public class NewBookmarkActivity extends Activity {
 
 	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
-	private static final String TAG = NewBookmarkActivity.class.getSimpleName();
 	private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
 
 	private Set<String> tags = new TreeSet<String>();
@@ -87,7 +85,6 @@ public class NewBookmarkActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG, "A new NewBookmarkActivity is created");
 		setContentView(R.layout.new_bookmark);
 	    dealWithIntents();
 		setUpSaveButton();
@@ -179,7 +176,6 @@ public class NewBookmarkActivity extends Activity {
 	}
 
 	private void saveButtonWasClicked() {
-		Log.i(TAG,"Save Button Pressed");
 		UserSettings settings = new SharedPrefsBackedUserSettings(NewBookmarkActivity.this);
 		String user = settings.getUsername();
 		String apiKey = settings.getApiKey();
@@ -191,12 +187,10 @@ public class NewBookmarkActivity extends Activity {
 	}
 
 	public void cancelButtonWasClicked() {
-		Log.i(TAG,"Save Button Pressed");
 		dismissThisActivity(0);
 	}
 
 	public void addTagButtonWasClicked() {
-		Log.i(TAG,"Add Tag button was pressed");
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 		alert.setTitle(getString(R.string.button_new_bookmark_new_tag_dialog_title));

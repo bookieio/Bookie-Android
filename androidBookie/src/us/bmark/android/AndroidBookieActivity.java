@@ -12,7 +12,6 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,7 +21,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 public class AndroidBookieActivity extends ListActivity {
-	private static final String TAG = AndroidBookieActivity.class.getSimpleName();
 
 	/** Called when the activity is first created. */
 	@Override
@@ -57,7 +55,6 @@ public class AndroidBookieActivity extends ListActivity {
 		systemNewest.addObserver(new Observer() {
 			@Override
 			public void update(Observable observable, Object data) {
-				Log.e(TAG, "system newest observer activated");
 				List<BookMark> bmarks = ((SystemNewest)observable).getList();
 				List<String> urls = new ArrayList<String>(bmarks.size());
 				for(BookMark item : bmarks) urls.add(item.url);
@@ -105,7 +102,6 @@ public class AndroidBookieActivity extends ListActivity {
 		newestGlobalButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i(TAG,"newest global button pressed");
 				refreshWithNewestGlobal();
 			}
 		});
@@ -119,7 +115,6 @@ public class AndroidBookieActivity extends ListActivity {
 		newestUserButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i(TAG,"newest User button pressed");
 				refreshWithNewestUser();
 			}
 		});

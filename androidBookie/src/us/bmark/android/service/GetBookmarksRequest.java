@@ -9,8 +9,6 @@ import org.json.JSONException;
 import us.bmark.android.model.BookMark;
 import us.bmark.android.model.SystemNewest;
 
-import android.util.Log;
-
 
 public class GetBookmarksRequest extends AbstractBookieRequest<List<BookMark>> {
 
@@ -49,7 +47,6 @@ public class GetBookmarksRequest extends AbstractBookieRequest<List<BookMark>> {
 	protected List<BookMark> postProcess(final List<BookMark> data) {
 		List<BookMark>postprocessed;
 		if(data==null) {
-			Log.w(this.getClass().toString(), "bmarks was null after execute request");
 			postprocessed = new ArrayList<BookMark>();
 		} else {
 			postprocessed = data;
