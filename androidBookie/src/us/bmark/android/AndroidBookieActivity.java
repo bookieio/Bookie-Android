@@ -56,10 +56,10 @@ public class AndroidBookieActivity extends ListActivity {
 			@Override
 			public void update(Observable observable, Object data) {
 				List<BookMark> bmarks = ((SystemNewest)observable).getList();
-				List<String> urls = new ArrayList<String>(bmarks.size());
-				for(BookMark item : bmarks) urls.add(item.url);
+				List<String> stringsForList = new ArrayList<String>(bmarks.size());
+				for(BookMark item : bmarks) stringsForList.add(item.description);
 
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(AndroidBookieActivity.this,R.layout.list_item, urls);
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(AndroidBookieActivity.this,R.layout.list_item, stringsForList);
 				setListAdapter(arrayAdapter);
 			}
 
@@ -96,7 +96,6 @@ public class AndroidBookieActivity extends ListActivity {
 		});
 	}
 
-
 	private void setUpNewestGlobalButton() {
 		Button newestGlobalButton = (Button) findViewById(R.id.newestGlobalButton);
 		newestGlobalButton.setOnClickListener(new OnClickListener() {
@@ -106,9 +105,6 @@ public class AndroidBookieActivity extends ListActivity {
 			}
 		});
 	}
-
-
-
 
 	private void setUpNewestUserButton() {
 		Button newestUserButton = (Button) findViewById(R.id.newestUserButton);
