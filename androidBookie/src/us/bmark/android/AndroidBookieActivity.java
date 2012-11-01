@@ -1,6 +1,5 @@
 package us.bmark.android;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -8,25 +7,62 @@ import java.util.Observer;
 import us.bmark.android.model.BookMark;
 import us.bmark.android.model.SystemNewest;
 import us.bmark.android.service.BookieService;
+import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class AndroidBookieActivity extends ListActivity {
+
+	private class BookmarkArrayAdapter extends ArrayAdapter<BookMark> {
+
+
+
+		private static final int ROW_VIEW_ID = R.layout.list_item;
+
+		public BookmarkArrayAdapter(Context context,List<BookMark> objects) {
+			super(context, ROW_VIEW_ID, objects);
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+
+			View row = convertView;
+	        BookMark bmark = this.getItem(position);
+
+	        if(row == null)
+	        {
+	            LayoutInflater inflater = ((Activity)this.getContext()).getLayoutInflater();
+	            row = inflater.inflate(ROW_VIEW_ID, parent, false);
+	        }
+
+
+            TextView textView = (TextView)row.findViewById(R.id.bookmarkListRowTextView);
+            textView.setText(bmark.description);
+
+	        return row;
+
+		}
+	}
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ArrayAdapter<String> arrayAdapter = createPopulatedArrayAdapter();
+		ArrayAdapter<BookMark> arrayAdapter = createPopulatedArrayAdapter();
 		setListAdapter(arrayAdapter);
 		setContentView(R.layout.main);
 		setUpSettingsButton();
@@ -46,26 +82,23 @@ public class AndroidBookieActivity extends ListActivity {
 		BookieService.getService().refreshUserNewest(user);
 	}
 
-	private ArrayAdapter<String> createPopulatedArrayAdapter() {
+
+
+	private ArrayAdapter<BookMark> createPopulatedArrayAdapter() {
 		SystemNewest systemNewest = SystemNewest.getSystemNewest();
 		List<BookMark> bmarks = systemNewest.getList();
-		List<String> urls = new ArrayList<String>(bmarks.size());
-		for(BookMark item : bmarks) urls.add(item.url);
 
 		systemNewest.addObserver(new Observer() {
 			@Override
 			public void update(Observable observable, Object data) {
 				List<BookMark> bmarks = ((SystemNewest)observable).getList();
-				List<String> stringsForList = new ArrayList<String>(bmarks.size());
-				for(BookMark item : bmarks) stringsForList.add(item.description);
-
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(AndroidBookieActivity.this,R.layout.list_item, stringsForList);
+				ArrayAdapter<BookMark> arrayAdapter = new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
 				setListAdapter(arrayAdapter);
 			}
 
 		});
 
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, urls);
+		ArrayAdapter<BookMark> arrayAdapter = new BookmarkArrayAdapter(this, bmarks);
 		return arrayAdapter;
 	}
 
@@ -76,7 +109,8 @@ public class AndroidBookieActivity extends ListActivity {
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				String url = (String) parent.getAdapter().getItem(position);
+				String url = ((BookMark) parent.getAdapter().getItem(position)).url;
+				Log.i("BMARK CLICK!",url);
 				// open link in browser
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				startActivity(browserIntent);

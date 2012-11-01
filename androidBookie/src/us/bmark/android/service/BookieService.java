@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import us.bmark.android.model.BookMark;
 import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
-
 import android.text.TextUtils;
 
 
@@ -25,7 +24,6 @@ public class BookieService {
 		super();
 		this.uri = uri;
 	}
-
 
 	public String getUri() {
 		return uri;
@@ -66,7 +64,6 @@ public class BookieService {
 		}
 		return bmarks;
 	}
-
 
 	public void saveBookmark(String user, String apiKey, BookMark bmark, RequestSuccessListener listener) {
 		NewBookmarkRequest request = new NewBookmarkRequest(user, apiKey, bmark);
