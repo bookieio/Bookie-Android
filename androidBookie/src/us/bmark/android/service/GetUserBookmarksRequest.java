@@ -7,8 +7,8 @@ public class GetUserBookmarksRequest extends GetBookmarksRequest {
 
 	private String user;
 
-	public GetUserBookmarksRequest(String user) {
-		super();
+	public GetUserBookmarksRequest(String user, int count) {
+		super(count);
 		if(user==null) {
 			throw new InvalidParameterException("Get User Bookmark requires a user string (received null)");
 		}

@@ -39,13 +39,13 @@ public class BookieService {
 		return singleton;
 	}
 
-	public void refreshSystemNewest() {
-		GetBookmarksRequest getBookmarksRequest = new GetBookmarksRequest();
+	public void refreshSystemNewest(int count) {
+		GetBookmarksRequest getBookmarksRequest = new GetBookmarksRequest(count);
 		getBookmarksRequest.execute(uri);
 	}
 
-	public void refreshUserNewest(String user) {
-		GetBookmarksRequest getBookmarksRequest = new GetUserBookmarksRequest(user);
+	public void refreshUserNewest(String user, int count) {
+		GetBookmarksRequest getBookmarksRequest = new GetUserBookmarksRequest(user, count);
 		getBookmarksRequest.execute(uri);
 	}
 

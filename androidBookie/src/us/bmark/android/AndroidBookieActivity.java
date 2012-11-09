@@ -73,16 +73,22 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 	private void refreshWithNewestGlobal() {
-		BookieService.getService().refreshSystemNewest();
+		BookieService.getService().refreshSystemNewest(desiredCountForSystemNewest());
+	}
+
+	private int desiredCountForSystemNewest() {
+		return R.integer.default_number_of_bookmarks_to_get;
 	}
 
 	private void refreshWithNewestUser() {
 		final UserSettings settings = new SharedPrefsBackedUserSettings(this);
 		final String user = settings.getUsername();
-		BookieService.getService().refreshUserNewest(user);
+		BookieService.getService().refreshUserNewest(user, desiredCountForUserNewest());
 	}
 
-
+	private int desiredCountForUserNewest() {
+		return R.integer.default_number_of_bookmarks_to_get;
+	}
 
 	private ArrayAdapter<BookMark> createPopulatedArrayAdapter() {
 		SystemNewest systemNewest = SystemNewest.getSystemNewest();
