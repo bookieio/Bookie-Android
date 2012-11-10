@@ -98,7 +98,7 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 			e.printStackTrace();
 		}
 		client.close();
-		return new Boolean(success);
+		return Boolean.valueOf(success);
 	}
 
 	@Override
