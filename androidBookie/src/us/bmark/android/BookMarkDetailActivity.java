@@ -1,5 +1,7 @@
 package us.bmark.android;
 
+import java.util.List;
+
 import us.bmark.android.model.BookMark;
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 public class BookMarkDetailActivity extends Activity {
@@ -44,9 +48,9 @@ public class BookMarkDetailActivity extends Activity {
 	private void populateFields(BookMark bmark) {
 		((TextView) findViewById(R.id.bookmarkDetailTextviewDescription)).setText(bmark.description);
 		((TextView) findViewById(R.id.bookmarkDetailTextviewUrl)).setText(bmark.url);
-		//refreshTagsTable(bmark.tags);
+		refreshTagsTable(bmark.tags);
 	}
-/*
+
 	private void refreshTagsTable(List<String> tags) {
 		final TableLayout table = (TableLayout) findViewById(R.id.bookmarkDetailTagTable);
 		table.removeAllViews();
@@ -63,6 +67,6 @@ public class BookMarkDetailActivity extends Activity {
 		tagTextView.setText(tagText);
 		rowView.addView(tagTextView);
 		return rowView;
-	}*/
+	}
 
 }
