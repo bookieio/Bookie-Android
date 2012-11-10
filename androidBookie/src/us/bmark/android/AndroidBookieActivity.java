@@ -29,8 +29,6 @@ public class AndroidBookieActivity extends ListActivity {
 
 	private class BookmarkArrayAdapter extends ArrayAdapter<BookMark> {
 
-
-
 		private static final int ROW_VIEW_ID = R.layout.list_item;
 
 		public BookmarkArrayAdapter(Context context,List<BookMark> objects) {
@@ -73,7 +71,7 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 	private void refreshWithNewestGlobal() {
-		BookieService.getService().refreshSystemNewest(desiredCountForSystemNewest());
+		service().refreshSystemNewest(desiredCountForSystemNewest());
 	}
 
 	private int desiredCountForSystemNewest() {
@@ -81,9 +79,8 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 	private void refreshWithNewestUser() {
-		final UserSettings settings = new SharedPrefsBackedUserSettings(this);
-		final String user = settings.getUsername();
-		BookieService.getService().refreshUserNewest(user, desiredCountForUserNewest());
+		final String user = userSettings().getUsername();
+		service().refreshUserNewest(user, desiredCountForUserNewest());
 	}
 
 	private int desiredCountForUserNewest() {
@@ -117,10 +114,9 @@ public class AndroidBookieActivity extends ListActivity {
 					int position, long id) {
 				// open link in browser
 				final BookMark bmark = ((BookMark) parent.getAdapter().getItem(position));
-				final Uri uri = BookieService.getService().uriForRedirect(bmark);
+				final Uri uri = service().uriForRedirect(bmark);
 				Log.i("BMARK CLICK!",uri.toString());
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
-				startActivity(browserIntent);
+				startActivity(new Intent(Intent.ACTION_VIEW, uri));
 			}
 		});
 	}
@@ -155,5 +151,16 @@ public class AndroidBookieActivity extends ListActivity {
 				refreshWithNewestUser();
 			}
 		});
+	}
+
+	private SharedPrefsBackedUserSettings userSettings() {
+		return new SharedPrefsBackedUserSettings(this);
+	}
+
+	private BookieService service() {
+		final UserSettings settings = userSettings();
+		final String baseUrl = settings.getBaseUrl();
+		BookieService service = BookieService.getService(baseUrl);
+		return service;
 	}
 }

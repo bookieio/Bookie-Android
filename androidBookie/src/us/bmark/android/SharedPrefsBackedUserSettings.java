@@ -9,6 +9,8 @@ public class SharedPrefsBackedUserSettings implements UserSettings {
 	private static final String USER_PREFS_DEFAULT_APIKEY = "";
 	private static final String USER_PREFS_KEY_USERNAME = "username";
 	private static final String USER_PREFS_KEY_APIKEY = "apikey";
+	private static final String USER_PREFS_KEY_BASEURL = "base_url";
+	private static final String USER_PREFS_DEFAULT_BASEURL = "https://bmark.us";
 
 
 	private SharedPreferences prefs;
@@ -31,6 +33,11 @@ public class SharedPrefsBackedUserSettings implements UserSettings {
 	@Override
 	public String getApiKey() {
 		return prefs.getString(USER_PREFS_KEY_APIKEY, USER_PREFS_DEFAULT_APIKEY);
+	}
+
+	@Override
+	public String getBaseUrl() {
+		return prefs.getString(USER_PREFS_KEY_BASEURL, USER_PREFS_DEFAULT_BASEURL);
 	}
 
 }

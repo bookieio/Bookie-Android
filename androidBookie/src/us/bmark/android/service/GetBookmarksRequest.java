@@ -50,9 +50,8 @@ public class GetBookmarksRequest extends AbstractBookieRequest<List<BookMark>> {
 
 	protected List<BookMark> parseStringToGetBookmarkList(String responseString) {
 		List<BookMark> bmarks = null;
-		BookieService service = BookieService.getService();
 		try {
-			bmarks = service.parseBookmarkListResponse(responseString);
+			bmarks = BookieService.parseBookmarkListResponse(responseString);
 		} catch (JSONException e) {
 			handleServerUnexpectedResponseError(e);
 		}

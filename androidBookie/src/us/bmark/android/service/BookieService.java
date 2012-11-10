@@ -18,7 +18,6 @@ import android.text.TextUtils;
  */
 public class BookieService {
 	private static final String TAGS_DELIMITER = " ";
-	private static BookieService singleton; // TODO find something better
 	private String baseUrl;
 
 	public BookieService(String uri) {
@@ -35,9 +34,8 @@ public class BookieService {
 		this.baseUrl = uri;
 	}
 
-	public static BookieService getService() {
-		if(singleton==null) singleton = new BookieService("https://bmark.us");
-		return singleton;
+	public static BookieService getService(String baseUrl) {
+		return new BookieService(baseUrl);
 	}
 
 	public void refreshSystemNewest(int count) {
@@ -50,7 +48,7 @@ public class BookieService {
 		getBookmarksRequest.execute(baseUrl);
 	}
 
-	public List<BookMark> parseBookmarkListResponse(String jsonString) throws JSONException {
+	public static List<BookMark> parseBookmarkListResponse(String jsonString) throws JSONException {
 		JSONObject jObj = new JSONObject(jsonString);
 		JSONArray jsonBmarks = jObj.getJSONArray("bmarks");
 		final int size = jsonBmarks.length();
