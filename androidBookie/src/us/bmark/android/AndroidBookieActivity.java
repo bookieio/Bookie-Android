@@ -115,10 +115,11 @@ public class AndroidBookieActivity extends ListActivity {
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				String url = ((BookMark) parent.getAdapter().getItem(position)).url;
-				Log.i("BMARK CLICK!",url);
 				// open link in browser
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				final BookMark bmark = ((BookMark) parent.getAdapter().getItem(position));
+				final Uri uri = BookieService.getService().uriForRedirect(bmark);
+				Log.i("BMARK CLICK!",uri.toString());
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
 				startActivity(browserIntent);
 			}
 		});

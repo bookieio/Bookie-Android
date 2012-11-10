@@ -12,4 +12,5 @@ public class BookMark {
 	public String url;
 	public String description;
 	public List<String> tags = new LinkedList<String>();
+	public String apiHash;
 }
