@@ -31,7 +31,7 @@
             android:summary="Base URL for the Bookie server"
             android:dialogTitle="@string/settings_baseurl_dialog_title"
             android:dialogMessage="@string/settings_baseurl_dialog_message"
-             android:defaultValue="@string/settings_baseurl_defaultvalue"/>
+            android:defaultValue="@string/settings_baseurl_defaultvalue"/>
 
     </PreferenceCategory>
     
