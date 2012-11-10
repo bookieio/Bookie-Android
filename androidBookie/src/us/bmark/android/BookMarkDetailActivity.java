@@ -37,33 +37,32 @@ public class BookMarkDetailActivity extends Activity {
 
 	private void dealWithIntents() {
 		Intent intent = getIntent();
-		//if (isIntentForUs(intent)) {
-			BookMark bmark = intent.getExtras().getParcelable("bmark");
-			populateFields(bmark);
-		//}
+		BookMark bmark = intent.getExtras().getParcelable("bmark");
+		populateFields(bmark);
 	}
 
 	private void populateFields(BookMark bmark) {
-		TextView tv = (TextView) findViewById(R.id.BookmarkDetailTextView);
-		tv.setText(bmark.url);
-	}
-
-	private boolean isIntentForUs(Intent intent) {
-		String action = intent.getAction();
-		String type = intent.getType();
-		return Intent.ACTION_SEND.equals(action) && type != null
-				&& "text/plain".equals(type);
+		((TextView) findViewById(R.id.bookmarkDetailTextviewDescription)).setText(bmark.description);
+		((TextView) findViewById(R.id.bookmarkDetailTextviewUrl)).setText(bmark.url);
+		//refreshTagsTable(bmark.tags);
 	}
 /*
-	private SharedPrefsBackedUserSettings userSettings() {
-		return new SharedPrefsBackedUserSettings(this);
+	private void refreshTagsTable(List<String> tags) {
+		final TableLayout table = (TableLayout) findViewById(R.id.bookmarkDetailTagTable);
+		table.removeAllViews();
+
+		for(String tagText: tags) {
+			final TableRow tagRow = createTagRow(tagText);
+			table.addView(tagRow);
+		}
 	}
 
-	private BookieService service() {
-		final UserSettings settings = userSettings();
-		final String baseUrl = settings.getBaseUrl();
-		BookieService service = BookieService.getService(baseUrl);
-		return service;
-	}
-*/
+	private TableRow createTagRow(String tagText) {
+		TableRow rowView = new TableRow(this);
+		TextView tagTextView = new TextView(this);
+		tagTextView.setText(tagText);
+		rowView.addView(tagTextView);
+		return rowView;
+	}*/
+
 }

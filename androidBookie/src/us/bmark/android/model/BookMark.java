@@ -31,8 +31,8 @@ public class BookMark implements Parcelable {
 	};
 
 	public BookMark(Parcel in) {
-		this.url = in.readString();
 		this.description = in.readString();
+		this.url = in.readString();
 		this.apiHash = in.readString();
 		in.readStringList(this.tags);
 	}
