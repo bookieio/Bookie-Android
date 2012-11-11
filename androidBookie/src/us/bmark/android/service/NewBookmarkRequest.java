@@ -30,8 +30,10 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 	private Object apiKey;
 	private BookMark bmark;
 	private Set<RequestSuccessListener> registeredSuccessListeners = new HashSet<RequestSuccessListener>();
+	private String insertedBy;
 
-	public NewBookmarkRequest(String user, String apiKey, BookMark bmark) {
+	public NewBookmarkRequest(String user, String apiKey, BookMark bmark, String insertedBy) {
+		this.insertedBy = insertedBy;
 		this.user = user;
 		this.apiKey = apiKey;
 		this.bmark = bmark;
@@ -60,20 +62,22 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 	@Override
 	protected Boolean executeRequest(String endpointUrl) {
 		boolean success = false;
-		final String urlForRequest = endpointUrl + "?api_key="+apiKey;
+		final String urlForRequest = endpointUrl + "?api_key=" + apiKey;
 		HttpPost postRq = new HttpPost(urlForRequest);
 
 		try {
-			JSONObject jsonifiedBmark = BookieService.JSONifyBookmark(bmark);
-			final StringEntity stringEntity = new StringEntity(jsonifiedBmark.toString(), "UTF8");
+			JSONObject jsonifiedBmark = BookieService.JSONifyBookmark(bmark,insertedBy);
+			final StringEntity stringEntity = new StringEntity(
+					jsonifiedBmark.toString(), "UTF8");
 
 			postRq.setHeader("Content-type", "application/json");
-	        postRq.setHeader("Accept", "application/json");
+			postRq.setHeader("Accept", "application/json");
 
-	        stringEntity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+			stringEntity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,
+					"application/json"));
 			postRq.setEntity(stringEntity);
 		} catch (IOException e) {
-		    // TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 		}
 
 		HttpResponse response;

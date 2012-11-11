@@ -314,13 +314,8 @@ public class NewBookmarkActivity extends Activity {
 		return tagRow;
 	}
 
-
-	private SharedPrefsBackedUserSettings userSettings() {
-		return new SharedPrefsBackedUserSettings(this);
-	}
-
 	private BookieService service() {
-		return BookieService.getService(userSettings());
+		return BookieService.getService(this);
 	}
 
 }

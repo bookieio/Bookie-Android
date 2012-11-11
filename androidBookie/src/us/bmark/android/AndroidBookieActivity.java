@@ -167,12 +167,7 @@ public class AndroidBookieActivity extends ListActivity {
 			}
 		});
 	}
-
-	private SharedPrefsBackedUserSettings userSettings() {
-		return new SharedPrefsBackedUserSettings(this);
-	}
-
 	private BookieService service() {
-		return BookieService.getService(userSettings());
+		return BookieService.getService(this);
 	}
 }

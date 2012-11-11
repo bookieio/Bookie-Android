@@ -10,9 +10,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import us.bmark.android.UserSettings;
+import us.bmark.android.SharedPrefsBackedUserSettings;
 import us.bmark.android.model.BookMark;
 import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 
 
@@ -24,23 +27,36 @@ public class BookieService {
 	private String baseUrl;
 	private String username;
 	private String apiKey;
+	private String clientName;
 
-	private BookieService(String uri,String user, String apiKey) {
+	private BookieService(String uri,String user, String apiKey, String clientName) {
 		super();
 		this.baseUrl = uri;
 		this.username = user;
 		this.apiKey = apiKey;
+		this.clientName = clientName;
 	}
 
 
-	public static BookieService getService(String baseUrl,String user, String apiKey ) {
-		return new BookieService(baseUrl,user,apiKey);
+	public static BookieService getService(String baseUrl,String user, String apiKey, String clientName) {
+		return new BookieService(baseUrl,user,apiKey,clientName);
 	}
 
-	public static BookieService getService(UserSettings settings) {
+	public static BookieService getService(Context context) {
+		SharedPrefsBackedUserSettings settings = new SharedPrefsBackedUserSettings(context);
+		PackageInfo info;
+		String clientName = "";
+		try {
+			info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+			clientName = info.packageName+"_"+info.versionName;
+		} catch (NameNotFoundException e) {
+			clientName = "SomeBugRiddenAndroidClient";
+			e.printStackTrace();
+		}
 		return getService(settings.getBaseUrl(),
 				settings.getUsername(),
-				settings.getApiKey());
+				settings.getApiKey(),
+				clientName);
 	}
 
 	public void refreshSystemNewest(int count) {
@@ -81,25 +97,25 @@ public class BookieService {
 	}
 
 	public void saveBookmark(BookMark bmark, RequestSuccessListener listener) {
-		NewBookmarkRequest request = new NewBookmarkRequest(username, apiKey, bmark);
+		NewBookmarkRequest request = new NewBookmarkRequest(username, apiKey, bmark, clientName);
 		request.registerListener(listener);
 		request.execute(baseUrl);
 	}
 
-	public static JSONObject JSONifyBookmark(BookMark bmark) {
+	public static JSONObject JSONifyBookmark(BookMark bmark, String insertedBy) {
 		JSONObject json = new JSONObject();
 		if(bmark!=null) {
 			try {
 				json.put("url", bmark.url);
 				json.put("description", bmark.description);
 				json.put("tags", makeTagsValue(bmark.tags));
+				json.put("inserted_by", insertedBy);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 		return json;
 	}
-
 
 	public Uri uriForRedirect(BookMark bmark) {
 		String uriString = baseUrl;
