@@ -16,6 +16,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputFilter;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -30,6 +33,7 @@ public class NewBookmarkActivity extends Activity {
 
 	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
 	private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
+	protected static final CharSequence TAG_SUBSTITUTE_CHARSEQ = "-";
 
 	private Set<String> tags = new TreeSet<String>();
 
@@ -82,6 +86,50 @@ public class NewBookmarkActivity extends Activity {
 		}
 	}
 
+	private class TagInputFilter implements InputFilter {
+		private AlertDialog tagDialog;
+		public TagInputFilter(AlertDialog tagDialog) {
+			this.tagDialog = tagDialog;
+		}
+		@Override
+		public CharSequence filter(CharSequence source, int start, int end,
+				Spanned dest, int dstart, int dend) {
+			if (source instanceof SpannableStringBuilder) {
+				SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder) source;
+				for (int i = end - 1; i >= start; i--) {
+					char currentChar = source.charAt(i);
+					if (!charIsAllowed(currentChar)) {
+						sourceAsSpannableBuilder.replace(dstart, dend, TAG_SUBSTITUTE_CHARSEQ);
+						visualBell();
+					}
+
+				}
+				return source;
+			} else {
+				StringBuilder filteredStringBuilder = new StringBuilder();
+				for (int i = 0; i < end; i++) {
+					char currentChar = source.charAt(i);
+					if (charIsAllowed(currentChar)) {
+						filteredStringBuilder.append(currentChar);
+					} else {
+						filteredStringBuilder.append(TAG_SUBSTITUTE_CHARSEQ);
+						visualBell();
+					}
+				}
+				return filteredStringBuilder.toString();
+			}
+		}
+
+		private boolean charIsAllowed(char suspect) {
+			return !Character.isSpaceChar(suspect);
+		}
+
+		protected void visualBell() {
+			tagDialog.setMessage(getString(
+					R.string.button_new_bookmark_new_tag_dialog_text_badchar));
+		}
+	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,6 +139,7 @@ public class NewBookmarkActivity extends Activity {
 		setUpCancelButton();
 		setUpAddTagButton();
 	}
+
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -214,9 +263,9 @@ public class NewBookmarkActivity extends Activity {
 		  }
 		});
 
+		AlertDialog dialog = alert.show();
 
-
-		alert.show();
+		aTextField.setFilters(new InputFilter[]{new TagInputFilter(dialog)});
 	}
 
 	protected void dissmsissSoftKeyBoard(EditText editText) {
