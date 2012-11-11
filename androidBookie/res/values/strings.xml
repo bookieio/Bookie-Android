@@ -27,5 +27,6 @@
     <string name="bookmark_detail_activity_username_label">User</string>
     <string name="bookmark_detail_activity_stored_label">Added</string>
     <string name="bookmark_detail_activity_total_count_label">Total Clicks</string>
+    <string name="bookmark_detail_activity_count_label">My Clicks</string>
     <string name="bookmark_detail_activity_tags_label">Tags</string>
 </resources>

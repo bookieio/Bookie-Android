@@ -66,6 +66,7 @@ public class BookieService {
 			item.username = jsonBookmark.getString("username");
 			item.stored = jsonBookmark.getString("stored");
 			item.totalClicks = jsonBookmark.getInt("total_clicks");
+			item.clicks = jsonBookmark.getInt("clicks");
 
 			JSONArray jsonTags = jsonBookmark.getJSONArray("tags");
 

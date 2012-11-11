@@ -51,6 +51,7 @@ public class BookMarkDetailActivity extends Activity {
 		((TextView) findViewById(R.id.bookmarkDetailTextviewUsername)).setText(bmark.username);
 		((TextView) findViewById(R.id.bookmarkDetailTextviewStored)).setText(bmark.stored);
 		((TextView) findViewById(R.id.bookmarkDetailTextviewTotalClicks)).setText(Integer.toString(bmark.totalClicks));
+		((TextView) findViewById(R.id.bookmarkDetailTextviewClicks)).setText(Integer.toString(bmark.clicks));
 		refreshTagsTable(bmark.tags);
 	}
 

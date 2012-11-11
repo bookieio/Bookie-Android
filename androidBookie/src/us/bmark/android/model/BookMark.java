@@ -17,6 +17,7 @@ public class BookMark implements Parcelable {
 	public String username;
 	public String stored;
 	public int totalClicks;
+	public int clicks;
 	public List<String> tags = new LinkedList<String>();
 
 	public static final Parcelable.Creator<BookMark> CREATOR = new Parcelable.Creator<BookMark>() {
@@ -40,6 +41,7 @@ public class BookMark implements Parcelable {
 		this.username = in.readString();
 		this.stored = in.readString();
 		this.totalClicks = in.readInt();
+		this.clicks = in.readInt();
 		in.readStringList(this.tags);
 	}
 
@@ -56,6 +58,7 @@ public class BookMark implements Parcelable {
 		dest.writeString(username);
 		dest.writeString(stored);
 		dest.writeInt(totalClicks);
+		dest.writeInt(clicks);
 		dest.writeStringList(tags);
 	}
 }
