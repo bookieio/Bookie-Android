@@ -3,7 +3,8 @@
     <string name="app_name">AndroidBookie</string>
     <string name="button_newest_global_text">All</string>
     <string name="button_newest_user_text">Mine</string>
-    <string name="button_settings_text">Settings</string><string name="field_new_bookmark_url_hint">URL</string>
+    <string name="button_settings_text">Settings</string>
+    <string name="field_new_bookmark_url_hint">URL</string>
     <string name="field_new_bookmark_title_hint">Title</string>
     <string name="button_new_bookmark_cancel_text">Cancel</string>
     <string name="button_new_bookmark_save_text">OK</string>
@@ -19,6 +20,12 @@
     <string name="settings_baseurl_dialog_title">Server</string>
     <string name="settings_baseurl_dialog_message">Enter the URL of the Bookie server (eg http://bmark.us)</string>
     <string name="settings_baseurl_defaultvalue">https://bmark.us</string>
-   	<string name="bookmark_detail_menu_title">BookMark Detail Menu</string>
-   	<string name="bookmark_detail_activity_title">Bookie BookMark Detail</string>
+    <string name="bookmark_detail_menu_title">BookMark Detail Menu</string>
+    <string name="bookmark_detail_activity_title">Bookie BookMark Detail</string>
+    <string name="bookmark_detail_activity_description_label">Description</string>
+    <string name="bookmark_detail_activity_url_label">URL</string>
+    <string name="bookmark_detail_activity_username_label">User</string>
+    <string name="bookmark_detail_activity_stored_label">Added</string>
+    <string name="bookmark_detail_activity_total_count_label">Total Clicks</string>
+    <string name="bookmark_detail_activity_tags_label">Tags</string>
 </resources>

@@ -6,46 +6,84 @@
     android:gravity="top"
     android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/bookmarkDetailTextviewDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
-            android:padding = "5dip"/>
+    <TextView
+        android:id="@+id/bookMarkDetailTextviewDescriptionLabel"
+        style="@style/bookmarkDetailActivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bookmark_detail_activity_description_label" />
 
-        <TextView
-            android:id="@+id/bookmarkDetailTextviewUrl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dip" />
-<!-- 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-             /> -->
+    <TextView
+        android:id="@+id/bookmarkDetailTextviewDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/bookmarkDetailActivityValue" />
 
-        <TextView
-            android:id="@+id/bookmarkDetailTextviewUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dip" />
+    <TextView
+        android:id="@+id/bookMarkDetailTextviewUrlLabel"
+        style="@style/bookmarkDetailActivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bookmark_detail_activity_url_label" />
 
-        <TextView
-            android:id="@+id/bookmarkDetailTextviewStored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dip" />
+    <TextView
+        android:id="@+id/bookmarkDetailTextviewUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/bookmarkDetailActivityValue" />
 
-        <TextView
-            android:id="@+id/bookmarkDetailTextviewTotalClicks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dip" />
-        
+    <TextView
+        android:id="@+id/bookMarkDetailTextviewUsernameLabel"
+        style="@style/bookmarkDetailActivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bookmark_detail_activity_username_label" />
+
+    <TextView
+        android:id="@+id/bookmarkDetailTextviewUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/bookmarkDetailActivityValue" />
+
+    <TextView
+        android:id="@+id/bookMarkDetailTextviewStoredLabel"
+        style="@style/bookmarkDetailActivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bookmark_detail_activity_stored_label" />
+
+    <TextView
+        android:id="@+id/bookmarkDetailTextviewStored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/bookmarkDetailActivityValue" />
+
+    <TextView
+        android:id="@+id/bookMarkDetailTextviewTotalCountLabel"
+        style="@style/bookmarkDetailActivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bookmark_detail_activity_total_count_label" />
+
+    <TextView
+        android:id="@+id/bookmarkDetailTextviewTotalClicks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/bookmarkDetailActivityValue" />
+
+    <TextView
+        android:id="@+id/bookMarkDetailTextviewTagsLabel"
+        style="@style/bookmarkDetailActivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bookmark_detail_activity_tags_label" />
+
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="0dip"
+        android:layout_gravity="top"
+        android:layout_marginLeft="15dip"
         android:layout_weight="1"
         android:scrollbars="vertical" >
 
@@ -53,7 +91,8 @@
             android:id="@+id/bookmarkDetailTagTable"
             android:layout_width="match_parent"
             android:layout_height="0dip"
-            android:layout_gravity="center" >
+            android:layout_gravity="top" >
+
         </TableLayout>
     </ScrollView>
 
