@@ -86,8 +86,11 @@ public class NewBookmarkActivity extends Activity {
 		}
 	}
 
-	private static InputFilter[] tagInputFilters =  new InputFilter[] {
-		new InputFilter() {
+	private class TagInputFilter implements InputFilter {
+		private AlertDialog tagDialog;
+		public TagInputFilter(AlertDialog tagDialog) {
+			this.tagDialog = tagDialog;
+		}
 		@Override
 		public CharSequence filter(CharSequence source, int start, int end,
 				Spanned dest, int dstart, int dend) {
@@ -97,6 +100,7 @@ public class NewBookmarkActivity extends Activity {
 					char currentChar = source.charAt(i);
 					if (!charIsAllowed(currentChar)) {
 						sourceAsSpannableBuilder.replace(dstart, dend, TAG_SUBSTITUTE_CHARSEQ);
+						visualBell();
 					}
 
 				}
@@ -109,6 +113,7 @@ public class NewBookmarkActivity extends Activity {
 						filteredStringBuilder.append(currentChar);
 					} else {
 						filteredStringBuilder.append(TAG_SUBSTITUTE_CHARSEQ);
+						visualBell();
 					}
 				}
 				return filteredStringBuilder.toString();
@@ -118,7 +123,12 @@ public class NewBookmarkActivity extends Activity {
 		private boolean charIsAllowed(char suspect) {
 			return !Character.isSpaceChar(suspect);
 		}
-	}};
+
+		protected void visualBell() {
+			tagDialog.setMessage(getString(
+					R.string.button_new_bookmark_new_tag_dialog_text_badchar));
+		}
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +139,7 @@ public class NewBookmarkActivity extends Activity {
 		setUpCancelButton();
 		setUpAddTagButton();
 	}
+
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -233,7 +244,6 @@ public class NewBookmarkActivity extends Activity {
 
 		// Set an EditText view to get user input
 		final EditText aTextField = new EditText(this);
-		aTextField.setFilters(tagInputFilters);
 		alert.setView(aTextField);
 
 		alert.setPositiveButton(getString(R.string.button_new_bookmark_new_tag_dialog_ok_button_text),
@@ -252,9 +262,9 @@ public class NewBookmarkActivity extends Activity {
 		  }
 		});
 
+		AlertDialog dialog = alert.show();
 
-
-		alert.show();
+		aTextField.setFilters(new InputFilter[]{new TagInputFilter(dialog)});
 	}
 
 	protected void dissmsissSoftKeyBoard(EditText editText) {
