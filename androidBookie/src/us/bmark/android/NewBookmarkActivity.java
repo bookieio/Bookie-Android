@@ -33,6 +33,7 @@ public class NewBookmarkActivity extends Activity {
 
 	private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
 	private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
+	protected static final CharSequence TAG_SUBSTITUTE_CHARSEQ = "-";
 
 	private Set<String> tags = new TreeSet<String>();
 
@@ -95,8 +96,9 @@ public class NewBookmarkActivity extends Activity {
 				for (int i = end - 1; i >= start; i--) {
 					char currentChar = source.charAt(i);
 					if (!charIsAllowed(currentChar)) {
-						sourceAsSpannableBuilder.delete(i, i + 1);
+						sourceAsSpannableBuilder.replace(dstart, dend, TAG_SUBSTITUTE_CHARSEQ);
 					}
+
 				}
 				return source;
 			} else {
@@ -105,6 +107,8 @@ public class NewBookmarkActivity extends Activity {
 					char currentChar = source.charAt(i);
 					if (charIsAllowed(currentChar)) {
 						filteredStringBuilder.append(currentChar);
+					} else {
+						filteredStringBuilder.append(TAG_SUBSTITUTE_CHARSEQ);
 					}
 				}
 				return filteredStringBuilder.toString();
