@@ -1,7 +1,7 @@
 package us.bmark.android.service;
 
 import static android.text.TextUtils.join;
-import static utils.Utils.areBothEqualAndNotBlank;
+import static utils.Utils.equalButNotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class BookieService {
 
 	public Uri uriForRedirect(BookMark bmark) {
 		String uriString = baseUrl;
-		if(areBothEqualAndNotBlank(bmark.username, username)) {
+		if(equalButNotBlank(bmark.username, username)) {
 			uriString += "/"+username;
 		}
 		uriString += "/redirect/"+bmark.apiHash;

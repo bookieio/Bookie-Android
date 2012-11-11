@@ -8,7 +8,7 @@ public class Utils {
 		return (isEmpty(suspect)) || (suspect.trim().isEmpty());
 	}
 
-	public static boolean areBothEqualAndNotBlank(String lhs,
+	public static boolean equalButNotBlank(String lhs,
 			String rhs) {
 		return !(isBlank(lhs)) && TextUtils.equals(lhs,rhs);
 	}

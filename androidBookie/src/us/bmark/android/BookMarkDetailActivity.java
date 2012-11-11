@@ -1,5 +1,7 @@
 package us.bmark.android;
 
+import static utils.Utils.equalButNotBlank;
+
 import java.util.List;
 
 import us.bmark.android.model.BookMark;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -51,8 +54,18 @@ public class BookMarkDetailActivity extends Activity {
 		((TextView) findViewById(R.id.bookmarkDetailTextviewUsername)).setText(bmark.username);
 		((TextView) findViewById(R.id.bookmarkDetailTextviewStored)).setText(bmark.stored);
 		((TextView) findViewById(R.id.bookmarkDetailTextviewTotalClicks)).setText(Integer.toString(bmark.totalClicks));
-		((TextView) findViewById(R.id.bookmarkDetailTextviewClicks)).setText(Integer.toString(bmark.clicks));
+		final TextView myClicksTextView = (TextView) findViewById(R.id.bookmarkDetailTextviewClicks);
+		if(isMyBookmark(bmark)){
+			myClicksTextView.setText(Integer.toString(bmark.clicks));
+		} else {
+			myClicksTextView.setVisibility(View.INVISIBLE);
+			((TextView) findViewById(R.id.bookMarkDetailTextviewCountLabel)).setVisibility(View.INVISIBLE);
+		}
 		refreshTagsTable(bmark.tags);
+	}
+
+	private boolean isMyBookmark(BookMark bmark) {
+		return equalButNotBlank(bmark.username, userSettings().getUsername() );
 	}
 
 	private void refreshTagsTable(List<String> tags) {
@@ -71,6 +84,10 @@ public class BookMarkDetailActivity extends Activity {
 		tagTextView.setText(tagText);
 		rowView.addView(tagTextView);
 		return rowView;
+	}
+
+	private SharedPrefsBackedUserSettings userSettings() {
+		return new SharedPrefsBackedUserSettings(this);
 	}
 
 }
