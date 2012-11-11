@@ -13,8 +13,11 @@ import android.os.Parcelable;
 public class BookMark implements Parcelable {
 	public String url;
 	public String description;
-	public List<String> tags = new LinkedList<String>();
 	public String apiHash;
+	public String username;
+	public String stored;
+	public int totalClicks;
+	public List<String> tags = new LinkedList<String>();
 
 	public static final Parcelable.Creator<BookMark> CREATOR = new Parcelable.Creator<BookMark>() {
 		public BookMark createFromParcel(Parcel in) {
@@ -34,6 +37,9 @@ public class BookMark implements Parcelable {
 		this.description = in.readString();
 		this.url = in.readString();
 		this.apiHash = in.readString();
+		this.username = in.readString();
+		this.stored = in.readString();
+		this.totalClicks = in.readInt();
 		in.readStringList(this.tags);
 	}
 
@@ -47,6 +53,9 @@ public class BookMark implements Parcelable {
 		dest.writeString(description);
 		dest.writeString(url);
 		dest.writeString(apiHash);
+		dest.writeString(username);
+		dest.writeString(stored);
+		dest.writeInt(totalClicks);
 		dest.writeStringList(tags);
 	}
 }
