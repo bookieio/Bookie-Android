@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -116,6 +117,21 @@ public class AndroidBookieActivity extends ListActivity {
 				final Uri uri = service().uriForRedirect(bmark);
 				Log.i("BMARK CLICK!",uri.toString());
 				startActivity(new Intent(Intent.ACTION_VIEW, uri));
+			}
+		});
+
+		lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// open link in browser
+				final BookMark bmark = ((BookMark) parent.getAdapter().getItem(position));
+				final Bundle bundle = new Bundle();
+				bundle.putParcelable("bmark", bmark);
+				Log.i("BMARK LONGCLICK!",bmark.description);
+				final Intent intent = new Intent(AndroidBookieActivity.this,BookMarkDetailActivity.class);
+				intent.putExtras(bundle);
+				startActivity(intent);
+				return true;
 			}
 		});
 	}

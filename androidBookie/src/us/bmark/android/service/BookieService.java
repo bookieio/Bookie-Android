@@ -57,12 +57,22 @@ public class BookieService {
 		final int size = jsonBmarks.length();
 
 		List<BookMark> bmarks = new ArrayList<BookMark>(size);
-		for(int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			BookMark item = new BookMark();
 			JSONObject jsonBookmark = jsonBmarks.getJSONObject(i);
 			item.description = jsonBookmark.getString("description");
 			item.url = jsonBookmark.getString("url");
 			item.apiHash = jsonBookmark.getString("hash_id");
+			item.username = jsonBookmark.getString("username");
+			item.stored = jsonBookmark.getString("stored");
+			item.totalClicks = jsonBookmark.getInt("total_clicks");
+			item.clicks = jsonBookmark.getInt("clicks");
+
+			JSONArray jsonTags = jsonBookmark.getJSONArray("tags");
+
+			for (int tagIndex = 0; tagIndex < jsonTags.length(); tagIndex++) {
+				item.tags.add(jsonTags.getJSONObject(tagIndex).getString("name"));
+			}
 			bmarks.add(item);
 		}
 		return bmarks;

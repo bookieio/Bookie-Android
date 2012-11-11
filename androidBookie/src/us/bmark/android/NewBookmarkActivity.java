@@ -101,22 +101,23 @@ public class NewBookmarkActivity extends Activity {
 
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-	    super.onRestoreInstanceState(savedInstanceState);
-	    ArrayList<String> tagsArrayList = savedInstanceState.getStringArrayList(STATE_TAGS_KEY);
+		super.onRestoreInstanceState(savedInstanceState);
+		ArrayList<String> tagsArrayList = savedInstanceState
+				.getStringArrayList(STATE_TAGS_KEY);
 		tags.addAll(tagsArrayList);
 		refreshTagsTable();
 	}
 
 	private void dealWithIntents() {
 		Intent intent = getIntent();
-	    if (isIntentForUs(intent)) {
-	    	handleSendText(intent);
-	    }
+		if (isIntentForUs(intent)) {
+			handleSendText(intent);
+		}
 	}
 
 	private boolean isIntentForUs(Intent intent) {
-	    String action = intent.getAction();
-	    String type = intent.getType();
+		String action = intent.getAction();
+		String type = intent.getType();
 		return Intent.ACTION_SEND.equals(action)
 				&& type != null
 				&& "text/plain".equals(type);
