@@ -97,19 +97,19 @@ public class BookieService {
 	}
 
 	public void saveBookmark(BookMark bmark, RequestSuccessListener listener) {
-		NewBookmarkRequest request = new NewBookmarkRequest(username, apiKey, bmark, clientName);
+		NewBookmarkRequest request = new NewBookmarkRequest(username, apiKey, JSONifyBookmark(bmark).toString());
 		request.registerListener(listener);
 		request.execute(baseUrl);
 	}
 
-	public static JSONObject JSONifyBookmark(BookMark bmark, String insertedBy) {
+	private JSONObject JSONifyBookmark(BookMark bmark) {
 		JSONObject json = new JSONObject();
 		if(bmark!=null) {
 			try {
 				json.put("url", bmark.url);
 				json.put("description", bmark.description);
 				json.put("tags", makeTagsValue(bmark.tags));
-				json.put("inserted_by", insertedBy);
+				json.put("inserted_by", clientName);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -129,8 +129,5 @@ public class BookieService {
 	private static String makeTagsValue(List<String> tags) {
 		return join(TAGS_DELIMITER,tags);
 	}
-
-
-
 
 }

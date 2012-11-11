@@ -11,9 +11,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONObject;
 
-import us.bmark.android.model.BookMark;
 import android.net.http.AndroidHttpClient;
 
 
@@ -28,15 +26,13 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 	private static final String RESTPATH = "bmark";
 	private String user;
 	private Object apiKey;
-	private BookMark bmark;
 	private Set<RequestSuccessListener> registeredSuccessListeners = new HashSet<RequestSuccessListener>();
-	private String insertedBy;
+	private String bmarkAsJson;
 
-	public NewBookmarkRequest(String user, String apiKey, BookMark bmark, String insertedBy) {
-		this.insertedBy = insertedBy;
+	public NewBookmarkRequest(String user, String apiKey, String bmarkAsJson) {
 		this.user = user;
 		this.apiKey = apiKey;
-		this.bmark = bmark;
+		this.bmarkAsJson = bmarkAsJson;
 	}
 
 	public void registerListener(RequestSuccessListener listener) {
@@ -66,9 +62,8 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
 		HttpPost postRq = new HttpPost(urlForRequest);
 
 		try {
-			JSONObject jsonifiedBmark = BookieService.JSONifyBookmark(bmark,insertedBy);
 			final StringEntity stringEntity = new StringEntity(
-					jsonifiedBmark.toString(), "UTF8");
+					bmarkAsJson, "UTF8");
 
 			postRq.setHeader("Content-type", "application/json");
 			postRq.setHeader("Accept", "application/json");
