@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -115,7 +114,6 @@ public class AndroidBookieActivity extends ListActivity {
 				// open link in browser
 				final BookMark bmark = ((BookMark) parent.getAdapter().getItem(position));
 				final Uri uri = service().uriForRedirect(bmark);
-				Log.i("BMARK CLICK!",uri.toString());
 				startActivity(new Intent(Intent.ACTION_VIEW, uri));
 			}
 		});
@@ -127,7 +125,6 @@ public class AndroidBookieActivity extends ListActivity {
 				final BookMark bmark = ((BookMark) parent.getAdapter().getItem(position));
 				final Bundle bundle = new Bundle();
 				bundle.putParcelable("bmark", bmark);
-				Log.i("BMARK LONGCLICK!",bmark.description);
 				final Intent intent = new Intent(AndroidBookieActivity.this,BookMarkDetailActivity.class);
 				intent.putExtras(bundle);
 				startActivity(intent);
