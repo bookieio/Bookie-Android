@@ -1,5 +1,8 @@
 package us.bmark.android.service;
 
+import static android.text.TextUtils.join;
+import static utils.Utils.areBothEqualAndNotBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +14,6 @@ import us.bmark.android.UserSettings;
 import us.bmark.android.model.BookMark;
 import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
 import android.net.Uri;
-import android.text.TextUtils;
 
 
 /**
@@ -100,11 +102,16 @@ public class BookieService {
 
 
 	public Uri uriForRedirect(BookMark bmark) {
-		return Uri.parse(baseUrl+"/"+username+"/redirect/"+bmark.apiHash);
+		String uriString = baseUrl;
+		if(areBothEqualAndNotBlank(bmark.username, username)) {
+			uriString += "/"+username;
+		}
+		uriString += "/redirect/"+bmark.apiHash;
+		return Uri.parse(uriString);
 	}
 
 	private static String makeTagsValue(List<String> tags) {
-		return TextUtils.join(TAGS_DELIMITER,tags);
+		return join(TAGS_DELIMITER,tags);
 	}
 
 
