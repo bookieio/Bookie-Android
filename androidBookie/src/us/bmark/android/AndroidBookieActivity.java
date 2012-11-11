@@ -79,8 +79,7 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 	private void refreshWithNewestUser() {
-		final String user = userSettings().getUsername();
-		service().refreshUserNewest(user, desiredCountForUserNewest());
+		service().refreshUserNewest(desiredCountForUserNewest());
 	}
 
 	private int desiredCountForUserNewest() {
@@ -158,9 +157,6 @@ public class AndroidBookieActivity extends ListActivity {
 	}
 
 	private BookieService service() {
-		final UserSettings settings = userSettings();
-		final String baseUrl = settings.getBaseUrl();
-		BookieService service = BookieService.getService(baseUrl);
-		return service;
+		return BookieService.getService(userSettings());
 	}
 }

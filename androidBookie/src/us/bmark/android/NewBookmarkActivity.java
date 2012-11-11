@@ -176,14 +176,11 @@ public class NewBookmarkActivity extends Activity {
 	}
 
 	private void saveButtonWasClicked() {
-		UserSettings settings = new SharedPrefsBackedUserSettings(NewBookmarkActivity.this);
-		String user = settings.getUsername();
-		String apiKey = settings.getApiKey();
 		BookMark bmark = new BookMark();
 		bmark.url = ((EditText) findViewById(id.newBookmarkUrlField)).getText().toString();
 		bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();
 		bmark.tags.addAll(tags);
-		service().saveBookmark(user,apiKey,bmark,NewBookmarkActivity.this.produceListenerForRequest());
+		service().saveBookmark(bmark,NewBookmarkActivity.this.produceListenerForRequest());
 	}
 
 	public void cancelButtonWasClicked() {
@@ -273,10 +270,7 @@ public class NewBookmarkActivity extends Activity {
 	}
 
 	private BookieService service() {
-		final UserSettings settings = userSettings();
-		final String baseUrl = settings.getBaseUrl();
-		BookieService service = BookieService.getService(baseUrl);
-		return service;
+		return BookieService.getService(userSettings());
 	}
 
 }

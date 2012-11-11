@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import us.bmark.android.UserSettings;
 import us.bmark.android.model.BookMark;
 import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
 import android.net.Uri;
@@ -19,23 +20,25 @@ import android.text.TextUtils;
 public class BookieService {
 	private static final String TAGS_DELIMITER = " ";
 	private String baseUrl;
+	private String username;
+	private String apiKey;
 
-	public BookieService(String uri) {
+	private BookieService(String uri,String user, String apiKey) {
 		super();
 		this.baseUrl = uri;
+		this.username = user;
+		this.apiKey = apiKey;
 	}
 
-	public String getUri() {
-		return baseUrl;
+
+	public static BookieService getService(String baseUrl,String user, String apiKey ) {
+		return new BookieService(baseUrl,user,apiKey);
 	}
 
-
-	public void setUri(String uri) {
-		this.baseUrl = uri;
-	}
-
-	public static BookieService getService(String baseUrl) {
-		return new BookieService(baseUrl);
+	public static BookieService getService(UserSettings settings) {
+		return getService(settings.getBaseUrl(),
+				settings.getUsername(),
+				settings.getApiKey());
 	}
 
 	public void refreshSystemNewest(int count) {
@@ -43,8 +46,8 @@ public class BookieService {
 		getBookmarksRequest.execute(baseUrl);
 	}
 
-	public void refreshUserNewest(String user, int count) {
-		GetBookmarksRequest getBookmarksRequest = new GetUserBookmarksRequest(user, count);
+	public void refreshUserNewest(int count) {
+		GetBookmarksRequest getBookmarksRequest = new GetUserBookmarksRequest(username, count);
 		getBookmarksRequest.execute(baseUrl);
 	}
 
@@ -65,8 +68,8 @@ public class BookieService {
 		return bmarks;
 	}
 
-	public void saveBookmark(String user, String apiKey, BookMark bmark, RequestSuccessListener listener) {
-		NewBookmarkRequest request = new NewBookmarkRequest(user, apiKey, bmark);
+	public void saveBookmark(BookMark bmark, RequestSuccessListener listener) {
+		NewBookmarkRequest request = new NewBookmarkRequest(username, apiKey, bmark);
 		request.registerListener(listener);
 		request.execute(baseUrl);
 	}
@@ -87,12 +90,13 @@ public class BookieService {
 
 
 	public Uri uriForRedirect(BookMark bmark) {
-		return Uri.parse(baseUrl+"/redirect/"+bmark.apiHash);
+		return Uri.parse(baseUrl+"/"+username+"/redirect/"+bmark.apiHash);
 	}
 
 	private static String makeTagsValue(List<String> tags) {
 		return TextUtils.join(TAGS_DELIMITER,tags);
 	}
+
 
 
 
