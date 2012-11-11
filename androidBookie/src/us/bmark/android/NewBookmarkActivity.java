@@ -16,6 +16,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputFilter;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -81,6 +84,37 @@ public class NewBookmarkActivity extends Activity {
 			cancelButtonWasClicked();
 		}
 	}
+
+	private static InputFilter[] tagInputFilters =  new InputFilter[] {
+		new InputFilter() {
+		@Override
+		public CharSequence filter(CharSequence source, int start, int end,
+				Spanned dest, int dstart, int dend) {
+			if (source instanceof SpannableStringBuilder) {
+				SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder) source;
+				for (int i = end - 1; i >= start; i--) {
+					char currentChar = source.charAt(i);
+					if (!charIsAllowed(currentChar)) {
+						sourceAsSpannableBuilder.delete(i, i + 1);
+					}
+				}
+				return source;
+			} else {
+				StringBuilder filteredStringBuilder = new StringBuilder();
+				for (int i = 0; i < end; i++) {
+					char currentChar = source.charAt(i);
+					if (charIsAllowed(currentChar)) {
+						filteredStringBuilder.append(currentChar);
+					}
+				}
+				return filteredStringBuilder.toString();
+			}
+		}
+
+		private boolean charIsAllowed(char suspect) {
+			return !Character.isSpaceChar(suspect);
+		}
+	}};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -195,6 +229,7 @@ public class NewBookmarkActivity extends Activity {
 
 		// Set an EditText view to get user input
 		final EditText aTextField = new EditText(this);
+		aTextField.setFilters(tagInputFilters);
 		alert.setView(aTextField);
 
 		alert.setPositiveButton(getString(R.string.button_new_bookmark_new_tag_dialog_ok_button_text),
