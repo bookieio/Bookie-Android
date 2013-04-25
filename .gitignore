@@ -73,3 +73,8 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
+target/
+*.iml
+*.ipr
+*.iws
+.idea/
