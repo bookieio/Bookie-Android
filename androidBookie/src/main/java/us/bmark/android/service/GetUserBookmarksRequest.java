@@ -5,18 +5,18 @@ import java.security.InvalidParameterException;
 
 public class GetUserBookmarksRequest extends GetBookmarksRequest {
 
-	private String user;
+    private String user;
 
-	public GetUserBookmarksRequest(String user, int count) {
-		super(count);
-		if(user==null) {
-			throw new InvalidParameterException("Get User Bookmark requires a user string (received null)");
-		}
-		this.user = user;
-	}
+    public GetUserBookmarksRequest(String user, int count) {
+        super(count);
+        if (user == null) {
+            throw new InvalidParameterException("Get User Bookmark requires a user string (received null)");
+        }
+        this.user = user;
+    }
 
-	@Override
-	protected String getEndpoint(String baseUrl) {
-		return baseUrl + API_PATH_PREFIX +  "/" + user  + RESTPATH;
-	}
+    @Override
+    protected String getEndpoint(String baseUrl) {
+        return baseUrl + API_PATH_PREFIX + "/" + user + RESTPATH;
+    }
 }

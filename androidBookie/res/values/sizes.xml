@@ -4,5 +4,5 @@
     <dimen name="TabbishButtonHeight">34sp</dimen>
     <dimen name="TabbishButtonMargin">3sp</dimen>
     <dimen name="TabbishButtonMinWidth">50sp</dimen>
-    
+
 </resources>

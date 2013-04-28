@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="default_number_of_bookmarks_to_get">50</integer>
-    
+
 </resources>

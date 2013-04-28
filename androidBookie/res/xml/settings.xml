@@ -11,7 +11,7 @@
             android:dialogTitle="@string/settings_username_dialog_title"
             android:dialogMessage="@string/settings_username_dialog_message"
              />
-        
+
         <EditTextPreference
             android:key="apikey"
             android:title="API Key" 
@@ -34,5 +34,5 @@
             android:defaultValue="@string/settings_baseurl_defaultvalue"/>
 
     </PreferenceCategory>
-    
+
 </PreferenceScreen>
