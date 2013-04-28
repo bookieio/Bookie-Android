@@ -1,6 +1,6 @@
 package us.bmark.android;
 
-import static utils.Utils.equalButNotBlank;
+import static us.bmark.android.utils.Utils.equalButNotBlank;
 
 import java.util.List;
 

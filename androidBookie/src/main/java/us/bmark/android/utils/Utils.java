@@ -1,4 +1,4 @@
-package utils;
+package us.bmark.android.utils;
 
 import static android.text.TextUtils.isEmpty;
 import android.text.TextUtils;

@@ -1,7 +1,7 @@
 package us.bmark.android.service;
 
 import static android.text.TextUtils.join;
-import static utils.Utils.equalButNotBlank;
+import static us.bmark.android.utils.Utils.equalButNotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
