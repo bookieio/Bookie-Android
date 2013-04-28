@@ -42,6 +42,7 @@ local.properties
 .Trashes
 .*
 !.gitignore
+!.gitattributes
 *~
 
 # KDE
