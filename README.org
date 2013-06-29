@@ -11,9 +11,11 @@
     1. Maven
     2. The android SDK and requirements, with ANDROID_HOME set
 *** To build an apk
-    1. cd to 'androidBookie'
-    2. mvn compile
-    3. your apk will be in ./target
+    1. 
+    #+BEGIN_SRC 
+    mvn compile
+    #+END_SRC
+    2. your apk will be in ./target
 *** Run on your device (or the emulator)
     1. If you want the emulator, start an emulator using the 'emulator' tool that comes with the sdk
     2. Make sure adb is started ( adb start-server ), check that adb sees your device ( adb devices )
