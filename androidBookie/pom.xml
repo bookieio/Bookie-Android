@@ -1,70 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>us.bmark</groupId>
-  <artifactId>androidBookie</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>apk</packaging>
-  <name>AndroidBookie</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>us.bmark</groupId>
+    <artifactId>androidBookie</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>apk</packaging>
+    <name>AndroidBookie</name>
 
-  <dependencies>
+    <dependencies>
 
-  
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>4.1.1.4</version>
+            <scope>provided</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>android.support</groupId>
-      <artifactId>compatibility-v4</artifactId>
-      <version>11</version>
-      <type>jar</type>
-      <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>r7</version>
+        </dependency>
+    </dependencies>
 
-    <dependency>
-      <groupId>android</groupId>
-      <artifactId>android</artifactId>
-      <version>4.2_r1</version>
-      <scope>provided</scope>
-    </dependency>
-
-  </dependencies>
-  <repositories>
-    <repository>
-      <id>oss-sonatype</id>
-      <name>oss-sonatype</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <build>
-    <finalName>${project.artifactId}</finalName>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-          <artifactId>maven-android-plugin</artifactId>
-          <version>3.5.3</version>
-          <extensions>true</extensions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <!-- See http://code.google.com/p/maven-android-plugin/ -->
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>android-maven-plugin</artifactId>
-        <configuration>
-          <sdk>
-            <!-- platform or api level (api level 8 = platform 2.2) -->
-            <platform>16</platform>
-          </sdk>
-          <zipalign><skip>false</skip></zipalign>
-        </configuration>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <artifactId>maven-android-plugin</artifactId>
+                    <version>3.6.0</version>
+                    <extensions>true</extensions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <!-- See http://code.google.com/p/maven-android-plugin/ -->
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <artifactId>android-maven-plugin</artifactId>
+                <configuration>
+                    <sdk>
+                        <platform>17</platform>
+                    </sdk>
+                    <zipalign>
+                        <skip>false</skip>
+                    </zipalign>
+                </configuration>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
