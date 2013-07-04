@@ -14,15 +14,19 @@ import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import us.bmark.android.R.id;
-import us.bmark.android.model.BookMark;
-import us.bmark.android.service.BookieService;
-import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
+
+import us.bmark.android.R.id;
+import us.bmark.android.model.BookMark;
+import us.bmark.android.service.BookieService;
+import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
+import us.bmark.android.views.TagListViewGroup;
 
 public class NewBookmarkActivity extends Activity {
 
@@ -284,33 +288,8 @@ public class NewBookmarkActivity extends Activity {
     }
 
     private void refreshTagsTable() {
-        final TableLayout table = (TableLayout) findViewById(id.newBookmarkTabTable);
-        table.removeAllViews();
-
-        for (String tagText : tags) {
-            final TableRow tagRow = createTagRow(tagText);
-            table.addView(tagRow);
-        }
-    }
-
-    private TableRow createTagRow(String tagText) {
-        final TableRow tagRow = new TableRow(this);
-
-        final TextView tagTextView = new TextView(this);
-        tagTextView.setText(tagText);
-        tagTextView.setPadding(8, 8, 8, 8);
-        tagRow.addView(tagTextView);
-
-        final Button delButton = new Button(this);
-        delButton.setTag(tagText);
-        delButton.setOnClickListener(new RemoveTagButtonListener());
-        delButton.setBackgroundResource(R.drawable.delete_button);
-        delButton.setText("X");
-        delButton.setPadding(8, 8, 8, 8);
-        tagRow.addView(delButton);
-
-        tagRow.setPadding(8, 8, 8, 8);
-        return tagRow;
+        final TagListViewGroup tagsView = (TagListViewGroup) findViewById(id.tagList);
+        tagsView.setTags(tags);
     }
 
     private BookieService service() {
