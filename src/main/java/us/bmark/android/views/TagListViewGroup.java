@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import com.sun.javafx.beans.annotations.NonNull;
 
 import java.util.Set;
+
+import us.bmark.android.R;
 
 public class TagListViewGroup extends ViewGroup {
 
@@ -29,9 +32,12 @@ public class TagListViewGroup extends ViewGroup {
         Log.v(TAG, "in setTags, tagsize is " + tags.size());
         removeAllViews();
         for (String tag : tags) {
-            TextView child = new TextView(getContext());
+            TextView child =
+                    (TextView)
+                    LayoutInflater.from(getContext()).inflate(R.layout.bookmark_tag,null);
             child.setText(tag);
-            child.setPadding(6, 6, 6, 6);
+
+
             LayoutParams params = child.getLayoutParams();
             if (params == null) {
                 params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -75,7 +81,7 @@ public class TagListViewGroup extends ViewGroup {
         int currentRowWidthUsed = l;
         int currentRowStart = t;
         int currentRowHeight = 0;
-
+        boolean checked=true;
         while (!all(done)) {
             for (int i = 0; i < childCount; i++) {
                 if (!done[i]) {
@@ -90,15 +96,17 @@ public class TagListViewGroup extends ViewGroup {
                         final int tagWidth = tView.getMeasuredWidth();
                         if (currentRowWidthUsed == 0 && tagWidth > width) {
                             currentRowHeight = childHeight > currentRowHeight ? childHeight : currentRowHeight;
-                            child.layout(currentRowWidthUsed, currentRowStart, currentRowWidthUsed+tagWidth,currentRowStart+currentRowHeight);
+                            tView.layout(currentRowWidthUsed, currentRowStart, currentRowWidthUsed+tagWidth,currentRowStart+currentRowHeight);
+                            applyCheckStyle(tView, checked);
                             currentRowWidthUsed = tagWidth;
                             done[i] = true;
                         } else if (tagWidth + currentRowWidthUsed < width) {
                             currentRowHeight = childHeight > currentRowHeight ? childHeight : currentRowHeight;
                             child.layout(currentRowWidthUsed, currentRowStart, currentRowWidthUsed+tagWidth,currentRowStart+currentRowHeight);
-                            //child.layout(22, 22, 88,88);
+                            applyCheckStyle(tView, checked);
                             currentRowWidthUsed+=tagWidth;
                             done[i] = true;
+                            checked=!checked;
                         }
                     }
                 }
@@ -108,8 +116,17 @@ public class TagListViewGroup extends ViewGroup {
             currentRowWidthUsed=l;
             currentRowStart+=currentRowHeight;
             currentRowHeight=0;
+            checked=currentRow%2==0;
+
         }
 
+    }
+
+    private void applyCheckStyle(TextView view, boolean checked) {
+        if(checked) {
+            view.setBackgroundColor(getResources().getColor(R.color.check_background));
+            view.setTextColor(getResources().getColor(R.color.check_text));
+        }
     }
 
     private boolean all(boolean[] bits) {

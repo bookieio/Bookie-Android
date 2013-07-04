@@ -9,11 +9,11 @@
         <item name="android:textColor">#e4e4b0</item>
     </style>
         <style name="bookmarkDetailActivityValue">
-        <item name="android:background">#353535</item>
+        <item name="android:background">@color/check_background</item>
         <item name="android:paddingBottom">3dip</item>
         <item name="android:paddingLeft">10dip</item>
         <item name="android:paddingRight">5dip</item>
         <item name="android:paddingTop">3dip</item>
-        <item name="android:textColor">#f0f0f0</item>
+        <item name="android:textColor">@color/check_text</item>
     </style>
 </resources>
