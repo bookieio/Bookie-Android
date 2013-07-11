@@ -4,15 +4,18 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import us.bmark.android.SharedPrefsBackedUserSettings;
-import us.bmark.android.model.BookMark;
-import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import us.bmark.android.SharedPrefsBackedUserSettings;
+import us.bmark.android.UserSettings;
+import us.bmark.android.model.BookMark;
+import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
 
 import static android.text.TextUtils.join;
 import static us.bmark.android.utils.Utils.equalButNotBlank;
@@ -42,7 +45,7 @@ public class BookieService {
     }
 
     public static BookieService getService(Context context) {
-        SharedPrefsBackedUserSettings settings = new SharedPrefsBackedUserSettings(context);
+        UserSettings settings = new SharedPrefsBackedUserSettings(context);
         PackageInfo info;
         String clientName = "";
         try {
@@ -125,7 +128,7 @@ public class BookieService {
         return Uri.parse(uriString);
     }
 
-    private static String makeTagsValue(List<String> tags) {
+    private static String makeTagsValue(Iterable<String> tags) {
         return join(TAGS_DELIMITER, tags);
     }
 

@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -96,7 +98,7 @@ public class NewBookmarkActivity extends Activity {
         public CharSequence filter(CharSequence source, int start, int end,
                                    Spanned dest, int dstart, int dend) {
             if (source instanceof SpannableStringBuilder) {
-                SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder) source;
+                Editable sourceAsSpannableBuilder = (SpannableStringBuilder) source;
                 for (int i = end - 1; i >= start; i--) {
                     char currentChar = source.charAt(i);
                     if (!charIsAllowed(currentChar)) {
@@ -154,7 +156,7 @@ public class NewBookmarkActivity extends Activity {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        ArrayList<String> tagsArrayList = savedInstanceState
+        Collection<String> tagsArrayList = savedInstanceState
                 .getStringArrayList(STATE_TAGS_KEY);
         tags.addAll(tagsArrayList);
         refreshTagsTable();

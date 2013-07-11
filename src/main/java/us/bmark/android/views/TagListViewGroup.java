@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sun.javafx.beans.annotations.NonNull;
-
 import java.util.Set;
 
 import us.bmark.android.R;
@@ -18,7 +16,7 @@ import us.bmark.android.R;
 public class TagListViewGroup extends ViewGroup {
 
     private static final String TAG = TagListViewGroup.class.getCanonicalName();
-
+    private Set<String> tags;
 
     public TagListViewGroup(Context context) {
         super(context);
@@ -28,15 +26,21 @@ public class TagListViewGroup extends ViewGroup {
         super(context, attrs);
     }
 
-    public void setTags(@NonNull Set<String> tags) {
-        Log.v(TAG, "in setTags, tagsize is " + tags.size());
+    private void recreateTagViews() {
         removeAllViews();
-        for (String tag : tags) {
-            TextView child =
+        for (final String tag : tags) {
+            final TextView child =
                     (TextView)
                     LayoutInflater.from(getContext()).inflate(R.layout.bookmark_tag,null);
             child.setText(tag);
+            child.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
 
+                    deleteTag(((TextView)view).getText().toString());
+                    return true;
+                }
+            });
 
             LayoutParams params = child.getLayoutParams();
             if (params == null) {
@@ -48,6 +52,11 @@ public class TagListViewGroup extends ViewGroup {
             child.setLayoutParams(params);
             addView(child);
         }
+    }
+
+    private void deleteTag( String s) {
+        tags.remove(s);
+
     }
 
     @Override

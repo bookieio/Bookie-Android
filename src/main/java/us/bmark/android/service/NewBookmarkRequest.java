@@ -1,6 +1,7 @@
 package us.bmark.android.service;
 
 import android.net.http.AndroidHttpClient;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -11,7 +12,6 @@ import org.apache.http.protocol.HTTP;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Set;
 
 
 // TODO make a sort of generalized "send json POST/PUT request"
@@ -25,7 +25,7 @@ public class NewBookmarkRequest extends AbstractBookieRequest<Boolean> {
     private static final String RESTPATH = "bmark";
     private String user;
     private Object apiKey;
-    private Set<RequestSuccessListener> registeredSuccessListeners = new HashSet<RequestSuccessListener>();
+    private java.util.Collection<RequestSuccessListener> registeredSuccessListeners = new HashSet<RequestSuccessListener>();
     private String bmarkAsJson;
 
     public NewBookmarkRequest(String user, String apiKey, String bmarkAsJson) {

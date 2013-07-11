@@ -10,7 +10,7 @@ public class Utils {
     }
 
     public static boolean equalButNotBlank(String lhs,
-                                           String rhs) {
+                                           CharSequence rhs) {
         return !(isBlank(lhs)) && TextUtils.equals(lhs, rhs);
     }
 }

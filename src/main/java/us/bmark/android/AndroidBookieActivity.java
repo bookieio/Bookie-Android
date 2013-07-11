@@ -10,16 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import us.bmark.android.model.BookMark;
-import us.bmark.android.model.SystemNewest;
-import us.bmark.android.service.BookieService;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
+import us.bmark.android.model.BookMark;
+import us.bmark.android.model.SystemNewest;
+import us.bmark.android.service.BookieService;
 
 public class AndroidBookieActivity extends ListActivity {
 
@@ -84,20 +90,20 @@ public class AndroidBookieActivity extends ListActivity {
     }
 
     private ArrayAdapter<BookMark> createPopulatedArrayAdapter() {
+
         SystemNewest systemNewest = SystemNewest.getSystemNewest();
-        List<BookMark> bmarks = systemNewest.getList();
 
         systemNewest.addObserver(new Observer() {
             @Override
             public void update(Observable observable, Object data) {
                 List<BookMark> bmarks = ((SystemNewest) observable).getList();
-                ArrayAdapter<BookMark> arrayAdapter = new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
+                ListAdapter arrayAdapter = new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
                 setListAdapter(arrayAdapter);
             }
 
         });
 
-        ArrayAdapter<BookMark> arrayAdapter = new BookmarkArrayAdapter(this, bmarks);
+        ArrayAdapter<BookMark> arrayAdapter = new BookmarkArrayAdapter(this, systemNewest.getList());
         return arrayAdapter;
     }
 

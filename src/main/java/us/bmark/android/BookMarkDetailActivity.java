@@ -10,9 +10,8 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import us.bmark.android.model.BookMark;
 
-import java.util.List;
+import us.bmark.android.model.BookMark;
 
 import static us.bmark.android.utils.Utils.equalButNotBlank;
 
@@ -68,7 +67,7 @@ public class BookMarkDetailActivity extends Activity {
         return equalButNotBlank(bmark.username, userSettings().getUsername());
     }
 
-    private void refreshTagsTable(List<String> tags) {
+    private void refreshTagsTable(Iterable<String> tags) {
         final TableLayout table = (TableLayout) findViewById(R.id.bookmarkDetailTagTable);
         table.removeAllViews();
 
@@ -78,7 +77,7 @@ public class BookMarkDetailActivity extends Activity {
         }
     }
 
-    private TableRow createTagRow(String tagText) {
+    private TableRow createTagRow(CharSequence tagText) {
         TableRow rowView = new TableRow(this);
         TextView tagTextView = new TextView(this);
         tagTextView.setText(tagText);
@@ -86,7 +85,7 @@ public class BookMarkDetailActivity extends Activity {
         return rowView;
     }
 
-    private SharedPrefsBackedUserSettings userSettings() {
+    private UserSettings userSettings() {
         return new SharedPrefsBackedUserSettings(this);
     }
 
