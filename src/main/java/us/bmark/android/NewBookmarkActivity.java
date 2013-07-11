@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class NewBookmarkActivity extends Activity {
         public CharSequence filter(CharSequence source, int start, int end,
                                    Spanned dest, int dstart, int dend) {
             if (source instanceof SpannableStringBuilder) {
-                Editable sourceAsSpannableBuilder = (SpannableStringBuilder) source;
+                Editable sourceAsSpannableBuilder = (Editable) source;
                 for (int i = end - 1; i >= start; i--) {
                     char currentChar = source.charAt(i);
                     if (!charIsAllowed(currentChar)) {
@@ -232,8 +233,8 @@ public class NewBookmarkActivity extends Activity {
 
     private void saveButtonWasClicked() {
         BookMark bmark = new BookMark();
-        bmark.url = ((EditText) findViewById(id.newBookmarkUrlField)).getText().toString();
-        bmark.description = ((EditText) findViewById(id.newBookmarkTitleField)).getText().toString();
+        bmark.url = ((TextView) findViewById(id.newBookmarkUrlField)).getText().toString();
+        bmark.description = ((TextView) findViewById(id.newBookmarkTitleField)).getText().toString();
         bmark.tags.addAll(tags);
         service().saveBookmark(bmark, NewBookmarkActivity.this.produceListenerForRequest());
     }
