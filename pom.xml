@@ -48,6 +48,7 @@
                     <zipalign>
                         <skip>false</skip>
                     </zipalign>
+                    <lint><skip>false</skip></lint>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>

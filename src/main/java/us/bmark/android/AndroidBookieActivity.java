@@ -78,9 +78,6 @@ public class AndroidBookieActivity extends ListActivity {
         return R.integer.default_number_of_bookmarks_to_get;
     }
 
-    private void refreshWithNewestUser() {
-        service().refreshUserNewest(desiredCountForUserNewest());
-    }
 
     private int desiredCountForUserNewest() {
         return R.integer.default_number_of_bookmarks_to_get;
@@ -160,10 +157,11 @@ public class AndroidBookieActivity extends ListActivity {
         newestUserButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshWithNewestUser();
+                service().refreshUserNewest(desiredCountForUserNewest());
             }
         });
     }
+
 
     private BookieService service() {
         return BookieService.getService(this);

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import us.bmark.android.R;
@@ -26,8 +28,11 @@ public class TagListViewGroup extends ViewGroup {
         super(context, attrs);
     }
 
-
-
+    public void setTags(Collection<String> newTags) {
+        tags = new HashSet<String>(newTags);
+        recreateTagViews();
+    }
+    
     private void recreateTagViews() {
         removeAllViews();
         for (final String tag : tags) {
