@@ -39,7 +39,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <!-- See http://code.google.com/p/maven-android-plugin/ -->
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
                 <configuration>

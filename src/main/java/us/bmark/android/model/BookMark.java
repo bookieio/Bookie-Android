@@ -6,10 +6,6 @@ import android.os.Parcelable;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Data object for single Bookmark
- */
-
 public class BookMark implements Parcelable {
     public String url;
     public String description;

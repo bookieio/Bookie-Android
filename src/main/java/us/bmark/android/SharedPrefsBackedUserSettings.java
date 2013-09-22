@@ -19,17 +19,11 @@ public class SharedPrefsBackedUserSettings implements UserSettings {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    /* (non-Javadoc)
-     * @see us.bmark.android.UserSetting#getUsername()
-     */
     @Override
     public String getUsername() {
         return prefs.getString(USER_PREFS_KEY_USERNAME, USER_PREFS_DEFAULT_USERNAME);
     }
 
-    /* (non-Javadoc)
-     * @see us.bmark.android.UserSetting#getApiKey()
-     */
     @Override
     public String getApiKey() {
         return prefs.getString(USER_PREFS_KEY_APIKEY, USER_PREFS_DEFAULT_APIKEY);

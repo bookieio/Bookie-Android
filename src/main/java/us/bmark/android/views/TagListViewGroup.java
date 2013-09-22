@@ -26,6 +26,8 @@ public class TagListViewGroup extends ViewGroup {
         super(context, attrs);
     }
 
+
+
     private void recreateTagViews() {
         removeAllViews();
         for (final String tag : tags) {
