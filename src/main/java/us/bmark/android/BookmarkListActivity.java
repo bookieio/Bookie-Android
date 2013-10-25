@@ -8,14 +8,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class BookmarkListActivity extends ListActivity {
 
     private BookieService service;
     private UserSettings settings;
+    private ListView listView;
 
     private class BookmarkArrayAdapter extends ArrayAdapter<Bookmark> {
 
@@ -74,11 +76,16 @@ public class BookmarkListActivity extends ListActivity {
         settings = new SharedPrefsBackedUserSettings(this);
         setUpService();
         setContentView(R.layout.main);
-        setUpSettingsButton();
-        setUpNewestGlobalButton();
-        setUpNewestUserButton();
         refreshWithNewestGlobal();
         setUpListView();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void setUpService() {
@@ -177,41 +184,30 @@ public class BookmarkListActivity extends ListActivity {
         });
     }
 
-    private void setUpSettingsButton() {
-        Button settingsButton = (Button) findViewById(R.id.settingsButton);
 
-        settingsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch( item.getItemId() ) {
+            case R.id.action_everyones_recent:
+                Log.v("bmark", "glabal bttn clicked");
+                refreshWithNewestGlobal();
+                return true;
+            case R.id.action_recent:
+                Log.v("bmark", "user bttn clicked");
+                refreshWithNewestUser();
+                return true;
+            case R.id.action_settings:
                 Intent settingsIntent =
                         new Intent(BookmarkListActivity.this, SettingsActivity.class);
                 BookmarkListActivity.this.startActivity(settingsIntent);
-            }
-        });
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
     }
 
-    private void setUpNewestGlobalButton() {
-        Button newestGlobalButton = (Button) findViewById(R.id.newestGlobalButton);
-        newestGlobalButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Log.v("bmark", "glabal bttn clicked");
-                refreshWithNewestGlobal();
-            }
-        });
-    }
-
-    private void setUpNewestUserButton() {
-        Button newestUserButton = (Button) findViewById(R.id.newestUserButton);
-        newestUserButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("bmark", "user bttn clicked");
-                refreshWithNewestUser();
-            }
-        });
-    }
 
 
 }

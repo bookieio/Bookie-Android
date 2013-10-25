@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_everyones_recent"
+        android:title="@string/button_newest_global_text"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_recent"
+        android:title="@string/button_newest_user_text"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_settings"
+        android:title="@string/button_settings_text" />
+</menu>
