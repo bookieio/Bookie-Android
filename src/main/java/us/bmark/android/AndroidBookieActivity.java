@@ -20,18 +20,18 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import us.bmark.android.model.BookMark;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
 import us.bmark.bookieclient.BookmarkList;
-import us.bmark.bookieclient.Tag;
 
 public class AndroidBookieActivity extends ListActivity {
 
@@ -162,22 +162,10 @@ public class AndroidBookieActivity extends ListActivity {
         lv.setOnItemLongClickListener(new OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                                            int position, long id) {
-                // open link in browser
                 final Bookmark bmark = ((Bookmark) parent.getAdapter().getItem(position));
                 final Bundle bundle = new Bundle();
-
-
-                // TODO -- be gone
-                BookMark bMark = new BookMark();
-                bMark.description = bmark.description;
-                bMark.apiHash = bmark.hash_id;
-                bMark.clicks = bmark.clicks;
-                bMark.stored = bmark.stored;
-                bMark.url = bmark.url;
-                bMark.username = bmark.username;
-                for (Tag tag : bmark.tags) bMark.tags.add(tag.name);
-
-                bundle.putParcelable("bmark", bMark);
+                String bmarkJson = (new Gson()).toJson(bmark);
+                bundle.putString("bmark", bmarkJson);
                 final Intent intent = new Intent(AndroidBookieActivity.this,
                         BookMarkDetailActivity.class);
                 intent.putExtras(bundle);

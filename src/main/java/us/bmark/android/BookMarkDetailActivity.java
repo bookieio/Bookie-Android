@@ -11,7 +11,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import us.bmark.android.model.BookMark;
+import com.google.gson.Gson;
+
+import us.bmark.bookieclient.Bookmark;
+import us.bmark.bookieclient.Tag;
 
 import static us.bmark.android.utils.Utils.equalButNotBlank;
 
@@ -43,16 +46,16 @@ public class BookMarkDetailActivity extends Activity {
 
     private void dealWithIntents() {
         Intent intent = getIntent();
-        BookMark bmark = intent.getExtras().getParcelable("bmark");
+        Bookmark bmark = (new Gson()).fromJson(intent.getStringExtra("bmark"), Bookmark.class);
         populateFields(bmark);
     }
 
-    private void populateFields(BookMark bmark) {
+    private void populateFields(Bookmark bmark) {
         ((TextView) findViewById(R.id.bookmarkDetailTextviewDescription)).setText(bmark.description);
         ((TextView) findViewById(R.id.bookmarkDetailTextviewUrl)).setText(bmark.url);
         ((TextView) findViewById(R.id.bookmarkDetailTextviewUsername)).setText(bmark.username);
         ((TextView) findViewById(R.id.bookmarkDetailTextviewStored)).setText(bmark.stored);
-        ((TextView) findViewById(R.id.bookmarkDetailTextviewTotalClicks)).setText(Integer.toString(bmark.totalClicks));
+        ((TextView) findViewById(R.id.bookmarkDetailTextviewTotalClicks)).setText(Integer.toString(bmark.total_clicks));
         final TextView myClicksTextView = (TextView) findViewById(R.id.bookmarkDetailTextviewClicks);
         if (isMyBookmark(bmark)) {
             myClicksTextView.setText(Integer.toString(bmark.clicks));
@@ -63,16 +66,18 @@ public class BookMarkDetailActivity extends Activity {
         refreshTagsTable(bmark.tags);
     }
 
-    private boolean isMyBookmark(BookMark bmark) {
+    private boolean isMyBookmark(Bookmark bmark) {
         return equalButNotBlank(bmark.username, userSettings().getUsername());
     }
 
-    private void refreshTagsTable(Iterable<String> tags) {
+    private void refreshTagsTable(Iterable<Tag> tags) {
         final TableLayout table = (TableLayout) findViewById(R.id.bookmarkDetailTagTable);
         table.removeAllViews();
 
-        for (String tagText : tags) {
-            final TableRow tagRow = createTagRow(tagText);
+        if(tags==null) return;
+
+        for (Tag tag : tags) {
+            final TableRow tagRow = createTagRow(tag.name);
             table.addView(tagRow);
         }
     }
