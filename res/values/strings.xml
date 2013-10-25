@@ -30,4 +30,7 @@
     <string name="bookmark_detail_activity_total_count_label">Total Clicks</string>
     <string name="bookmark_detail_activity_count_label">My Clicks</string>
     <string name="bookmark_detail_activity_tags_label">Tags</string>
+    <string name="menu_search">search</string>
+    <string name="search_dialog_title">Search</string>
+    <string name="search_dialog_message">Enter search terms</string>
 </resources>

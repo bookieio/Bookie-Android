@@ -1,13 +1,16 @@
 package us.bmark.android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +21,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import retrofit.Callback;
@@ -37,7 +42,9 @@ import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
 import us.bmark.bookieclient.BookmarkList;
+import us.bmark.bookieclient.SearchResult;
 
+import static java.net.URLEncoder.encode;
 import static us.bmark.android.utils.Utils.isBlank;
 
 public class BookmarkListActivity extends ListActivity {
@@ -204,6 +211,8 @@ public class BookmarkListActivity extends ListActivity {
                         new Intent(BookmarkListActivity.this, SettingsActivity.class);
                 BookmarkListActivity.this.startActivity(settingsIntent);
                 return true;
+            case R.id.action_search:
+                displaySearchDialog();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -211,6 +220,57 @@ public class BookmarkListActivity extends ListActivity {
 
     }
 
+    private void displaySearchDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle(R.string.search_dialog_title);
+        alert.setMessage(R.string.search_dialog_message);
+
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                refreshWithSearch(input.getText().toString());
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing
+            }
+        });
+
+        alert.show();
+    }
+
+    private void refreshWithSearch(String value) {
+        String terms = null;
+        try {
+            terms = encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return;
+        }
+        service.search(settings.getUsername(),settings.getApiKey(),
+                terms,desiredCountForUserNewest(),0,
+                new Callback<SearchResult>() {
+
+                    @Override
+                    public void success(SearchResult searchResult, Response response) {
+                        List<Bookmark> bmarks = searchResult.search_results;
+                        Log.w("bmark", "on success search :" + bmarks.size());
+                        ListAdapter arrayAdapter =
+                                new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
+                        setListAdapter(arrayAdapter);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.w("bmark", error.getMessage());
+                        // TODO
+                    }
+                });
+    }
 
 
 }
