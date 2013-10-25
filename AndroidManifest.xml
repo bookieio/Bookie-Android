@@ -18,11 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity 
-            android:theme="@android:style/Animation" 
-            android:name=".SettingsActivity">
+        <activity
+            android:theme="@android:style/Animation"
+            android:name=".prefs.SettingsActivity">
         </activity>
-        <activity 
+        <activity
             android:name="NewBookmarkActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

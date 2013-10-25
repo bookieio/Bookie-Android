@@ -1,7 +1,9 @@
-package us.bmark.android;
+package us.bmark.android.prefs;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
+import us.bmark.android.R;
 
 public class SettingsActivity extends PreferenceActivity {
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
 import us.bmark.bookieclient.Bookmark;
 import us.bmark.bookieclient.Tag;
 

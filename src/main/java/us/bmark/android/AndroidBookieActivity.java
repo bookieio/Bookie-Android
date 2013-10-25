@@ -28,6 +28,8 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import us.bmark.android.prefs.SettingsActivity;
+import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
