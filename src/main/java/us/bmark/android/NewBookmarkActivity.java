@@ -12,6 +12,8 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -25,19 +27,25 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import us.bmark.android.R.id;
-import us.bmark.android.model.BookMark;
-import us.bmark.android.service.BookieService;
-import us.bmark.android.service.NewBookmarkRequest.RequestSuccessListener;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import us.bmark.android.views.TagListViewGroup;
+import us.bmark.bookieclient.BookieService;
+import us.bmark.bookieclient.NewBookmark;
+import us.bmark.bookieclient.NewBookmarkResponse;
 
 public class NewBookmarkActivity extends Activity {
 
     private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
     private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
     protected static final CharSequence TAG_SUBSTITUTE_CHARSEQ = "-";
+    private static final String TAG = NewBookmarkActivity.class.getName();
 
     private Set<String> tags = new TreeSet<String>();
+    private UserSettings settings;
+    private BookieService service;
 
     private final class RemoveTagButtonListener implements
             OnClickListener {
@@ -62,17 +70,19 @@ public class NewBookmarkActivity extends Activity {
         }
     }
 
-    private final class RequestSuccessListenerImpl implements
-            RequestSuccessListener {
-        @Override
-        public void notify(Boolean requestWasSuccessful) {
-            if (requestWasSuccessful) {
-                NewBookmarkActivity.this.requestFinishedWithSuccess();
-            } else {
-                NewBookmarkActivity.this.requestFinishedWithFailure();
-            }
-        }
-    }
+    private final Callback<NewBookmarkResponse> newBookmarkCallback =
+            new  Callback<NewBookmarkResponse>() {
+                @Override
+                public void success(NewBookmarkResponse newBookmarkResponse, Response response) {
+                    NewBookmarkActivity.this.requestFinishedWithSuccess();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.w(TAG, error.getMessage());
+                    NewBookmarkActivity.this.requestFinishedWithFailure();
+                }
+            };
 
     private final class SaveButtonListener implements OnClickListener {
         @Override
@@ -134,12 +144,11 @@ public class NewBookmarkActivity extends Activity {
         }
     }
 
-    ;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_bookmark);
+        settings = new SharedPrefsBackedUserSettings(this);
         dealWithIntents();
         setUpSaveButton();
         setUpCancelButton();
@@ -180,22 +189,18 @@ public class NewBookmarkActivity extends Activity {
 
 
     private void setUpSaveButton() {
-        Button save = (Button) findViewById(id.newBookmarkSaveButton);
+        Button save = (Button) findViewById(R.id.newBookmarkSaveButton);
         save.setOnClickListener(new SaveButtonListener());
     }
 
     private void setUpCancelButton() {
-        Button save = (Button) findViewById(id.newBookmarkCancelButton);
+        Button save = (Button) findViewById(R.id.newBookmarkCancelButton);
         save.setOnClickListener(new CancelButtonListener());
     }
 
     private void setUpAddTagButton() {
-        Button addTag = (Button) findViewById(id.newBookmarkAddTagButton);
+        Button addTag = (Button) findViewById(R.id.newBookmarkAddTagButton);
         addTag.setOnClickListener(new addTagButtonListener());
-    }
-
-    private RequestSuccessListener produceListenerForRequest() {
-        return new RequestSuccessListenerImpl();
     }
 
     protected void requestFinishedWithFailure() {
@@ -217,7 +222,7 @@ public class NewBookmarkActivity extends Activity {
 
     private void handleSendText(Intent intent) {
         String url = intent.getStringExtra(Intent.EXTRA_TEXT);
-        EditText uriField = (EditText) findViewById(id.newBookmarkUrlField);
+        EditText uriField = (EditText) findViewById(R.id.newBookmarkUrlField);
         uriField.setText(url);
     }
 
@@ -231,12 +236,20 @@ public class NewBookmarkActivity extends Activity {
         }
     }
 
+
     private void saveButtonWasClicked() {
-        BookMark bmark = new BookMark();
-        bmark.url = ((TextView) findViewById(id.newBookmarkUrlField)).getText().toString();
-        bmark.description = ((TextView) findViewById(id.newBookmarkTitleField)).getText().toString();
-        bmark.tags.addAll(tags);
-        service().saveBookmark(bmark, NewBookmarkActivity.this.produceListenerForRequest());
+        NewBookmark bmark = new NewBookmark();
+
+        bmark.url = ((TextView) findViewById(R.id.newBookmarkUrlField)).getText().toString();
+        bmark.description = ((TextView) findViewById(R.id.newBookmarkTitleField))
+                .getText().toString();
+        bmark.tags = TextUtils.join(" ", tags);
+        UserSettings settings = new SharedPrefsBackedUserSettings(this);
+        getService().bookmark(
+                settings.getUsername(),
+                settings.getApiKey(),
+                bmark,
+                newBookmarkCallback);
     }
 
     public void cancelButtonWasClicked() {
@@ -291,12 +304,19 @@ public class NewBookmarkActivity extends Activity {
     }
 
     private void refreshTagsTable() {
-        final TagListViewGroup tagsView = (TagListViewGroup) findViewById(id.tagList);
+        final TagListViewGroup tagsView = (TagListViewGroup) findViewById(R.id.tagList);
         tagsView.setTags(tags);
     }
 
-    private BookieService service() {
-        return BookieService.getService(this);
+    private BookieService getService() {
+        if(service==null) {
+            String serverUrl = settings.getBaseUrl();
+            RestAdapter adapter = new RestAdapter.Builder()
+                    .setServer(serverUrl).build();
+            adapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            service = adapter.create(BookieService.class);
+        }
+        return service;
     }
 
 }
