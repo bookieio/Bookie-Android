@@ -4,7 +4,7 @@
     android:versionCode="2"
     android:versionName="2012-11,0">
 
-    <uses-sdk android:minSdkVersion="10" />
+    <uses-sdk android:minSdkVersion="16" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
