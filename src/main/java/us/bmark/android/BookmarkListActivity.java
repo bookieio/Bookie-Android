@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,10 +32,13 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import us.bmark.android.prefs.SettingsActivity;
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
+import us.bmark.android.utils.Utils;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
 import us.bmark.bookieclient.BookmarkList;
+
+import static us.bmark.android.utils.Utils.isBlank;
 
 public class BookmarkListActivity extends ListActivity {
 
@@ -61,12 +65,11 @@ public class BookmarkListActivity extends ListActivity {
                 row = inflater.inflate(ROW_VIEW_ID, parent, false);
             }
 
-
             TextView textView = (TextView) row.findViewById(R.id.bookmarkListRowTextView);
-            textView.setText(bmark.description);
+            final String description = isBlank(bmark.description) ? bmark.url : bmark.description;
+            textView.setText(description);
 
             return row;
-
         }
     }
 
