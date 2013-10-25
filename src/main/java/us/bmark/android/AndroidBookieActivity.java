@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,20 +21,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import us.bmark.android.model.BookMark;
-import us.bmark.android.model.SystemNewest;
-import us.bmark.android.service.BookieService;
+import us.bmark.bookieclient.BookieService;
+import us.bmark.bookieclient.BookieServiceUtils;
+import us.bmark.bookieclient.Bookmark;
+import us.bmark.bookieclient.BookmarkList;
+import us.bmark.bookieclient.Tag;
 
 public class AndroidBookieActivity extends ListActivity {
 
-    private class BookmarkArrayAdapter extends ArrayAdapter<BookMark> {
+    private BookieService service;
+    private UserSettings settings;
+
+    private class BookmarkArrayAdapter extends ArrayAdapter<Bookmark> {
 
         private static final int ROW_VIEW_ID = R.layout.list_item;
 
-        public BookmarkArrayAdapter(Context context, List<BookMark> objects) {
+        public BookmarkArrayAdapter(Context context, List<Bookmark> objects) {
             super(context, ROW_VIEW_ID, objects);
         }
 
@@ -41,7 +50,7 @@ public class AndroidBookieActivity extends ListActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             View row = convertView;
-            BookMark bmark = this.getItem(position);
+            Bookmark bmark = this.getItem(position);
 
             if (row == null) {
                 LayoutInflater inflater = ((Activity) this.getContext()).getLayoutInflater();
@@ -60,8 +69,8 @@ public class AndroidBookieActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ArrayAdapter<BookMark> arrayAdapter = createPopulatedArrayAdapter();
-        setListAdapter(arrayAdapter);
+        settings = new SharedPrefsBackedUserSettings(this);
+        setUpService();
         setContentView(R.layout.main);
         setUpSettingsButton();
         setUpNewestGlobalButton();
@@ -70,8 +79,58 @@ public class AndroidBookieActivity extends ListActivity {
         setUpListView();
     }
 
+    private void setUpService() {
+        String serverUrl = settings.getBaseUrl();
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setServer(serverUrl).build();
+        adapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        service = adapter.create(BookieService.class);
+    }
+
     private void refreshWithNewestGlobal() {
-        service().refreshSystemNewest(desiredCountForSystemNewest());
+        int count = desiredCountForSystemNewest();
+        service.everyonesRecent(count, 0, new Callback<BookmarkList>() {
+
+            @Override
+            public void success(BookmarkList bookmarkList, Response response) {
+                List<Bookmark> bmarks = bookmarkList.bmarks;
+                Log.w("bmark", "on success global :" + bmarks.size());
+                ListAdapter arrayAdapter =
+                        new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
+                setListAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w("bmark", error.getMessage());
+                // TODO
+            }
+        });
+    }
+
+    private void refreshWithNewestUser() {
+        int count = desiredCountForUserNewest();
+        service.recent(settings.getUsername(),
+                settings.getApiKey(),
+                count,
+                0,
+                new Callback<BookmarkList>() {
+
+            @Override
+            public void success(BookmarkList bookmarkList, Response response) {
+                List<Bookmark> bmarks = bookmarkList.bmarks;
+                Log.w("bmark", "on success user :" + bmarks.size());
+                ListAdapter arrayAdapter =
+                        new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
+                setListAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w("bmark", error.getMessage());
+                // TODO
+            }
+        });
     }
 
     private int desiredCountForSystemNewest() {
@@ -83,24 +142,6 @@ public class AndroidBookieActivity extends ListActivity {
         return R.integer.default_number_of_bookmarks_to_get;
     }
 
-    private ArrayAdapter<BookMark> createPopulatedArrayAdapter() {
-
-        SystemNewest systemNewest = SystemNewest.getSystemNewest();
-
-        systemNewest.addObserver(new Observer() {
-            @Override
-            public void update(Observable observable, Object data) {
-                List<BookMark> bmarks = ((SystemNewest) observable).getList();
-                ListAdapter arrayAdapter = new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
-                setListAdapter(arrayAdapter);
-            }
-
-        });
-
-        ArrayAdapter<BookMark> arrayAdapter = new BookmarkArrayAdapter(this, systemNewest.getList());
-        return arrayAdapter;
-    }
-
     private void setUpListView() {
         ListView lv = getListView();
         lv.setTextFilterEnabled(true);
@@ -109,8 +150,11 @@ public class AndroidBookieActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // open link in browser
-                final BookMark bmark = ((BookMark) parent.getAdapter().getItem(position));
-                final Uri uri = service().uriForRedirect(bmark);
+                final Bookmark bmark = ((Bookmark) parent.getAdapter().getItem(position));
+
+                final Uri uri = Uri.parse(BookieServiceUtils.urlForRedirect(bmark,
+                        settings.getBaseUrl(),
+                        settings.getUsername()));
                 startActivity(new Intent(Intent.ACTION_VIEW, uri));
             }
         });
@@ -119,10 +163,23 @@ public class AndroidBookieActivity extends ListActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                                            int position, long id) {
                 // open link in browser
-                final BookMark bmark = ((BookMark) parent.getAdapter().getItem(position));
+                final Bookmark bmark = ((Bookmark) parent.getAdapter().getItem(position));
                 final Bundle bundle = new Bundle();
-                bundle.putParcelable("bmark", bmark);
-                final Intent intent = new Intent(AndroidBookieActivity.this, BookMarkDetailActivity.class);
+
+
+                // TODO -- be gone
+                BookMark bMark = new BookMark();
+                bMark.description = bmark.description;
+                bMark.apiHash = bmark.hash_id;
+                bMark.clicks = bmark.clicks;
+                bMark.stored = bmark.stored;
+                bMark.url = bmark.url;
+                bMark.username = bmark.username;
+                for (Tag tag : bmark.tags) bMark.tags.add(tag.name);
+
+                bundle.putParcelable("bmark", bMark);
+                final Intent intent = new Intent(AndroidBookieActivity.this,
+                        BookMarkDetailActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
@@ -136,7 +193,8 @@ public class AndroidBookieActivity extends ListActivity {
         settingsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent settingsIntent = new Intent(AndroidBookieActivity.this, SettingsActivity.class);
+                Intent settingsIntent =
+                        new Intent(AndroidBookieActivity.this, SettingsActivity.class);
                 AndroidBookieActivity.this.startActivity(settingsIntent);
             }
         });
@@ -147,6 +205,8 @@ public class AndroidBookieActivity extends ListActivity {
         newestGlobalButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.v("bmark", "glabal bttn clicked");
                 refreshWithNewestGlobal();
             }
         });
@@ -157,13 +217,11 @@ public class AndroidBookieActivity extends ListActivity {
         newestUserButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                service().refreshUserNewest(desiredCountForUserNewest());
+                Log.v("bmark", "user bttn clicked");
+                refreshWithNewestUser();
             }
         });
     }
 
 
-    private BookieService service() {
-        return BookieService.getService(this);
-    }
 }
