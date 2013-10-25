@@ -35,7 +35,7 @@ import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
 import us.bmark.bookieclient.BookmarkList;
 
-public class AndroidBookieActivity extends ListActivity {
+public class BookmarkListActivity extends ListActivity {
 
     private BookieService service;
     private UserSettings settings;
@@ -98,7 +98,7 @@ public class AndroidBookieActivity extends ListActivity {
                 List<Bookmark> bmarks = bookmarkList.bmarks;
                 Log.w("bmark", "on success global :" + bmarks.size());
                 ListAdapter arrayAdapter =
-                        new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
+                        new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
                 setListAdapter(arrayAdapter);
             }
 
@@ -123,7 +123,7 @@ public class AndroidBookieActivity extends ListActivity {
                 List<Bookmark> bmarks = bookmarkList.bmarks;
                 Log.w("bmark", "on success user :" + bmarks.size());
                 ListAdapter arrayAdapter =
-                        new BookmarkArrayAdapter(AndroidBookieActivity.this, bmarks);
+                        new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
                 setListAdapter(arrayAdapter);
             }
 
@@ -168,7 +168,7 @@ public class AndroidBookieActivity extends ListActivity {
                 final Bundle bundle = new Bundle();
                 String bmarkJson = (new Gson()).toJson(bmark);
                 bundle.putString("bmark", bmarkJson);
-                final Intent intent = new Intent(AndroidBookieActivity.this,
+                final Intent intent = new Intent(BookmarkListActivity.this,
                         BookMarkDetailActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -184,8 +184,8 @@ public class AndroidBookieActivity extends ListActivity {
             @Override
             public void onClick(View v) {
                 Intent settingsIntent =
-                        new Intent(AndroidBookieActivity.this, SettingsActivity.class);
-                AndroidBookieActivity.this.startActivity(settingsIntent);
+                        new Intent(BookmarkListActivity.this, SettingsActivity.class);
+                BookmarkListActivity.this.startActivity(settingsIntent);
             }
         });
     }

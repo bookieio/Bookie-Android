@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AndroidBookie</string>
+    <string name="app_name">Bookie</string>
     <string name="button_newest_global_text">All</string>
     <string name="button_newest_user_text">Mine</string>
     <string name="button_settings_text">Settings</string>
