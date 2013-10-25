@@ -29,6 +29,12 @@
             <artifactId>bookieClient</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>1.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>
