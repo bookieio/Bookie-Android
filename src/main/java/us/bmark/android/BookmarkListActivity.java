@@ -15,18 +15,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -46,8 +47,20 @@ import static us.bmark.android.utils.Utils.isBlank;
 
 public class BookmarkListActivity extends ListActivity {
 
+    private int countPP;
     private BookieService service;
     private UserSettings settings;
+    private List<Bookmark> bmarks =
+            new ArrayList<Bookmark>();
+    private String searchTerms;
+    private int pagesLoaded = 0;
+    private State state = State.ALL;
+    private BookmarkArrayAdapter adapter;
+
+    private enum State {
+        ALL, MINE, SEARCH;
+    };
+
 
     private class BookmarkArrayAdapter extends ArrayAdapter<Bookmark> {
 
@@ -77,15 +90,48 @@ public class BookmarkListActivity extends ListActivity {
     }
 
 
+    private class EndlessScrollListener implements AbsListView.OnScrollListener {
+
+        private int visibleThreshold = 5;
+        private int previousTotal = 0;
+        private boolean loading = true;
+
+        public EndlessScrollListener() {
+        }
+        public EndlessScrollListener(int visibleThreshold) {
+            this.visibleThreshold = visibleThreshold;
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem,
+                             int visibleItemCount, int totalItemCount) {
+            if (loading) {
+                if (totalItemCount > previousTotal) {
+                    loading = false;
+                    previousTotal = totalItemCount;
+                }
+            }
+            if (!loading && ((totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold))) {
+                // I load the next page of gigs using a background task,
+                // but you can call any function here.
+                loadMoreData();
+                loading = true;
+            }
+        }
+
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+        }
+    }
+
     private class ServiceCallback implements Callback<BookmarkList> {
 
         @Override
         public void success(BookmarkList bookmarkList, Response response) {
-            List<Bookmark> bmarks = bookmarkList.bmarks;
+            bmarks.addAll(bookmarkList.bmarks);
             Log.w("bmark", "on success for bookmark list, fetched " + bmarks.size());
-            ListAdapter arrayAdapter =
-                    new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
-            setListAdapter(arrayAdapter);
+            adapter.notifyDataSetChanged();
+            pagesLoaded++;
         }
 
         @Override
@@ -99,10 +145,13 @@ public class BookmarkListActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings = new SharedPrefsBackedUserSettings(this);
+        countPP = getResources().getInteger(R.integer.default_number_of_bookmarks_to_get);
         setUpService();
         setContentView(R.layout.main);
-        refreshWithNewestGlobal();
+        adapter = new BookmarkArrayAdapter(this,bmarks);
+        setListAdapter(adapter);
         setUpListView();
+        loadMoreData();
     }
 
 
@@ -122,30 +171,22 @@ public class BookmarkListActivity extends ListActivity {
     }
 
     private void refreshWithNewestGlobal() {
-        int count = desiredCountForSystemNewest();
-        service.everyonesRecent(count, 0, new ServiceCallback());
+        int nextPage = pagesLoaded+1;
+        service.everyonesRecent(countPP, nextPage, new ServiceCallback());
     }
 
     private void refreshWithNewestUser() {
-        int count = desiredCountForUserNewest();
+        int nextPage = pagesLoaded+1;
         service.recent(settings.getUsername(),
                 settings.getApiKey(),
-                count,
-                0,
+                countPP,
+                nextPage,
                 new ServiceCallback());
-    }
-
-    private int desiredCountForSystemNewest() {
-        return R.integer.default_number_of_bookmarks_to_get;
-    }
-
-
-    private int desiredCountForUserNewest() {
-        return R.integer.default_number_of_bookmarks_to_get;
     }
 
     private void setUpListView() {
         ListView lv = getListView();
+
         lv.setTextFilterEnabled(true);
 
         lv.setOnItemClickListener(new OnItemClickListener() {
@@ -175,19 +216,22 @@ public class BookmarkListActivity extends ListActivity {
                 return true;
             }
         });
+
+        lv.setOnScrollListener(new EndlessScrollListener());
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch( item.getItemId() ) {
             case R.id.action_everyones_recent:
                 Log.v("bmark", "glabal bttn clicked");
-                refreshWithNewestGlobal();
+                flipState(State.ALL);
                 return true;
             case R.id.action_recent:
                 Log.v("bmark", "user bttn clicked");
-                refreshWithNewestUser();
+                flipState(State.MINE);
                 return true;
             case R.id.action_settings:
                 Intent settingsIntent =
@@ -199,8 +243,17 @@ public class BookmarkListActivity extends ListActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
 
+    private void flipState(State desiredState) {
+        this.state = desiredState;
+        bmarks = new ArrayList<Bookmark>(countPP);
+        adapter = new BookmarkArrayAdapter(this,bmarks);
+        setListAdapter(adapter);
+        pagesLoaded = 0;
+        getListView().setOnScrollListener(new EndlessScrollListener());
 
+        loadMoreData();
     }
 
     private void displaySearchDialog() {
@@ -214,7 +267,8 @@ public class BookmarkListActivity extends ListActivity {
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                refreshWithSearch(input.getText().toString());
+                searchTerms = input.getText().toString();
+                flipState(State.SEARCH);
             }
         });
 
@@ -227,24 +281,25 @@ public class BookmarkListActivity extends ListActivity {
         alert.show();
     }
 
-    private void refreshWithSearch(String value) {
+    private void refreshWithSearch() {
         String terms = null;
         try {
-            terms = encode(value, "UTF-8");
+            terms = encode(searchTerms, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             return;
         }
+        final int nextPage = pagesLoaded+1;
         service.search(settings.getUsername(),settings.getApiKey(),
-                terms,desiredCountForUserNewest(),0,
+                terms,countPP,nextPage,
                 new Callback<SearchResult>() {
 
                     @Override
                     public void success(SearchResult searchResult, Response response) {
-                        List<Bookmark> bmarks = searchResult.search_results;
+                        bmarks.addAll(searchResult.search_results);
+
                         Log.w("bmark", "on success search :" + bmarks.size());
-                        ListAdapter arrayAdapter =
-                                new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
-                        setListAdapter(arrayAdapter);
+                        adapter.notifyDataSetChanged();
+                        pagesLoaded=nextPage;
                     }
 
                     @Override
@@ -255,5 +310,13 @@ public class BookmarkListActivity extends ListActivity {
                 });
     }
 
+
+    private void loadMoreData() {
+        switch(state) {
+            case ALL : refreshWithNewestGlobal(); break;
+            case MINE : refreshWithNewestUser(); break;
+            case SEARCH : refreshWithSearch(); break;
+        }
+    }
 
 }
