@@ -8,9 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +35,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import us.bmark.android.prefs.SettingsActivity;
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
-import us.bmark.android.utils.Utils;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
@@ -51,7 +48,6 @@ public class BookmarkListActivity extends ListActivity {
 
     private BookieService service;
     private UserSettings settings;
-    private ListView listView;
 
     private class BookmarkArrayAdapter extends ArrayAdapter<Bookmark> {
 
@@ -77,6 +73,25 @@ public class BookmarkListActivity extends ListActivity {
             textView.setText(description);
 
             return row;
+        }
+    }
+
+
+    private class ServiceCallback implements Callback<BookmarkList> {
+
+        @Override
+        public void success(BookmarkList bookmarkList, Response response) {
+            List<Bookmark> bmarks = bookmarkList.bmarks;
+            Log.w("bmark", "on success for bookmark list, fetched " + bmarks.size());
+            ListAdapter arrayAdapter =
+                    new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
+            setListAdapter(arrayAdapter);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            Log.w("bmark", error.getMessage());
+            // TODO
         }
     }
 
@@ -108,23 +123,7 @@ public class BookmarkListActivity extends ListActivity {
 
     private void refreshWithNewestGlobal() {
         int count = desiredCountForSystemNewest();
-        service.everyonesRecent(count, 0, new Callback<BookmarkList>() {
-
-            @Override
-            public void success(BookmarkList bookmarkList, Response response) {
-                List<Bookmark> bmarks = bookmarkList.bmarks;
-                Log.w("bmark", "on success global :" + bmarks.size());
-                ListAdapter arrayAdapter =
-                        new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
-                setListAdapter(arrayAdapter);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.w("bmark", error.getMessage());
-                // TODO
-            }
-        });
+        service.everyonesRecent(count, 0, new ServiceCallback());
     }
 
     private void refreshWithNewestUser() {
@@ -133,23 +132,7 @@ public class BookmarkListActivity extends ListActivity {
                 settings.getApiKey(),
                 count,
                 0,
-                new Callback<BookmarkList>() {
-
-            @Override
-            public void success(BookmarkList bookmarkList, Response response) {
-                List<Bookmark> bmarks = bookmarkList.bmarks;
-                Log.w("bmark", "on success user :" + bmarks.size());
-                ListAdapter arrayAdapter =
-                        new BookmarkArrayAdapter(BookmarkListActivity.this, bmarks);
-                setListAdapter(arrayAdapter);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.w("bmark", error.getMessage());
-                // TODO
-            }
-        });
+                new ServiceCallback());
     }
 
     private int desiredCountForSystemNewest() {
