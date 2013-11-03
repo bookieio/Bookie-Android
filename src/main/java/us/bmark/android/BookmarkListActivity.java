@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -120,6 +121,7 @@ public class BookmarkListActivity extends ListActivity {
 
         @Override
         public void success(BookmarkList bookmarkList, Response response) {
+            setProgressBarIndeterminateVisibility(false);
             bmarks.addAll(bookmarkList.bmarks);
             Log.w(TAG, "on success for bookmark list, fetched " + bmarks.size());
             adapter.notifyDataSetChanged();
@@ -128,6 +130,7 @@ public class BookmarkListActivity extends ListActivity {
 
         @Override
         public void failure(RetrofitError error) {
+            setProgressBarIndeterminateVisibility(false);
             Log.w(TAG, error.getMessage());
             // TODO
         }
@@ -139,6 +142,7 @@ public class BookmarkListActivity extends ListActivity {
         settings = new SharedPrefsBackedUserSettings(this);
         countPP = getResources().getInteger(R.integer.default_number_of_bookmarks_to_get);
         setUpService();
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main);
         adapter = new BookmarkArrayAdapter(this,bmarks);
         setListAdapter(adapter);
@@ -164,11 +168,13 @@ public class BookmarkListActivity extends ListActivity {
 
     private void refreshWithNewestGlobal() {
         int nextPage = pagesLoaded+1;
+        setProgressBarIndeterminateVisibility(true);
         service.everyonesRecent(countPP, nextPage, new ServiceCallback());
     }
 
     private void refreshWithNewestUser() {
         int nextPage = pagesLoaded+1;
+        setProgressBarIndeterminateVisibility(true);
         service.recent(settings.getUsername(),
                 settings.getApiKey(),
                 countPP,
@@ -283,6 +289,7 @@ public class BookmarkListActivity extends ListActivity {
         } catch (UnsupportedEncodingException e) {
             return;
         }
+        setProgressBarIndeterminateVisibility(true);
         final int nextPage = pagesLoaded+1;
         service.search(settings.getUsername(),settings.getApiKey(),
                 terms,countPP,nextPage,
@@ -291,6 +298,7 @@ public class BookmarkListActivity extends ListActivity {
                     @Override
                     public void success(SearchResult searchResult, Response response) {
                         bmarks.addAll(searchResult.search_results);
+                        setProgressBarIndeterminateVisibility(false);
 
                         Log.w(TAG, "on success search :" + bmarks.size());
                         adapter.notifyDataSetChanged();
@@ -299,6 +307,7 @@ public class BookmarkListActivity extends ListActivity {
 
                     @Override
                     public void failure(RetrofitError error) {
+                        setProgressBarIndeterminateVisibility(false);
                         Log.w(TAG, error.getMessage());
                         // TODO
                     }
