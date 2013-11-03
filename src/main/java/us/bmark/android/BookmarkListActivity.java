@@ -47,26 +47,27 @@ import static us.bmark.android.utils.Utils.isBlank;
 
 public class BookmarkListActivity extends ListActivity {
 
+    private static final String TAG = BookmarkListActivity.class.getName();
     private int countPP;
     private BookieService service;
     private UserSettings settings;
     private List<Bookmark> bmarks =
             new ArrayList<Bookmark>();
     private String searchTerms;
-    private int pagesLoaded = 0;
+    private int pagesLoaded;
     private State state = State.ALL;
     private BookmarkArrayAdapter adapter;
 
     private enum State {
-        ALL, MINE, SEARCH;
-    };
+        ALL, MINE, SEARCH
+    }
 
 
     private class BookmarkArrayAdapter extends ArrayAdapter<Bookmark> {
 
         private static final int ROW_VIEW_ID = R.layout.list_item;
 
-        public BookmarkArrayAdapter(Context context, List<Bookmark> objects) {
+        BookmarkArrayAdapter(Context context, List<Bookmark> objects) {
             super(context, ROW_VIEW_ID, objects);
         }
 
@@ -91,16 +92,9 @@ public class BookmarkListActivity extends ListActivity {
 
 
     private class EndlessScrollListener implements AbsListView.OnScrollListener {
-
-        private int visibleThreshold = 5;
+        private static final int THRESH = 0;
         private int previousTotal = 0;
         private boolean loading = true;
-
-        public EndlessScrollListener() {
-        }
-        public EndlessScrollListener(int visibleThreshold) {
-            this.visibleThreshold = visibleThreshold;
-        }
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem,
@@ -111,9 +105,7 @@ public class BookmarkListActivity extends ListActivity {
                     previousTotal = totalItemCount;
                 }
             }
-            if (!loading && ((totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold))) {
-                // I load the next page of gigs using a background task,
-                // but you can call any function here.
+            if (!loading && ((totalItemCount - visibleItemCount) <= (firstVisibleItem + THRESH))) {
                 loadMoreData();
                 loading = true;
             }
@@ -129,14 +121,14 @@ public class BookmarkListActivity extends ListActivity {
         @Override
         public void success(BookmarkList bookmarkList, Response response) {
             bmarks.addAll(bookmarkList.bmarks);
-            Log.w("bmark", "on success for bookmark list, fetched " + bmarks.size());
+            Log.w(TAG, "on success for bookmark list, fetched " + bmarks.size());
             adapter.notifyDataSetChanged();
             pagesLoaded++;
         }
 
         @Override
         public void failure(RetrofitError error) {
-            Log.w("bmark", error.getMessage());
+            Log.w(TAG, error.getMessage());
             // TODO
         }
     }
@@ -164,10 +156,10 @@ public class BookmarkListActivity extends ListActivity {
 
     private void setUpService() {
         String serverUrl = settings.getBaseUrl();
-        RestAdapter adapter = new RestAdapter.Builder()
+        RestAdapter restAdapter = new RestAdapter.Builder()
                 .setServer(serverUrl).build();
-        adapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        service = adapter.create(BookieService.class);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        service = restAdapter.create(BookieService.class);
     }
 
     private void refreshWithNewestGlobal() {
@@ -190,9 +182,9 @@ public class BookmarkListActivity extends ListActivity {
         lv.setTextFilterEnabled(true);
 
         lv.setOnItemClickListener(new OnItemClickListener() {
+            @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // open link in browser
                 final Bookmark bmark = ((Bookmark) parent.getAdapter().getItem(position));
 
                 final Uri uri = Uri.parse(BookieServiceUtils.urlForRedirect(bmark,
@@ -203,12 +195,13 @@ public class BookmarkListActivity extends ListActivity {
         });
 
         lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                                            int position, long id) {
                 final Bookmark bmark = ((Bookmark) parent.getAdapter().getItem(position));
                 final Bundle bundle = new Bundle();
                 String bmarkJson = (new Gson()).toJson(bmark);
-                bundle.putString("bmark", bmarkJson);
+                bundle.putString(TAG, bmarkJson);
                 final Intent intent = new Intent(BookmarkListActivity.this,
                         BookMarkDetailActivity.class);
                 intent.putExtras(bundle);
@@ -226,11 +219,11 @@ public class BookmarkListActivity extends ListActivity {
 
         switch( item.getItemId() ) {
             case R.id.action_everyones_recent:
-                Log.v("bmark", "glabal bttn clicked");
+                Log.v(TAG, "global button clicked");
                 flipState(State.ALL);
                 return true;
             case R.id.action_recent:
-                Log.v("bmark", "user bttn clicked");
+                Log.v(TAG, "user button clicked");
                 flipState(State.MINE);
                 return true;
             case R.id.action_settings:
@@ -266,6 +259,7 @@ public class BookmarkListActivity extends ListActivity {
         alert.setView(input);
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 searchTerms = input.getText().toString();
                 flipState(State.SEARCH);
@@ -273,6 +267,7 @@ public class BookmarkListActivity extends ListActivity {
         });
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Do nothing
             }
@@ -282,7 +277,7 @@ public class BookmarkListActivity extends ListActivity {
     }
 
     private void refreshWithSearch() {
-        String terms = null;
+        String terms;
         try {
             terms = encode(searchTerms, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -297,14 +292,14 @@ public class BookmarkListActivity extends ListActivity {
                     public void success(SearchResult searchResult, Response response) {
                         bmarks.addAll(searchResult.search_results);
 
-                        Log.w("bmark", "on success search :" + bmarks.size());
+                        Log.w(TAG, "on success search :" + bmarks.size());
                         adapter.notifyDataSetChanged();
                         pagesLoaded=nextPage;
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.w("bmark", error.getMessage());
+                        Log.w(TAG, error.getMessage());
                         // TODO
                     }
                 });
