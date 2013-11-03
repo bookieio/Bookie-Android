@@ -3,22 +3,26 @@ package us.bmark.android;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
+import us.bmark.android.utils.IntentConstants;
 import us.bmark.bookieclient.Bookmark;
 import us.bmark.bookieclient.Tag;
 
 import static us.bmark.android.utils.Utils.equalButNotBlank;
 
 public class BookMarkDetailActivity extends Activity {
+
+    private static final String TAG = BookMarkDetailActivity.class.getName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,8 +40,14 @@ public class BookMarkDetailActivity extends Activity {
 
     private void dealWithIntents() {
         Intent intent = getIntent();
-        Bookmark bmark = (new Gson()).fromJson(intent.getStringExtra("bmark"), Bookmark.class);
-        populateFields(bmark);
+        try {
+            final String json = intent.getStringExtra(IntentConstants.EXTRAS_KEY_BMARK);
+            Bookmark bmark = (new Gson()).fromJson(json, Bookmark.class);
+            populateFields(bmark);
+
+        } catch (JsonParseException e) {
+            Log.e(TAG, "Error getting bookmark detail", e);
+        }
     }
 
     private void populateFields(Bookmark bmark) {

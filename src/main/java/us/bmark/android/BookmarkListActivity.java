@@ -38,6 +38,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import us.bmark.android.prefs.SettingsActivity;
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
+import us.bmark.android.utils.IntentConstants;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
@@ -207,7 +208,7 @@ public class BookmarkListActivity extends ListActivity {
                 final Bookmark bmark = ((Bookmark) parent.getAdapter().getItem(position));
                 final Bundle bundle = new Bundle();
                 String bmarkJson = (new Gson()).toJson(bmark);
-                bundle.putString(TAG, bmarkJson);
+                bundle.putString(IntentConstants.EXTRAS_KEY_BMARK, bmarkJson);
                 final Intent intent = new Intent(BookmarkListActivity.this,
                         BookMarkDetailActivity.class);
                 intent.putExtras(bundle);
