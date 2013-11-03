@@ -6,9 +6,11 @@
         android:title="@string/menu_search"
         android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_everyones_recent"
+        android:icon="@drawable/fa_tags"
         android:title="@string/button_newest_global_text"
         android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_recent"
+        android:icon="@drawable/fa_tag"
         android:title="@string/button_newest_user_text"
         android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_settings"
