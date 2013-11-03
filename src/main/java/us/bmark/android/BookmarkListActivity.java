@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -93,7 +94,7 @@ public class BookmarkListActivity extends ListActivity {
 
 
     private class EndlessScrollListener implements AbsListView.OnScrollListener {
-        private static final int THRESH = 0;
+        private final int threshold = countPP / 5;
         private int previousTotal = 0;
         private boolean loading = true;
 
@@ -106,7 +107,7 @@ public class BookmarkListActivity extends ListActivity {
                     previousTotal = totalItemCount;
                 }
             }
-            if (!loading && ((totalItemCount - visibleItemCount) <= (firstVisibleItem + THRESH))) {
+            if (!loading && ((totalItemCount - visibleItemCount) <= (firstVisibleItem + threshold))) {
                 loadMoreData();
                 loading = true;
             }
@@ -131,8 +132,7 @@ public class BookmarkListActivity extends ListActivity {
         @Override
         public void failure(RetrofitError error) {
             setProgressBarIndeterminateVisibility(false);
-            Log.w(TAG, error.getMessage());
-            // TODO
+            handleError(error);
         }
     }
 
@@ -308,10 +308,19 @@ public class BookmarkListActivity extends ListActivity {
                     @Override
                     public void failure(RetrofitError error) {
                         setProgressBarIndeterminateVisibility(false);
-                        Log.w(TAG, error.getMessage());
-                        // TODO
+                        handleError(error);
                     }
                 });
+    }
+
+    private void handleError(RetrofitError error) {
+        Log.w(TAG,"Error received in callback");
+        if(error.getCause()!=null)
+            Log.w(TAG,error.getCause());
+        if(!TextUtils.isEmpty(error.getMessage()))
+            Log.w(TAG, error.getMessage());
+
+        // TODO clue to user
     }
 
 
