@@ -168,13 +168,13 @@ public class BookmarkListActivity extends ListActivity {
     }
 
     private void refreshWithNewestGlobal() {
-        int nextPage = pagesLoaded+1;
+        int nextPage = pagesLoaded;
         setProgressBarIndeterminateVisibility(true);
         service.everyonesRecent(countPP, nextPage, new ServiceCallback());
     }
 
     private void refreshWithNewestUser() {
-        int nextPage = pagesLoaded+1;
+        int nextPage = pagesLoaded;
         setProgressBarIndeterminateVisibility(true);
         service.recent(settings.getUsername(),
                 settings.getApiKey(),
@@ -291,7 +291,7 @@ public class BookmarkListActivity extends ListActivity {
             return;
         }
         setProgressBarIndeterminateVisibility(true);
-        final int nextPage = pagesLoaded+1;
+        final int nextPage = pagesLoaded;
         service.search(settings.getUsername(),settings.getApiKey(),
                 terms,countPP,nextPage,
                 new Callback<SearchResult>() {
@@ -303,7 +303,7 @@ public class BookmarkListActivity extends ListActivity {
 
                         Log.w(TAG, "on success search :" + bmarks.size());
                         adapter.notifyDataSetChanged();
-                        pagesLoaded=nextPage;
+                        pagesLoaded++;
                     }
 
                     @Override
