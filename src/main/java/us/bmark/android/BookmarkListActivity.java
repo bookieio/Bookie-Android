@@ -298,12 +298,13 @@ public class BookmarkListActivity extends ListActivity {
 
                     @Override
                     public void success(SearchResult searchResult, Response response) {
-                        bmarks.addAll(searchResult.search_results);
+                        Log.w(TAG, "on success search :" + searchResult.result_count);
+                        if(searchResult.result_count>0) {
+                            bmarks.addAll(searchResult.search_results);
+                            adapter.notifyDataSetChanged();
+                            pagesLoaded++;
+                        }
                         setProgressBarIndeterminateVisibility(false);
-
-                        Log.w(TAG, "on success search :" + bmarks.size());
-                        adapter.notifyDataSetChanged();
-                        pagesLoaded++;
                     }
 
                     @Override
