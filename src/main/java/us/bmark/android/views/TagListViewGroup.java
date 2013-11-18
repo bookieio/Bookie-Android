@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class TagListViewGroup extends ViewGroup {
         tags = new HashSet<String>(newTags);
         recreateTagViews();
     }
-    
+
     private void recreateTagViews() {
         removeAllViews();
         for (final String tag : tags) {
@@ -43,11 +44,12 @@ public class TagListViewGroup extends ViewGroup {
             child.setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-
-                    deleteTag(((TextView)view).getText().toString());
+                    Log.d(TAG, "child tag view on long click event received");
+                    deleteTag(((TextView) view).getText().toString());
                     return true;
                 }
             });
+
 
             LayoutParams params = child.getLayoutParams();
             if (params == null) {
@@ -62,7 +64,9 @@ public class TagListViewGroup extends ViewGroup {
     }
 
     private void deleteTag( String s) {
+        Log.d(TAG,"removing "+s);
         tags.remove(s);
+        recreateTagViews();
 
     }
 
@@ -184,7 +188,12 @@ public class TagListViewGroup extends ViewGroup {
                 child.measure(childMeasureWidth, childMeasureHeight);
             }
         }
-
-
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
+
 }
