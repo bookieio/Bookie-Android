@@ -33,6 +33,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
 import us.bmark.android.views.TagListViewGroup;
+import us.bmark.bookieParserClient.BookeParserService.BookieParserService;
+import us.bmark.bookieParserClient.BookeParserService.ParseResponse;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.NewBookmark;
 import us.bmark.bookieclient.NewBookmarkResponse;
@@ -47,6 +49,8 @@ public class NewBookmarkActivity extends Activity {
     private Set<String> tags = new TreeSet<String>();
     private UserSettings settings;
     private BookieService service;
+    private BookieParserService parserService;
+    private String url;
 
     private final class RemoveTagButtonListener implements
             OnClickListener {
@@ -72,7 +76,7 @@ public class NewBookmarkActivity extends Activity {
     }
 
     private final Callback<NewBookmarkResponse> newBookmarkCallback =
-            new  Callback<NewBookmarkResponse>() {
+            new Callback<NewBookmarkResponse>() {
                 @Override
                 public void success(NewBookmarkResponse newBookmarkResponse, Response response) {
                     NewBookmarkActivity.this.requestFinishedWithSuccess();
@@ -150,12 +154,13 @@ public class NewBookmarkActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_bookmark);
         settings = new SharedPrefsBackedUserSettings(this);
+
         dealWithIntents();
+        goFetchSuggestedTitleFromReadable();
         setUpSaveButton();
         setUpCancelButton();
         setUpAddTagButton();
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -184,10 +189,31 @@ public class NewBookmarkActivity extends Activity {
         String action = intent.getAction();
         String type = intent.getType();
         return Intent.ACTION_SEND.equals(action)
-                && type != null
+                && (type != null)
                 && "text/plain".equals(type);
     }
 
+
+    private void goFetchSuggestedTitleFromReadable() {
+        if (url != null) {
+            getParserService().parse(url, new Callback<ParseResponse>() {
+                @Override
+                public void success(ParseResponse parseResponse, Response response) {
+                    if ((parseResponse != null)
+                            && (parseResponse.data != null)
+                            && !TextUtils.isEmpty(parseResponse.data.title)) {
+                        EditText titleField = (EditText) findViewById(R.id.newBookmarkTitleField);
+                        titleField.setText(parseResponse.data.title);
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    // TODO
+                }
+            });
+        }
+    }
 
     private void setUpSaveButton() {
         Button save = (Button) findViewById(R.id.newBookmarkSaveButton);
@@ -222,7 +248,7 @@ public class NewBookmarkActivity extends Activity {
     }
 
     private void handleSendText(Intent intent) {
-        String url = intent.getStringExtra(Intent.EXTRA_TEXT);
+        url = intent.getStringExtra(Intent.EXTRA_TEXT);
         EditText uriField = (EditText) findViewById(R.id.newBookmarkUrlField);
         uriField.setText(url);
     }
@@ -245,8 +271,7 @@ public class NewBookmarkActivity extends Activity {
         bmark.description = ((TextView) findViewById(R.id.newBookmarkTitleField))
                 .getText().toString();
         bmark.tags = TextUtils.join(" ", tags);
-        UserSettings settings = new SharedPrefsBackedUserSettings(this);
-        getService().bookmark(
+        getBookieService().bookmark(
                 settings.getUsername(),
                 settings.getApiKey(),
                 bmark,
@@ -309,15 +334,26 @@ public class NewBookmarkActivity extends Activity {
         tagsView.setTags(tags);
     }
 
-    private BookieService getService() {
-        if(service==null) {
+    private BookieService getBookieService() {
+        if (service == null) {
             String serverUrl = settings.getBaseUrl();
             RestAdapter adapter = new RestAdapter.Builder()
                     .setServer(serverUrl).build();
-            adapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            adapter.setLogLevel(RestAdapter.LogLevel.FULL); // TODO loglevel should be set globally
             service = adapter.create(BookieService.class);
         }
         return service;
+    }
+
+    private BookieParserService getParserService() {
+        if (parserService == null) {
+            String serverUrl = "http://r.bmark.us";// TODO add settings
+            RestAdapter adapter = new RestAdapter.Builder()
+                    .setServer(serverUrl).build();
+            adapter.setLogLevel(RestAdapter.LogLevel.FULL); // TODO loglevel should be set globally
+            parserService = adapter.create(BookieParserService.class);
+        }
+        return parserService;
     }
 
 }

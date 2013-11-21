@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>us.bmark.android</groupId>
     <artifactId>bookie</artifactId>
@@ -21,6 +21,12 @@
         <dependency>
             <groupId>us.bmark</groupId>
             <artifactId>bookieClient</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>us.bmark</groupId>
+            <artifactId>bookieParserClient</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -54,7 +60,9 @@
                     <zipalign>
                         <skip>false</skip>
                     </zipalign>
-                    <lint><skip>false</skip></lint>
+                    <lint>
+                        <skip>false</skip>
+                    </lint>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
