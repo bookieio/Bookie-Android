@@ -4,15 +4,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/newBookmarkTitleField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/field_new_bookmark_title_hint" >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <requestFocus />
-    </EditText>
+        <EditText
+            android:id="@+id/newBookmarkTitleField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/field_new_bookmark_title_hint"
+            android:layout_centerInParent="true">
+
+            <requestFocus />
+        </EditText>
+
+        <ProgressBar
+            android:id="@+id/newBookmarkTitleProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/newBookmarkUrlField"

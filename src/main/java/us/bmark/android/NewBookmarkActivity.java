@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -195,7 +196,10 @@ public class NewBookmarkActivity extends Activity {
 
 
     private void goFetchSuggestedTitleFromReadable() {
+        final ProgressBar titleFetchProgressBar = view(R.id.newBookmarkTitleProgressBar);
+
         if (url != null) {
+            titleFetchProgressBar.setVisibility(View.VISIBLE);
             getParserService().parse(url, new Callback<ParseResponse>() {
                 @Override
                 public void success(ParseResponse parseResponse, Response response) {
@@ -204,15 +208,22 @@ public class NewBookmarkActivity extends Activity {
                             && !TextUtils.isEmpty(parseResponse.data.title)) {
                         EditText titleField = (EditText) findViewById(R.id.newBookmarkTitleField);
                         titleField.setText(parseResponse.data.title);
+                        titleFetchProgressBar.setVisibility(View.INVISIBLE);
                     }
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
+                    titleFetchProgressBar.setVisibility(View.INVISIBLE);
                     // TODO
                 }
             });
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends View> T  view(int id) {
+        return (T) findViewById(id);
     }
 
     private void setUpSaveButton() {
