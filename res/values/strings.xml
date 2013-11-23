@@ -21,8 +21,11 @@
     <string name="settings_apikey_dialog_title">API Key</string>
     <string name="settings_apikey_dialog_message">Enter the API for your existing account</string>
     <string name="settings_baseurl_dialog_title">Server</string>
-    <string name="settings_baseurl_dialog_message">Enter the URL of the Bookie server (eg http://bmark.us)</string>
+    <string name="settings_baseurl_dialog_message">Enter the URL of the Bookie server (eg https://bmark.us)</string>
+    <string name="settings_parseurl_dialog_title" >Parse Server</string>
+    <string name="settings_parseurl_dialog_message">Enter the URL of the Parse server (eg http://r.bmark.us)</string>
     <string name="settings_baseurl_defaultvalue">https://bmark.us</string>
+    <string name="settings_parseurl_defaultvalue">http://r.bmark.us</string>
     <string name="bookmark_detail_menu_title">BookMark Detail Menu</string>
     <string name="bookmark_detail_activity_title">Bookie BookMark Detail</string>
     <string name="bookmark_detail_activity_description_label">Description</string>

@@ -347,9 +347,8 @@ public class NewBookmarkActivity extends Activity {
 
     private BookieParserService getParserService() {
         if (parserService == null) {
-            String serverUrl = "http://r.bmark.us";// TODO add settings
             RestAdapter adapter = new RestAdapter.Builder()
-                    .setServer(serverUrl).build();
+                    .setServer(settings.getParserUrl()).build();
             adapter.setLogLevel(RestAdapter.LogLevel.FULL); // TODO loglevel should be set globally
             parserService = adapter.create(BookieParserService.class);
         }
