@@ -60,14 +60,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:baselineAligned="true"
-        android:orientation="horizontal" >
-
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle">
         <Button
             android:id="@+id/newBookmarkCancelButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
             android:text="@string/button_new_bookmark_cancel_text" />
 
         <Button
@@ -76,6 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
             android:text="@string/button_new_bookmark_save_text" />
 
     </LinearLayout>
