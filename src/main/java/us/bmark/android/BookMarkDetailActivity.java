@@ -61,7 +61,7 @@ public class BookmarkDetailActivity extends Activity {
             myClicksTextView.setText(Integer.toString(bmark.clicks));
         } else {
             myClicksTextView.setVisibility(View.INVISIBLE);
-            ((TextView) findViewById(R.id.bookMarkDetailTextviewCountLabel)).setVisibility(View.INVISIBLE);
+            findViewById(R.id.bookMarkDetailTextviewCountLabel).setVisibility(View.INVISIBLE);
         }
         refreshTagsTable(bmark.tags);
     }

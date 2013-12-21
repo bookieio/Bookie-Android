@@ -44,7 +44,7 @@ public class NewBookmarkActivity extends Activity {
 
     private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
     private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
-    protected static final CharSequence TAG_SUBSTITUTE_CHARSEQ = "-";
+    private static final CharSequence TAG_SUBSTITUTE_CHARSEQ = "-";
     private static final String TAG = NewBookmarkActivity.class.getName();
 
     private Set<String> tags = new TreeSet<String>();
@@ -62,7 +62,7 @@ public class NewBookmarkActivity extends Activity {
         }
     }
 
-    public class addTagButtonListener implements OnClickListener {
+    private class AddTagButtonListener implements OnClickListener {
         @Override
         public void onClick(View v) {
             addTagButtonWasClicked();
@@ -70,6 +70,7 @@ public class NewBookmarkActivity extends Activity {
     }
 
     private final class DismissLater implements Runnable {
+        @Override
         public void run() {
             final NewBookmarkActivity thisActivity = NewBookmarkActivity.this;
             thisActivity.finish();
@@ -97,7 +98,7 @@ public class NewBookmarkActivity extends Activity {
         }
     }
 
-    public class CancelButtonListener implements OnClickListener {
+    private class CancelButtonListener implements OnClickListener {
         @Override
         public void onClick(View v) {
             cancelButtonWasClicked();
@@ -107,7 +108,8 @@ public class NewBookmarkActivity extends Activity {
     private class TagInputFilter implements InputFilter {
         private AlertDialog tagDialog;
 
-        public TagInputFilter(AlertDialog tagDialog) {
+        TagInputFilter(AlertDialog tagDialog) {
+            super();
             this.tagDialog = tagDialog;
         }
 
@@ -144,7 +146,7 @@ public class NewBookmarkActivity extends Activity {
             return !Character.isSpaceChar(suspect);
         }
 
-        protected void visualBell() {
+        void visualBell() {
             tagDialog.setMessage(getString(
                     R.string.button_new_bookmark_new_tag_dialog_text_badchar));
         }
@@ -238,15 +240,15 @@ public class NewBookmarkActivity extends Activity {
 
     private void setUpAddTagButton() {
         Button addTag = (Button) findViewById(R.id.newBookmarkAddTagButton);
-        addTag.setOnClickListener(new addTagButtonListener());
+        addTag.setOnClickListener(new AddTagButtonListener());
     }
 
-    protected void requestFinishedWithFailure() {
+    void requestFinishedWithFailure() {
         final String message = getString(R.string.new_bookmark_save_failed);
         showMessageAboutResultsOfSave(message);
     }
 
-    protected void requestFinishedWithSuccess() {
+    void requestFinishedWithSuccess() {
         final String message = getString(R.string.new_bookmark_save_success);
         showMessageAboutResultsOfSave(message);
         dismissThisActivity(RESULTS_MESSAGE_DURATION);
@@ -289,11 +291,11 @@ public class NewBookmarkActivity extends Activity {
                 newBookmarkCallback);
     }
 
-    public void cancelButtonWasClicked() {
+    void cancelButtonWasClicked() {
         dismissThisActivity(0);
     }
 
-    public void addTagButtonWasClicked() {
+    void addTagButtonWasClicked() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle(getString(R.string.button_new_bookmark_new_tag_dialog_title));
@@ -305,6 +307,7 @@ public class NewBookmarkActivity extends Activity {
 
         alert.setPositiveButton(getString(R.string.button_new_bookmark_new_tag_dialog_ok_button_text),
                 new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String tagValue = aTextField.getText().toString();
                         addNewTag(tagValue);
@@ -314,6 +317,7 @@ public class NewBookmarkActivity extends Activity {
 
         alert.setNegativeButton(getString(R.string.button_new_bookmark_new_tag_dialog_cancel_button_text),
                 new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dissmsissSoftKeyBoard(aTextField);
                     }
@@ -324,7 +328,7 @@ public class NewBookmarkActivity extends Activity {
         aTextField.setFilters(new InputFilter[]{new TagInputFilter(dialog)});
     }
 
-    protected void dissmsissSoftKeyBoard(EditText editText) {
+    void dissmsissSoftKeyBoard(EditText editText) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }

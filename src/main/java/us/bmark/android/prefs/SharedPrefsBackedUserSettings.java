@@ -22,6 +22,7 @@ public class SharedPrefsBackedUserSettings implements UserSettings {
     private SharedPreferences prefs;
 
     public SharedPrefsBackedUserSettings(Context context) {
+        super();
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 

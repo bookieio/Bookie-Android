@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".BookmarkDetailActivity"
-            android:parentActivityName=".BookmarkListActivity"></activity>
+            android:parentActivityName=".BookmarkListActivity"/>
     </application>
 
 </manifest>
