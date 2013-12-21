@@ -8,6 +8,7 @@
             android:key="username"
             android:title="User name"
             android:summary="Your Login Name for this Server"
+            android:inputType="textVisiblePassword|textNoSuggestions"
             android:dialogTitle="@string/settings_username_dialog_title"
             android:dialogMessage="@string/settings_username_dialog_message"
              />
@@ -16,6 +17,7 @@
             android:key="apikey"
             android:title="API Key"
             android:summary="Your API key for this server"
+            android:inputType="textVisiblePassword|textNoSuggestions"
             android:dialogTitle="@string/settings_apikey_dialog_title"
             android:dialogMessage="@string/settings_apikey_dialog_message"
            	 />
@@ -29,6 +31,7 @@
             android:key="base_url"
             android:title="Server URL"
             android:summary="Base URL for the Bookie server"
+            android:inputType="textUri"
             android:dialogTitle="@string/settings_baseurl_dialog_title"
             android:dialogMessage="@string/settings_baseurl_dialog_message"
             android:defaultValue="@string/settings_baseurl_defaultvalue"/>
@@ -37,6 +40,7 @@
             android:key="parse_url"
             android:title="Bookie Parser Server URL"
             android:summary="Base URL for the Bookie Parser server"
+            android:inputType="textUri"
             android:dialogTitle="@string/settings_parseurl_dialog_title"
             android:dialogMessage="@string/settings_parseurl_dialog_message"
             android:defaultValue="@string/settings_parseurl_defaultvalue"/>

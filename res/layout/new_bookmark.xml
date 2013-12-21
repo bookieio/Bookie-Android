@@ -14,7 +14,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/field_new_bookmark_title_hint"
-            android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            >
 
             <requestFocus />
         </EditText>
@@ -29,6 +30,7 @@
 
     <EditText
         android:id="@+id/newBookmarkUrlField"
+        android:inputType="textUri"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
