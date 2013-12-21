@@ -20,9 +20,9 @@ import us.bmark.bookieclient.Tag;
 
 import static us.bmark.android.utils.Utils.equalButNotBlank;
 
-public class BookMarkDetailActivity extends Activity {
+public class BookmarkDetailActivity extends Activity {
 
-    private static final String TAG = BookMarkDetailActivity.class.getName();
+    private static final String TAG = BookmarkDetailActivity.class.getName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

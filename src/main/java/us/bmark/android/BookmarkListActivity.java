@@ -210,7 +210,7 @@ public class BookmarkListActivity extends ListActivity {
                 String bmarkJson = (new Gson()).toJson(bmark);
                 bundle.putString(IntentConstants.EXTRAS_KEY_BMARK, bmarkJson);
                 final Intent intent = new Intent(BookmarkListActivity.this,
-                        BookMarkDetailActivity.class);
+                        BookmarkDetailActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;

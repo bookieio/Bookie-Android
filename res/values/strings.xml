@@ -26,8 +26,8 @@
     <string name="settings_parseurl_dialog_message">Enter the URL of the Parse server (eg http://r.bmark.us)</string>
     <string name="settings_baseurl_defaultvalue">https://bmark.us</string>
     <string name="settings_parseurl_defaultvalue">http://r.bmark.us</string>
-    <string name="bookmark_detail_menu_title">BookMark Detail Menu</string>
-    <string name="bookmark_detail_activity_title">Bookie BookMark Detail</string>
+    <string name="bookmark_detail_menu_title">Bookmark Detail Menu</string>
+    <string name="bookmark_detail_activity_title">Bookie Bookmark Detail</string>
     <string name="bookmark_detail_activity_description_label">Description</string>
     <string name="bookmark_detail_activity_url_label">URL</string>
     <string name="bookmark_detail_activity_username_label">User</string>

@@ -32,7 +32,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name="BookMarkDetailActivity"
+        <activity android:name=".BookmarkDetailActivity"
             android:parentActivityName=".BookmarkListActivity"></activity>
     </application>
 
