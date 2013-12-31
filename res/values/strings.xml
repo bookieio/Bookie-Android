@@ -40,4 +40,5 @@
     <string name="search_dialog_message">Enter search terms</string>
     <string name="search_dialog_positive_button">@string/generic_dialog_positive_button</string>
     <string name="search_dialog_cancel_button">@string/generic_dialog_cancel_button</string>
+    <string name="error_network_message">error communicating with server</string>
 </resources>

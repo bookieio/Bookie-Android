@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -51,6 +52,7 @@ import static us.bmark.android.utils.Utils.isBlank;
 public class BookmarkListActivity extends ListActivity {
 
     private static final String TAG = BookmarkListActivity.class.getName();
+    public static final int ERROR_TOAST_DURATION = 3000;
     private int countPP;
     private BookieService service;
     private UserSettings settings;
@@ -64,7 +66,6 @@ public class BookmarkListActivity extends ListActivity {
     private enum State {
         ALL, MINE, SEARCH
     }
-
 
     private class BookmarkArrayAdapter extends ArrayAdapter<Bookmark> {
 
@@ -92,7 +93,6 @@ public class BookmarkListActivity extends ListActivity {
             return row;
         }
     }
-
 
     private class EndlessScrollListener implements AbsListView.OnScrollListener {
         private final int threshold = countPP / 5;
@@ -322,7 +322,14 @@ public class BookmarkListActivity extends ListActivity {
         if(!TextUtils.isEmpty(error.getMessage()))
             Log.w(TAG, error.getMessage());
 
+        if(error.isNetworkError()) {
+            displayErrorMessage(R.string.error_network_message);
+        }
         // TODO clue to user
+    }
+
+    private void displayErrorMessage(int message) {
+        Toast.makeText(this,message, ERROR_TOAST_DURATION).show();
     }
 
 
