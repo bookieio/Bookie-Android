@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/menu_search"
-        android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_everyones_recent"
         android:icon="@drawable/fa_tags"
         android:title="@string/button_newest_global_text"
@@ -12,6 +8,10 @@
     <item android:id="@+id/action_recent"
         android:icon="@drawable/fa_tag"
         android:title="@string/button_newest_user_text"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/menu_search"
         android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_settings"
         android:title="@string/button_settings_text" />
