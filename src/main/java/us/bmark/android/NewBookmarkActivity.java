@@ -10,12 +10,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.jetbrains.annotations.NonNls;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -33,12 +34,29 @@ import us.bmark.bookieclient.NewBookmarkResponse;
 public class NewBookmarkActivity extends Activity {
 
     private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
-    private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
     private static final String TAG = NewBookmarkActivity.class.getName();
+    @NonNls
+    private static final String MIME_TYPE_FOR_URLS = "text/plain";
+    private final Callback<ParseResponse> parserCallback = new Callback<ParseResponse>() {
+        @Override
+        public void success(ParseResponse parseResponse, Response response) {
+            if ((parseResponse != null)
+                    && (parseResponse.data != null)
+                    && !TextUtils.isEmpty(parseResponse.data.title)) {
+                EditText titleField = (EditText) findViewById(R.id.newBookmarkTitleField);
+                titleField.setText(parseResponse.data.title);
+                NewBookmarkActivity.this.titleFetchDidFinish();
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            NewBookmarkActivity.this.titleFetchDidFinish();
+            // TODO
+        }
+    };
 
     private UserSettings settings;
-    private BookieService service;
-    private BookieParserService parserService;
     private String url;
     private ErrorHandler errorHandler;
 
@@ -99,37 +117,19 @@ public class NewBookmarkActivity extends Activity {
     }
 
     private boolean isIntentForUs(Intent intent) {
-        String action = intent.getAction();
-        String type = intent.getType();
+        @NonNls String action = intent.getAction();
+        @NonNls String type = intent.getType();
         return Intent.ACTION_SEND.equals(action)
                 && (type != null)
-                && "text/plain".equals(type);
+                && MIME_TYPE_FOR_URLS.equals(type);
     }
 
 
     private void goFetchSuggestedTitleFromReadable() {
-        final ProgressBar titleFetchProgressBar = view(R.id.newBookmarkTitleProgressBar);
-
         if (url != null) {
-            titleFetchProgressBar.setVisibility(View.VISIBLE);
-            getParserService().parse(url, new Callback<ParseResponse>() {
-                @Override
-                public void success(ParseResponse parseResponse, Response response) {
-                    if ((parseResponse != null)
-                            && (parseResponse.data != null)
-                            && !TextUtils.isEmpty(parseResponse.data.title)) {
-                        EditText titleField = (EditText) findViewById(R.id.newBookmarkTitleField);
-                        titleField.setText(parseResponse.data.title);
-                        titleFetchProgressBar.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    titleFetchProgressBar.setVisibility(View.INVISIBLE);
-                    // TODO
-                }
-            });
+            titleFetchDidStart();
+            BookieParserService parserService = createParserService();
+            parserService.parse(url, parserCallback);
         }
     }
 
@@ -181,6 +181,16 @@ public class NewBookmarkActivity extends Activity {
         }
     }
 
+    private void titleFetchDidStart() {
+        final ProgressBar titleFetchProgressBar = view(R.id.newBookmarkTitleProgressBar);
+        titleFetchProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void titleFetchDidFinish() {
+        final ProgressBar titleFetchProgressBar = view(R.id.newBookmarkTitleProgressBar);
+        titleFetchProgressBar.setVisibility(View.INVISIBLE);
+    }
+
 
     private void saveButtonWasClicked() {
         NewBookmark bmark = new NewBookmark();
@@ -189,9 +199,16 @@ public class NewBookmarkActivity extends Activity {
         bmark.description = ((TextView) findViewById(R.id.newBookmarkTitleField))
                 .getText().toString();
         bmark.tags =  ((TextView) findViewById(R.id.newBookmarkTagsField)).getText().toString();
-        getBookieService().bookmark(
-                settings.getUsername(),
-                settings.getApiKey(),
+        saveBookmarkToServer(bmark);
+    }
+
+    private void saveBookmarkToServer(NewBookmark bmark) {
+        BookieService bookieService = createBookieService();
+        String username = settings.getUsername();
+        String apiKey = settings.getApiKey();
+        bookieService.bookmark(
+                username,
+                apiKey,
                 bmark,
                 newBookmarkCallback);
     }
@@ -200,30 +217,19 @@ public class NewBookmarkActivity extends Activity {
         dismissThisActivity(0);
     }
 
-    void dissmsissSoftKeyBoard(EditText editText) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    private BookieService createBookieService() {
+        String serverUrl = settings.getBaseUrl();
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setServer(serverUrl).build();
+        adapter.setLogLevel(RestAdapter.LogLevel.FULL); // TODO loglevel should be set globally
+        return adapter.create(BookieService.class);
     }
 
-    private BookieService getBookieService() {
-        if (service == null) {
-            String serverUrl = settings.getBaseUrl();
-            RestAdapter adapter = new RestAdapter.Builder()
-                    .setServer(serverUrl).build();
-            adapter.setLogLevel(RestAdapter.LogLevel.FULL); // TODO loglevel should be set globally
-            service = adapter.create(BookieService.class);
-        }
-        return service;
-    }
-
-    private BookieParserService getParserService() {
-        if (parserService == null) {
-            RestAdapter adapter = new RestAdapter.Builder()
-                    .setServer(settings.getParserUrl()).build();
-            adapter.setLogLevel(RestAdapter.LogLevel.FULL); // TODO loglevel should be set globally
-            parserService = adapter.create(BookieParserService.class);
-        }
-        return parserService;
+    private BookieParserService createParserService() {
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setServer(settings.getParserUrl()).build();
+        adapter.setLogLevel(RestAdapter.LogLevel.FULL); // TODO loglevel should be set globally
+        return adapter.create(BookieParserService.class);
     }
 
 }
