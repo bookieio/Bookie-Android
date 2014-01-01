@@ -46,4 +46,5 @@
     <string name="error_unknown_error">unknown error</string>
     <string name="new_bookmark_save_success">Saved OK</string>
     <string name="new_bookmark_save_failed">Error saving bookmark</string>
+    <string name="field_new_bookmark_tags_hint">Tags</string>
 </resources>
