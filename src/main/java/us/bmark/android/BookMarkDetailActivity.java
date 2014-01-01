@@ -1,6 +1,5 @@
 package us.bmark.android;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,15 +19,15 @@ import us.bmark.bookieclient.Tag;
 
 import static us.bmark.android.utils.Utils.equalButNotBlank;
 
-public class BookmarkDetailActivity extends Activity {
+public class BookMarkDetailActivity extends AbstractActivity {
 
-    private static final String TAG = BookmarkDetailActivity.class.getName();
+    private static final String TAG = BookMarkDetailActivity.class.getName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_mark_detail);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+      //  getActionBar().setDisplayHomeAsUpEnabled(true);
         dealWithIntents();
     }
 

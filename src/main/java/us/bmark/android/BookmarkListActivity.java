@@ -6,11 +6,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -152,6 +148,8 @@ public class BookmarkListActivity extends ListActivity {
         setUpService();
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main);
+        getActionBar().setDisplayHomeAsUpEnabled(false);   // Hides the '<' button in the ActionBar
+        getActionBar().setHomeButtonEnabled(true);         // Enables the 'B' icon to be tappable on the list Activity
         adapter = new BookmarkArrayAdapter(this,bmarks);
         setListAdapter(adapter);
         setUpListView();
@@ -217,7 +215,7 @@ public class BookmarkListActivity extends ListActivity {
                 String bmarkJson = (new Gson()).toJson(bmark);
                 bundle.putString(IntentConstants.EXTRAS_KEY_BMARK, bmarkJson);
                 final Intent intent = new Intent(BookmarkListActivity.this,
-                        BookmarkDetailActivity.class);
+                        BookMarkDetailActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
@@ -232,6 +230,7 @@ public class BookmarkListActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch( item.getItemId() ) {
+            case android.R.id.home:
             case R.id.action_everyones_recent:
                 Log.v(TAG, "global button clicked");
                 flipState(State.ALL);

@@ -1,7 +1,6 @@
 package us.bmark.android;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,7 +41,7 @@ import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.NewBookmark;
 import us.bmark.bookieclient.NewBookmarkResponse;
 
-public class NewBookmarkActivity extends Activity {
+public class NewBookmarkActivity extends AbstractActivity {
 
     private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
     private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
