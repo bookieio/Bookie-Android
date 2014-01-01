@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.apache.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 
 import retrofit.RetrofitError;
@@ -29,7 +30,7 @@ public class JustDisplayToastErrorHandler implements ErrorHandler {
 
     @Override
     public void handleError(RetrofitError error) {
-        Log.w(TAG, "Error received in callback");
+        Log.w(TAG, "Error received");
         if(error.getCause()!=null)
             Log.w(TAG,error.getCause());
         if(!TextUtils.isEmpty(error.getMessage()))
@@ -48,6 +49,9 @@ public class JustDisplayToastErrorHandler implements ErrorHandler {
         Response response = error.getResponse();
         if(TextUtils.isEmpty(response.getReason())) {
             displayErrorMessage(R.string.error_unknown_error);
+        } else if((response.getStatus() == HttpStatus.SC_FORBIDDEN)
+                || (response.getStatus() == HttpStatus.SC_UNAUTHORIZED)) {
+            displayErrorMessage(R.string.error_access_denied);
         } else {
             String reason = response.getReason();
 

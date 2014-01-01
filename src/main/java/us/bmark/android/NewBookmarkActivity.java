@@ -77,7 +77,6 @@ public class NewBookmarkActivity extends Activity {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.w(TAG, error.getMessage());
                     errorHandler.handleError(error);
                     NewBookmarkActivity.this.requestFinishedWithFailure();
                 }
