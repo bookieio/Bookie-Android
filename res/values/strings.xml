@@ -40,5 +40,8 @@
     <string name="search_dialog_message">Enter search terms</string>
     <string name="search_dialog_positive_button">@string/generic_dialog_positive_button</string>
     <string name="search_dialog_cancel_button">@string/generic_dialog_cancel_button</string>
-    <string name="error_network_message">error communicating with server</string>
+    <string name="error_network_message">error communicating with server at %s</string>
+    <string name="error_server_format">error talking to %1$s : %2$s</string>
+    <string name="error_unconnected_message">no data connection available</string>
+    <string name="error_unknown_error">unknown error</string>
 </resources>

@@ -6,6 +6,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -62,6 +64,8 @@ public class BookmarkListActivity extends ListActivity {
     private int pagesLoaded;
     private State state = State.ALL;
     private BookmarkArrayAdapter adapter;
+    public static final int UNAUTHORIZED = 401;
+    public static final int FORBIDDEN = 403;
 
     private enum State {
         ALL, MINE, SEARCH
@@ -288,6 +292,7 @@ public class BookmarkListActivity extends ListActivity {
         try {
             terms = encode(searchTerms, "UTF-8");
         } catch (UnsupportedEncodingException e) {
+            Log.e(TAG,"UTF-8 not supported?",e);
             return;
         }
         setProgressBarIndeterminateVisibility(true);
@@ -323,15 +328,48 @@ public class BookmarkListActivity extends ListActivity {
             Log.w(TAG, error.getMessage());
 
         if(error.isNetworkError()) {
-            displayErrorMessage(R.string.error_network_message);
+            handleNetworkError();
+        } else if(error.getResponse() != null) {
+            handleServerErrorResponse(error);
+        } else {
+            displayErrorMessage(R.string.error_unknown_error);
         }
-        // TODO clue to user
+    }
+
+    private void handleServerErrorResponse(RetrofitError error) {
+        Response response = error.getResponse();
+        if(TextUtils.isEmpty(response.getReason())) {
+            displayErrorMessage(R.string.error_unknown_error);
+        } else {
+            String reason = response.getReason();
+
+            String message = getString(R.string.error_server_format,settings.getBaseUrl(),reason);
+            displayErrorMessage(message);
+        }
+    }
+
+    private void handleNetworkError() {
+        if(isNetworkConnected()) {
+            displayErrorMessage(R.string.error_network_message);
+        } else {
+            displayErrorMessage(R.string.error_unconnected_message);
+        }
+    }
+
+    private boolean isNetworkConnected() {
+        Object uncast = this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivity = (ConnectivityManager) uncast;
+        return (connectivity.getActiveNetworkInfo() != null) &&
+                (connectivity.getActiveNetworkInfo().getState() == NetworkInfo.State.CONNECTED);
     }
 
     private void displayErrorMessage(int message) {
-        Toast.makeText(this,message, ERROR_TOAST_DURATION).show();
+        Toast.makeText(this, message, ERROR_TOAST_DURATION).show();
     }
 
+    private void displayErrorMessage(String message) {
+        Toast.makeText(this, message, ERROR_TOAST_DURATION).show();
+    }
 
     private void loadMoreData() {
         switch(state) {
