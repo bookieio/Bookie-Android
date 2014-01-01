@@ -52,7 +52,7 @@ public class NewBookmarkActivity extends Activity {
         @Override
         public void failure(RetrofitError error) {
             NewBookmarkActivity.this.titleFetchDidFinish();
-            // TODO
+            errorHandler.handleError(error);
         }
     };
 
@@ -206,11 +206,7 @@ public class NewBookmarkActivity extends Activity {
         BookieService bookieService = createBookieService();
         String username = settings.getUsername();
         String apiKey = settings.getApiKey();
-        bookieService.bookmark(
-                username,
-                apiKey,
-                bmark,
-                newBookmarkCallback);
+        bookieService.bookmark(username,apiKey,bmark,newBookmarkCallback);
     }
 
     void cancelButtonWasClicked() {
