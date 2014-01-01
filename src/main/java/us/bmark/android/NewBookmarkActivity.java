@@ -1,7 +1,5 @@
 package us.bmark.android;
 
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,7 +29,7 @@ import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.NewBookmark;
 import us.bmark.bookieclient.NewBookmarkResponse;
 
-public class NewBookmarkActivity extends Activity {
+public class NewBookmarkActivity extends AbstractActivity {
 
     private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
     private static final String TAG = NewBookmarkActivity.class.getName();
