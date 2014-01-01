@@ -33,6 +33,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
+import us.bmark.android.utils.ErrorHandler;
+import us.bmark.android.utils.JustDisplayToastErrorHandler;
 import us.bmark.android.views.TagListViewGroup;
 import us.bmark.bookieParserClient.BookeParserService.BookieParserService;
 import us.bmark.bookieParserClient.BookeParserService.ParseResponse;
@@ -52,6 +54,7 @@ public class NewBookmarkActivity extends Activity {
     private BookieService service;
     private BookieParserService parserService;
     private String url;
+    private ErrorHandler errorHandler;
 
     private final class RemoveTagButtonListener implements
             OnClickListener {
@@ -87,6 +90,7 @@ public class NewBookmarkActivity extends Activity {
                 @Override
                 public void failure(RetrofitError error) {
                     Log.w(TAG, error.getMessage());
+                    errorHandler.handleError(error);
                     NewBookmarkActivity.this.requestFinishedWithFailure();
                 }
             };
@@ -157,7 +161,7 @@ public class NewBookmarkActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_bookmark);
         settings = new SharedPrefsBackedUserSettings(this);
-
+        errorHandler = new JustDisplayToastErrorHandler(this,settings);
         dealWithIntents();
         goFetchSuggestedTitleFromReadable();
         setUpSaveButton();
