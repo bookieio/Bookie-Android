@@ -1,16 +1,9 @@
 package us.bmark.android;
 
-
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,11 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
-
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -34,7 +22,6 @@ import retrofit.client.Response;
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
 import us.bmark.android.utils.ErrorHandler;
 import us.bmark.android.utils.JustDisplayToastErrorHandler;
-import us.bmark.android.views.TagListViewGroup;
 import us.bmark.bookieParserClient.BookeParserService.BookieParserService;
 import us.bmark.bookieParserClient.BookeParserService.ParseResponse;
 import us.bmark.bookieclient.BookieService;
@@ -45,31 +32,13 @@ public class NewBookmarkActivity extends AbstractActivity {
 
     private static final int RESULTS_MESSAGE_DURATION = Toast.LENGTH_SHORT;
     private static final String STATE_TAGS_KEY = "NEW-BOOKMARK-TAGS";
-    private static final CharSequence TAG_SUBSTITUTE_CHARSEQ = "-";
     private static final String TAG = NewBookmarkActivity.class.getName();
 
-    private Set<String> tags = new TreeSet<String>();
     private UserSettings settings;
     private BookieService service;
     private BookieParserService parserService;
     private String url;
     private ErrorHandler errorHandler;
-
-    private final class RemoveTagButtonListener implements
-            OnClickListener {
-        @Override
-        public void onClick(View buttonClicked) {
-            final String tagText = (String) buttonClicked.getTag();
-            removeTag(tagText);
-        }
-    }
-
-    private class AddTagButtonListener implements OnClickListener {
-        @Override
-        public void onClick(View v) {
-            addTagButtonWasClicked();
-        }
-    }
 
     private final class DismissLater implements Runnable {
         @Override
@@ -108,53 +77,6 @@ public class NewBookmarkActivity extends AbstractActivity {
         }
     }
 
-    private class TagInputFilter implements InputFilter {
-        private AlertDialog tagDialog;
-
-        TagInputFilter(AlertDialog tagDialog) {
-            super();
-            this.tagDialog = tagDialog;
-        }
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-            if (source instanceof SpannableStringBuilder) {
-                Editable sourceAsSpannableBuilder = (Editable) source;
-                for (int i = end - 1; i >= start; i--) {
-                    char currentChar = source.charAt(i);
-                    if (!charIsAllowed(currentChar)) {
-                        sourceAsSpannableBuilder.replace(dstart, dend, TAG_SUBSTITUTE_CHARSEQ);
-                        visualBell();
-                    }
-
-                }
-                return source;
-            } else {
-                StringBuilder filteredStringBuilder = new StringBuilder();
-                for (int i = 0; i < end; i++) {
-                    char currentChar = source.charAt(i);
-                    if (charIsAllowed(currentChar)) {
-                        filteredStringBuilder.append(currentChar);
-                    } else {
-                        filteredStringBuilder.append(TAG_SUBSTITUTE_CHARSEQ);
-                        visualBell();
-                    }
-                }
-                return filteredStringBuilder.toString();
-            }
-        }
-
-        private boolean charIsAllowed(char suspect) {
-            return !Character.isSpaceChar(suspect);
-        }
-
-        void visualBell() {
-            tagDialog.setMessage(getString(
-                    R.string.button_new_bookmark_new_tag_dialog_text_badchar));
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,23 +87,6 @@ public class NewBookmarkActivity extends AbstractActivity {
         goFetchSuggestedTitleFromReadable();
         setUpSaveButton();
         setUpCancelButton();
-        setUpAddTagButton();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        ArrayList<String> tagsArrayList = new ArrayList<String>(tags);
-        savedInstanceState.putStringArrayList(STATE_TAGS_KEY, tagsArrayList);
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Collection<String> tagsArrayList = savedInstanceState
-                .getStringArrayList(STATE_TAGS_KEY);
-        tags.addAll(tagsArrayList);
-        refreshTagsTable();
     }
 
     private void dealWithIntents() {
@@ -241,11 +146,6 @@ public class NewBookmarkActivity extends AbstractActivity {
         save.setOnClickListener(new CancelButtonListener());
     }
 
-    private void setUpAddTagButton() {
-        Button addTag = (Button) findViewById(R.id.newBookmarkAddTagButton);
-        addTag.setOnClickListener(new AddTagButtonListener());
-    }
-
     void requestFinishedWithFailure() {
         final String message = getString(R.string.new_bookmark_save_failed);
         showMessageAboutResultsOfSave(message);
@@ -286,7 +186,7 @@ public class NewBookmarkActivity extends AbstractActivity {
         bmark.url = ((TextView) findViewById(R.id.newBookmarkUrlField)).getText().toString();
         bmark.description = ((TextView) findViewById(R.id.newBookmarkTitleField))
                 .getText().toString();
-        bmark.tags = TextUtils.join(" ", tags);
+        bmark.tags =  ((TextView) findViewById(R.id.newBookmarkTagsField)).getText().toString();
         getBookieService().bookmark(
                 settings.getUsername(),
                 settings.getApiKey(),
@@ -298,58 +198,9 @@ public class NewBookmarkActivity extends AbstractActivity {
         dismissThisActivity(0);
     }
 
-    void addTagButtonWasClicked() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setTitle(getString(R.string.button_new_bookmark_new_tag_dialog_title));
-        alert.setMessage(R.string.button_new_bookmark_new_tag_dialog_text);
-
-        // Set an EditText view to get user input
-        final EditText aTextField = new EditText(this);
-        alert.setView(aTextField);
-
-        alert.setPositiveButton(getString(R.string.button_new_bookmark_new_tag_dialog_ok_button_text),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String tagValue = aTextField.getText().toString();
-                        addNewTag(tagValue);
-                        dissmsissSoftKeyBoard(aTextField);
-                    }
-                });
-
-        alert.setNegativeButton(getString(R.string.button_new_bookmark_new_tag_dialog_cancel_button_text),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dissmsissSoftKeyBoard(aTextField);
-                    }
-                });
-
-        AlertDialog dialog = alert.show();
-
-        aTextField.setFilters(new InputFilter[]{new TagInputFilter(dialog)});
-    }
-
     void dissmsissSoftKeyBoard(EditText editText) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-    }
-
-    private void addNewTag(String tagValue) {
-        tags.add(tagValue);
-        refreshTagsTable();
-    }
-
-
-    private void removeTag(String tagText) {
-        tags.remove(tagText);
-        refreshTagsTable();
-    }
-
-    private void refreshTagsTable() {
-        final TagListViewGroup tagsView = (TagListViewGroup) findViewById(R.id.tagList);
-        tagsView.setTags(tags);
     }
 
     private BookieService getBookieService() {

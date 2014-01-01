@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="new_bookmark_save_success">Saved OK</string>
-    <string name="new_bookmark_save_failed">Error saving bookmark</string>
-</resources>
