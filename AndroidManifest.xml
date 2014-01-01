@@ -23,7 +23,8 @@
         </activity>
         <activity
             android:theme="@android:style/Animation"
-            android:name=".prefs.SettingsActivity">
+            android:name=".prefs.SettingsActivity"
+            android:parentActivityName=".BookmarkListActivity" >
         </activity>
         <activity
             android:name="NewBookmarkActivity">
@@ -33,7 +34,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".BookmarkDetailActivity"
+        <activity android:name=".BookMarkDetailActivity"
             android:parentActivityName=".BookmarkListActivity"/>
     </application>
 
