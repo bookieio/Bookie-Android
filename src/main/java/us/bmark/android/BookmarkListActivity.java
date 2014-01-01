@@ -41,7 +41,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import us.bmark.android.prefs.SettingsActivity;
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
+import us.bmark.android.utils.ErrorHandler;
 import us.bmark.android.utils.IntentConstants;
+import us.bmark.android.utils.JustDisplayToastErrorHandler;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
@@ -54,7 +56,6 @@ import static us.bmark.android.utils.Utils.isBlank;
 public class BookmarkListActivity extends ListActivity {
 
     private static final String TAG = BookmarkListActivity.class.getName();
-    public static final int ERROR_TOAST_DURATION = 3000;
     private int countPP;
     private BookieService service;
     private UserSettings settings;
@@ -66,6 +67,7 @@ public class BookmarkListActivity extends ListActivity {
     private BookmarkArrayAdapter adapter;
     public static final int UNAUTHORIZED = 401;
     public static final int FORBIDDEN = 403;
+    private ErrorHandler errorHandler;
 
     private enum State {
         ALL, MINE, SEARCH
@@ -137,7 +139,7 @@ public class BookmarkListActivity extends ListActivity {
         @Override
         public void failure(RetrofitError error) {
             setProgressBarIndeterminateVisibility(false);
-            handleError(error);
+            errorHandler.handleError(error);
         }
     }
 
@@ -145,6 +147,7 @@ public class BookmarkListActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings = new SharedPrefsBackedUserSettings(this);
+        errorHandler = new JustDisplayToastErrorHandler(this,settings);
         countPP = getResources().getInteger(R.integer.default_number_of_bookmarks_to_get);
         setUpService();
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -315,60 +318,9 @@ public class BookmarkListActivity extends ListActivity {
                     @Override
                     public void failure(RetrofitError error) {
                         setProgressBarIndeterminateVisibility(false);
-                        handleError(error);
+                        errorHandler.handleError(error);
                     }
                 });
-    }
-
-    private void handleError(RetrofitError error) {
-        Log.w(TAG,"Error received in callback");
-        if(error.getCause()!=null)
-            Log.w(TAG,error.getCause());
-        if(!TextUtils.isEmpty(error.getMessage()))
-            Log.w(TAG, error.getMessage());
-
-        if(error.isNetworkError()) {
-            handleNetworkError();
-        } else if(error.getResponse() != null) {
-            handleServerErrorResponse(error);
-        } else {
-            displayErrorMessage(R.string.error_unknown_error);
-        }
-    }
-
-    private void handleServerErrorResponse(RetrofitError error) {
-        Response response = error.getResponse();
-        if(TextUtils.isEmpty(response.getReason())) {
-            displayErrorMessage(R.string.error_unknown_error);
-        } else {
-            String reason = response.getReason();
-
-            String message = getString(R.string.error_server_format,settings.getBaseUrl(),reason);
-            displayErrorMessage(message);
-        }
-    }
-
-    private void handleNetworkError() {
-        if(isNetworkConnected()) {
-            displayErrorMessage(R.string.error_network_message);
-        } else {
-            displayErrorMessage(R.string.error_unconnected_message);
-        }
-    }
-
-    private boolean isNetworkConnected() {
-        Object uncast = this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        ConnectivityManager connectivity = (ConnectivityManager) uncast;
-        return (connectivity.getActiveNetworkInfo() != null) &&
-                (connectivity.getActiveNetworkInfo().getState() == NetworkInfo.State.CONNECTED);
-    }
-
-    private void displayErrorMessage(int message) {
-        Toast.makeText(this, message, ERROR_TOAST_DURATION).show();
-    }
-
-    private void displayErrorMessage(String message) {
-        Toast.makeText(this, message, ERROR_TOAST_DURATION).show();
     }
 
     private void loadMoreData() {
