@@ -3,8 +3,8 @@
     <string name="app_name">Bookie</string>
     <string name="generic_dialog_positive_button">OK</string>
     <string name="generic_dialog_cancel_button">Cancel</string>
-    <string name="button_newest_global_text">All</string>
-    <string name="button_newest_user_text">Mine</string>
+    <string name="title_all">All</string>
+    <string name="title_mine">Mine</string>
     <string name="button_settings_text">Settings</string>
     <string name="field_new_bookmark_url_hint">URL</string>
     <string name="field_new_bookmark_title_hint">Title</string>
@@ -35,7 +35,7 @@
     <string name="bookmark_detail_activity_total_count_label">Total Clicks</string>
     <string name="bookmark_detail_activity_count_label">My Clicks</string>
     <string name="bookmark_detail_activity_tags_label">Tags</string>
-    <string name="menu_search">search</string>
+    <string name="title_search">search</string>
     <string name="search_dialog_title">Search</string>
     <string name="search_dialog_message">Enter search terms</string>
     <string name="search_dialog_positive_button">@string/generic_dialog_positive_button</string>

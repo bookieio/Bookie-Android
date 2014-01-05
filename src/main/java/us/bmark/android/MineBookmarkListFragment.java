@@ -2,9 +2,6 @@ package us.bmark.android;
 
 import android.os.Bundle;
 
-import us.bmark.android.utils.ErrorHandler;
-import us.bmark.bookieclient.BookieService;
-
 public class MineBookmarkListFragment extends BookmarkListFragment {
 
     @Override

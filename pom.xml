@@ -19,6 +19,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>r7</version>
+        </dependency>
+
+        <dependency>
             <groupId>us.bmark</groupId>
             <artifactId>bookieClient</artifactId>
             <version>0.0.1-SNAPSHOT</version>
@@ -35,6 +41,7 @@
             <artifactId>okhttp</artifactId>
             <version>1.2.1</version>
         </dependency>
+
     </dependencies>
 
     <build>
