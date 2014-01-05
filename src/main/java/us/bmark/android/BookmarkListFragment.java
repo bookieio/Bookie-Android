@@ -22,10 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
+import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
 import us.bmark.android.utils.ErrorHandler;
 import us.bmark.android.utils.IntentConstants;
+import us.bmark.android.utils.JustDisplayToastErrorHandler;
 import us.bmark.bookieclient.BookieService;
 import us.bmark.bookieclient.BookieServiceUtils;
 import us.bmark.bookieclient.Bookmark;
@@ -113,17 +116,20 @@ public abstract class BookmarkListFragment extends ListFragment {
         }
     }
 
-
-
-    public BookmarkListFragment(BookieService service, UserSettings settings, ErrorHandler errorHandler) {
-        this.service = service;
-        this.settings = settings;
-        this.errorHandler = errorHandler;
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        settings = new SharedPrefsBackedUserSettings(getActivity());
+
+        String serverUrl = settings.getBaseUrl();
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setServer(serverUrl).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        service = restAdapter.create(BookieService.class);
+
+        errorHandler = new JustDisplayToastErrorHandler(getActivity(),settings);
+
         countPP = getResources().getInteger(R.integer.default_number_of_bookmarks_to_get);
         setListAdapter( new BookmarkArrayAdapter(getActivity(),bmarks));
         setUpListView();

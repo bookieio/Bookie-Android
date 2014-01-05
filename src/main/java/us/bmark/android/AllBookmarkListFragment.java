@@ -7,10 +7,6 @@ import us.bmark.bookieclient.BookieService;
 
 public class AllBookmarkListFragment extends BookmarkListFragment {
 
-    public AllBookmarkListFragment(BookieService service, UserSettings settings, ErrorHandler errorHandler) {
-        super(service, settings, errorHandler);
-    }
-
     @Override
     void refresh() {
         int nextPage = pagesLoaded;

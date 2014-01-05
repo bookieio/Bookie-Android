@@ -27,8 +27,6 @@ public class BookmarkListActivity extends Activity {
     private BookieService service;
     private UserSettings settings;
     private String searchTerms;
-    public static final int UNAUTHORIZED = 401;
-    public static final int FORBIDDEN = 403;
     private ErrorHandler errorHandler;
     private BookmarkListFragment mineFragment;
     private BookmarkListFragment allFragment;
@@ -53,9 +51,9 @@ public class BookmarkListActivity extends Activity {
     }
 
     private void createFragments() {
-        mineFragment = new MineBookmarkListFragment(service,settings,errorHandler);
-        allFragment = new AllBookmarkListFragment(service,settings,errorHandler);
-        searchFragment = new SearchBookmarkFragment(service,settings,errorHandler);
+        mineFragment = new MineBookmarkListFragment();
+        allFragment = new AllBookmarkListFragment();
+        searchFragment = new SearchBookmarkFragment();
 
         FragmentManager manager = getFragmentManager();
         final FragmentTransaction transaction = manager.beginTransaction();
@@ -83,11 +81,6 @@ public class BookmarkListActivity extends Activity {
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         service = restAdapter.create(BookieService.class);
     }
-//
-//    private void refreshWithNewestGlobal() {
-//    }
-//
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -19,10 +19,6 @@ public class SearchBookmarkFragment extends BookmarkListFragment {
     private static final String TAG = SearchBookmarkFragment.class.getName();
     private String searchTerms;
 
-    public SearchBookmarkFragment(BookieService service, UserSettings settings, ErrorHandler errorHandler) {
-        super(service, settings, errorHandler);
-    }
-
     public void search(String searchTerms) {
         this.searchTerms = searchTerms;
         refresh();
