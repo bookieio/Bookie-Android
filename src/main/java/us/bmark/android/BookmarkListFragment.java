@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,17 +52,23 @@ public abstract class BookmarkListFragment extends ListFragment {
     protected class ServiceCallback implements Callback<BookmarkList> {
         @Override
         public void success(BookmarkList bookmarkList, Response response) {
-            getActivity().setProgressBarIndeterminateVisibility(false);
-            bmarks.addAll(bookmarkList.bmarks);
-            Log.w(TAG, "on success for bookmark list, fetched " + bmarks.size());
-            ((BookmarkArrayAdapter)getListAdapter()).notifyDataSetChanged();
-            pagesLoaded++;
+            FragmentActivity myActivity = getActivity();
+            if(myActivity!=null) {
+                myActivity.setProgressBarIndeterminateVisibility(false);
+                bmarks.addAll(bookmarkList.bmarks);
+                Log.w(TAG, "on success for bookmark list, fetched " + bmarks.size());
+                ((BookmarkArrayAdapter)getListAdapter()).notifyDataSetChanged();
+                pagesLoaded++;
+            }
         }
 
         @Override
         public void failure(RetrofitError error) {
-            getActivity().setProgressBarIndeterminateVisibility(false);
-            errorHandler.handleError(error);
+            FragmentActivity myActivity = getActivity();
+            if(myActivity!=null) {
+                myActivity.setProgressBarIndeterminateVisibility(false);
+                errorHandler.handleError(error);
+            }
         }
     }
 
@@ -178,6 +185,11 @@ public abstract class BookmarkListFragment extends ListFragment {
         });
 
         lv.setOnScrollListener(new EndlessScrollListener());
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T extends View> T findView(int id) {
+        return (T) getView().findViewById(id);
     }
 
     abstract void refresh();

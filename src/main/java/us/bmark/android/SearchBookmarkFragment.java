@@ -40,7 +40,6 @@ public class SearchBookmarkFragment extends BookmarkListFragment {
         searchBox = (SearchView) getView().findViewById(R.id.search_box);
         searchBox.setVisibility(View.VISIBLE);
         searchBox.setOnQueryTextListener(new RefreshWhenUserHitsSubmit());
-
     }
 
     @Override
