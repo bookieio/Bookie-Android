@@ -1,5 +1,6 @@
 package us.bmark.android;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,35 +18,48 @@ import static java.net.URLEncoder.encode;
 
 public class SearchBookmarkFragment extends BookmarkListFragment {
 
+
     private static final String TAG = SearchBookmarkFragment.class.getName();
-    private SearchView searchBox;
 
 
-    private class RefreshWhenUserHitsSubmit implements SearchView.OnQueryTextListener {
-        @Override
-        public boolean onQueryTextSubmit(String query) {
+    private String currentQuery = "";
+    private NetworkActivityListener progressListener;
+
+
+    public interface NetworkActivityListener {
+        void onNetworkActivityStarted();
+        void onNetworkActivityEndedNormally();
+        void onNetworkActivityEndedAbnormally();
+    }
+
+    public void refreshWithQuery(String query) {
+        Log.i(TAG,"refreshWithQuery");
+        this.currentQuery = query;
+        if(isResumed() & !isDetached())
             refresh();
-            return true;
-        }
-
-        @Override
-        public boolean onQueryTextChange(String newText) {
-            return false; // no nothing
-        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        searchBox = (SearchView) getView().findViewById(R.id.search_box);
-        searchBox.setVisibility(View.VISIBLE);
-        searchBox.setOnQueryTextListener(new RefreshWhenUserHitsSubmit());
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        progressListener = (NetworkActivityListener) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        progressListener = null;
     }
 
     @Override
     protected void refresh() {
         String terms;
-        String searchBoxContents = searchBox.getQuery().toString();
+        String searchBoxContents = currentQuery;
         if(TextUtils.isEmpty(searchBoxContents)) return;
 
         try {
@@ -54,7 +68,7 @@ public class SearchBookmarkFragment extends BookmarkListFragment {
             Log.e(TAG, "UTF-8 not supported?", e);
             return;
         }
-        getActivity().setProgressBarIndeterminateVisibility(true);
+        notifyNetworkStarted();
         final int nextPage = pagesLoaded;
         service.search(settings.getUsername(),settings.getApiKey(),
                 terms,countPP,nextPage,
@@ -68,15 +82,27 @@ public class SearchBookmarkFragment extends BookmarkListFragment {
                             ((BookmarkArrayAdapter)getListAdapter()).notifyDataSetChanged();
                             pagesLoaded++;
                         }
-                        getActivity().setProgressBarIndeterminateVisibility(false);
+                        notifyNetworkActivityEnded();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        getActivity().setProgressBarIndeterminateVisibility(false);
+                        notifyNetworkActivityFailed();
                         errorHandler.handleError(error);
                     }
                 });
+    }
+
+    private void notifyNetworkActivityFailed() {
+        if(progressListener!=null) progressListener.onNetworkActivityEndedAbnormally();
+    }
+
+    private void notifyNetworkActivityEnded() {
+        if(progressListener!=null) progressListener.onNetworkActivityEndedNormally();
+    }
+
+    private void notifyNetworkStarted() {
+        if(progressListener!=null) progressListener.onNetworkActivityStarted();
     }
 
 }

@@ -8,14 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.SearchView;
 
 import us.bmark.android.prefs.SettingsActivity;
 
-public class BookmarkListActivity extends FragmentActivity {
+public class BookmarkListActivity extends FragmentActivity implements SearchBookmarkFragment.NetworkActivityListener {
 
     private static final String TAG = BookmarkListActivity.class.getName();
     private BookmarkListFragment mineFragment;
@@ -40,7 +42,6 @@ public class BookmarkListActivity extends FragmentActivity {
             // do nothing
         }
     };
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,32 @@ public class BookmarkListActivity extends FragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
+
+        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        searchMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                searchMenuItem.expandActionView();
+                return true;
+            }
+        });
+
+        SearchView searchWidget = (SearchView) searchMenuItem.getActionView();
+        searchWidget.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i(TAG,"SEARCH");
+                pager.setCurrentItem(3);
+                searchFragment.refreshWithQuery(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -89,6 +116,20 @@ public class BookmarkListActivity extends FragmentActivity {
         }
     }
 
+    @Override
+    public void onNetworkActivityStarted() {
+        setProgressBarVisibility(true);
+    }
+
+    @Override
+    public void onNetworkActivityEndedNormally() {
+        setProgressBarVisibility(false);
+    }
+
+    @Override
+    public void onNetworkActivityEndedAbnormally() {
+        setProgressBarVisibility(false);
+    }
 
 
     private class BookiePagerAdapter extends FragmentPagerAdapter {
