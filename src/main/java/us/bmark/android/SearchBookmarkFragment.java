@@ -4,26 +4,26 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.SearchView;
+import android.widget.BaseAdapter;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import us.bmark.android.exception.UnsupportedPlatformException;
 import us.bmark.bookieclient.SearchResult;
-
-import static java.net.URLEncoder.encode;
 
 public class SearchBookmarkFragment extends BookmarkListFragment {
 
 
     private static final String TAG = SearchBookmarkFragment.class.getName();
+    private static final NetworkActivityListener DO_NOTHING = new NullNetworkActivityListener();
 
 
     private String currentQuery = "";
-    private NetworkActivityListener progressListener;
+    private NetworkActivityListener progressListener = DO_NOTHING;
 
 
     public interface NetworkActivityListener {
@@ -33,9 +33,9 @@ public class SearchBookmarkFragment extends BookmarkListFragment {
     }
 
     public void refreshWithQuery(String query) {
-        Log.i(TAG,"refreshWithQuery");
+        Log.i(TAG, "refreshWithQuery");
         this.currentQuery = query;
-        if(isResumed() & !isDetached())
+        if(isResumed() && !isDetached())
             refresh();
     }
 
@@ -53,56 +53,67 @@ public class SearchBookmarkFragment extends BookmarkListFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        progressListener = null;
+        progressListener = DO_NOTHING;
     }
 
     @Override
     protected void refresh() {
-        String terms;
         String searchBoxContents = currentQuery;
         if(TextUtils.isEmpty(searchBoxContents)) return;
 
-        try {
-            terms = encode(searchBoxContents, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "UTF-8 not supported?", e);
-            return;
-        }
-        notifyNetworkStarted();
+        String terms = urlEncode(currentQuery);
+        progressListener.onNetworkActivityStarted();
         final int nextPage = pagesLoaded;
         service.search(settings.getUsername(),settings.getApiKey(),
                 terms,countPP,nextPage,
-                new Callback<SearchResult>() {
-
-                    @Override
-                    public void success(SearchResult searchResult, Response response) {
-                        Log.w(TAG, "on success search :" + searchResult.result_count);
-                        if(searchResult.result_count>0) {
-                            bmarks.addAll(searchResult.search_results);
-                            ((BookmarkArrayAdapter)getListAdapter()).notifyDataSetChanged();
-                            pagesLoaded++;
-                        }
-                        notifyNetworkActivityEnded();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        notifyNetworkActivityFailed();
-                        errorHandler.handleError(error);
-                    }
-                });
+                new SearchResultCallback());
     }
 
-    private void notifyNetworkActivityFailed() {
-        if(progressListener!=null) progressListener.onNetworkActivityEndedAbnormally();
+    private static String urlEncode(String originalText) {
+        try {
+            return URLEncoder.encode(originalText, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Log.wtf(TAG, "UTF-8 not supported?", e);
+            throw new UnsupportedPlatformException("Wow, so disappoint", e);
+        }
+
     }
 
-    private void notifyNetworkActivityEnded() {
-        if(progressListener!=null) progressListener.onNetworkActivityEndedNormally();
-    }
+    private class SearchResultCallback implements Callback<SearchResult> {
 
-    private void notifyNetworkStarted() {
-        if(progressListener!=null) progressListener.onNetworkActivityStarted();
+        @Override
+        public void success(SearchResult searchResult, Response response) {
+            Log.w(TAG, "on success search :" + searchResult.result_count);
+            if(searchResult.result_count>0) {
+                bmarks.addAll(searchResult.search_results);
+                ((BaseAdapter)getListAdapter()).notifyDataSetChanged();
+                pagesLoaded++;
+            }
+            progressListener.onNetworkActivityEndedNormally();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            progressListener.onNetworkActivityEndedAbnormally();
+            errorHandler.handleError(error);
+        }
+    }
+    private static class NullNetworkActivityListener implements NetworkActivityListener {
+
+        @Override
+        public void onNetworkActivityStarted() {
+            // do nothing
+        }
+
+        @Override
+        public void onNetworkActivityEndedNormally() {
+            // do nothing
+        }
+
+        @Override
+        public void onNetworkActivityEndedAbnormally() {
+            // do nothing
+        }
     }
 
 }
