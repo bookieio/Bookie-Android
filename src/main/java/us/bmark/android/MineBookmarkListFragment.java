@@ -18,7 +18,7 @@ public class MineBookmarkListFragment extends BookmarkListFragment {
             bookieList.setVisibility(View.GONE);
         }
         int nextPage = pagesLoaded;
-        getActivity().setProgressBarIndeterminateVisibility(true);
+        refreshState.setStateInProgress();
         service.recent(settings.getUsername(),
                 settings.getApiKey(),
                 countPP,

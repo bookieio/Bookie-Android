@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,7 +39,8 @@ import static us.bmark.android.utils.Utils.isBlank;
 
 public abstract class BookmarkListFragment extends ListFragment {
 
-    private final String TAG = BookmarkListFragment.class.getName();
+    private static final String TAG = BookmarkListFragment.class.getName();
+
     protected UserSettings settings;
     protected ErrorHandler errorHandler;
     protected BookieService service;
@@ -49,26 +50,26 @@ public abstract class BookmarkListFragment extends ListFragment {
     protected List<Bookmark> bmarks =
             new ArrayList<Bookmark>();
 
+    protected RefreshStateObservable refreshState = new RefreshStateObservable();
+
+    public RefreshStateObservable getRefreshState() {
+        return refreshState;
+    }
+
     protected class ServiceCallback implements Callback<BookmarkList> {
         @Override
         public void success(BookmarkList bookmarkList, Response response) {
-            FragmentActivity myActivity = getActivity();
-            if(myActivity!=null) {
-                myActivity.setProgressBarIndeterminateVisibility(false);
-                bmarks.addAll(bookmarkList.bmarks);
-                Log.w(TAG, "on success for bookmark list, fetched " + bmarks.size());
-                ((BookmarkArrayAdapter)getListAdapter()).notifyDataSetChanged();
-                pagesLoaded++;
-            }
+            refreshState.setStateDefault();
+            bmarks.addAll(bookmarkList.bmarks);
+            Log.w(TAG, "on success for bookmark list, fetched " + bmarks.size());
+            ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
+            pagesLoaded++;
         }
 
         @Override
         public void failure(RetrofitError error) {
-            FragmentActivity myActivity = getActivity();
-            if(myActivity!=null) {
-                myActivity.setProgressBarIndeterminateVisibility(false);
-                errorHandler.handleError(error);
-            }
+            refreshState.setStateDefault();
+            errorHandler.handleError(error);
         }
     }
 
@@ -146,10 +147,9 @@ public abstract class BookmarkListFragment extends ListFragment {
         errorHandler = new JustDisplayToastErrorHandler(getActivity(),settings);
 
         countPP = getResources().getInteger(R.integer.default_number_of_bookmarks_to_get);
-        setListAdapter( new BookmarkArrayAdapter(getActivity(),bmarks));
+        setListAdapter( new BookmarkArrayAdapter(getActivity(),bmarks) );
         setUpListView();
     }
-
 
     private void setUpListView() {
         ListView lv = getListView();
@@ -191,6 +191,7 @@ public abstract class BookmarkListFragment extends ListFragment {
     protected <T extends View> T findView(int id) {
         return (T) getView().findViewById(id);
     }
+
 
     abstract void refresh();
 }

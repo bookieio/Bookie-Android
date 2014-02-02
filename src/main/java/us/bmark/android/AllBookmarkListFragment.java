@@ -7,7 +7,7 @@ public class AllBookmarkListFragment extends BookmarkListFragment {
     @Override
     void refresh() {
         int nextPage = pagesLoaded;
-        getActivity().setProgressBarIndeterminateVisibility(true);
+        refreshState.setStateInProgress();
         service.everyonesRecent(countPP, nextPage, new ServiceCallback());
     }
 
