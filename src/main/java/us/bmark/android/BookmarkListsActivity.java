@@ -15,10 +15,8 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.SearchView;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import us.bmark.android.prefs.SettingsActivity;
+import us.bmark.android.watcher.PausableMultiWatcher;
 
 public class BookmarkListsActivity extends FragmentActivity {
 
@@ -28,7 +26,7 @@ public class BookmarkListsActivity extends FragmentActivity {
     private SearchBookmarkFragment searchFragment;
     private ViewPager pager;
 
-    private ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+    final private ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -45,7 +43,7 @@ public class BookmarkListsActivity extends FragmentActivity {
             // do nothing
         }
     };
-    private MultiRefreshStateObserver observer;
+    private PausableMultiWatcher watcher;
     private BookmarkListsActivity.BookiePagerAdapter tabsPagerAdapter;
 
     @Override
@@ -76,13 +74,13 @@ public class BookmarkListsActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        observer.activateObservation();
+        watcher.activateObservation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        observer.pauseObservation();
+        watcher.pauseObservation();
     }
 
     @Override
@@ -143,46 +141,6 @@ public class BookmarkListsActivity extends FragmentActivity {
         }
     }
 
-    private class MultiRefreshStateObserver
-            implements RefreshStateObservable.RefreshActivityObserver {
-        private final Collection<RefreshStateObservable> observables =
-                new ArrayList<RefreshStateObservable>();
-
-        void add(BookmarkListFragment fragment) {
-            RefreshStateObservable refreshState = fragment.getRefreshState();
-            observables.add(refreshState);
-        }
-
-        void activateObservation() {
-            for(RefreshStateObservable observable : observables) {
-                observable.addObserver(this);
-            }
-            updateProgressBar();
-        }
-
-        void pauseObservation() {
-            for(RefreshStateObservable observable : observables) {
-                observable.removeObserver(this);
-            }
-        }
-
-        boolean isAnyInProgress() {
-            for(RefreshStateObservable observable : observables) {
-                if(observable.isInProgress()) return true;
-            }
-            return false;
-        }
-
-        @Override
-        public void onChanged() {
-            updateProgressBar();
-        }
-
-        private void updateProgressBar() {
-            setProgressBarIndeterminateVisibility(isAnyInProgress());
-        }
-    }
-
 
     private class BookiePagerAdapter extends FragmentPagerAdapter {
         final Fragment[] fragments = {mineFragment,allFragment,searchFragment};
@@ -215,14 +173,15 @@ public class BookmarkListsActivity extends FragmentActivity {
     private final static int[] titleIds = {R.string.title_mine, R.string.title_all, R.string.title_search};
 
     private void createFragments() {
-        observer = new MultiRefreshStateObserver();
+        watcher = new RefreshStatePausableMultiWatcher();
+
         mineFragment = new MineBookmarkListFragment();
         allFragment = new AllBookmarkListFragment();
         searchFragment = new SearchBookmarkFragment();
 
-        observer.add(mineFragment);
-        observer.add(allFragment);
-        observer.add(searchFragment);
+        watcher.addWatchable(mineFragment.getRefreshState());
+        watcher.addWatchable(allFragment.getRefreshState());
+        watcher.addWatchable(searchFragment.getRefreshState());
 
         tabsPagerAdapter = new BookiePagerAdapter();
         pager.setAdapter(tabsPagerAdapter);
@@ -241,5 +200,23 @@ public class BookmarkListsActivity extends FragmentActivity {
         BookmarkListFragment activeFragment =
                 (BookmarkListFragment) tabsPagerAdapter.getFragments()[pager.getCurrentItem()];
         activeFragment.refresh();
+    }
+
+    private class RefreshStatePausableMultiWatcher extends PausableMultiWatcher<Boolean> {
+        @Override
+        public void onValueChanged() {
+            updateProgressBar();
+        }
+
+        private void updateProgressBar() {
+            setProgressBarIndeterminateVisibility(isAnyInProgress());
+        }
+
+        private boolean isAnyInProgress() {
+            for(Boolean watchableInProgress : getAllCurrentValues()) {
+                if(watchableInProgress) return true;
+            }
+            return false;
+        }
     }
 }

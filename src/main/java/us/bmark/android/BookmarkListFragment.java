@@ -50,9 +50,9 @@ public abstract class BookmarkListFragment extends ListFragment {
     protected List<Bookmark> bmarks =
             new ArrayList<Bookmark>();
 
-    protected RefreshStateObservable refreshState = new RefreshStateObservable();
+    protected RefreshStateWatchable refreshState = new RefreshStateWatchable();
 
-    public RefreshStateObservable getRefreshState() {
+    public RefreshStateWatchable getRefreshState() {
         return refreshState;
     }
 
