@@ -18,7 +18,7 @@ import android.widget.SearchView;
 import us.bmark.android.prefs.SettingsActivity;
 import us.bmark.android.watcher.PausableMultiWatcher;
 
-public class BookmarkListsActivity extends FragmentActivity {
+public class BookmarkListsActivity extends WatcherActivity {
 
     private static final String TAG = BookmarkListsActivity.class.getName();
     private BookmarkListFragment mineFragment;
@@ -182,6 +182,8 @@ public class BookmarkListsActivity extends FragmentActivity {
         watcher.addWatchable(mineFragment.getRefreshState());
         watcher.addWatchable(allFragment.getRefreshState());
         watcher.addWatchable(searchFragment.getRefreshState());
+
+        registerActivityManagedWatcher(watcher);
 
         tabsPagerAdapter = new BookiePagerAdapter();
         pager.setAdapter(tabsPagerAdapter);
