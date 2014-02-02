@@ -46,6 +46,7 @@ public class BookmarkListsActivity extends FragmentActivity {
         }
     };
     private MultiRefreshStateObserver observer;
+    private BookmarkListsActivity.BookiePagerAdapter tabsPagerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,8 +115,18 @@ public class BookmarkListsActivity extends FragmentActivity {
             }
         });
 
+        MenuItem refreshButton = menu.findItem(R.id.action_refresh);
+        refreshButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                refreshActiveFragment();
+                return true;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -139,12 +150,12 @@ public class BookmarkListsActivity extends FragmentActivity {
 
         void add(BookmarkListFragment fragment) {
             RefreshStateObservable refreshState = fragment.getRefreshState();
-            refreshState.addObserver(this);
+            observables.add(refreshState);
         }
 
         void activateObservation() {
             for(RefreshStateObservable observable : observables) {
-                observables.add(observable);
+                observable.addObserver(this);
             }
             updateProgressBar();
         }
@@ -168,10 +179,9 @@ public class BookmarkListsActivity extends FragmentActivity {
         }
 
         private void updateProgressBar() {
-            setProgressBarVisibility(isAnyInProgress());
+            setProgressBarIndeterminateVisibility(isAnyInProgress());
         }
     }
-
 
 
     private class BookiePagerAdapter extends FragmentPagerAdapter {
@@ -179,6 +189,10 @@ public class BookmarkListsActivity extends FragmentActivity {
 
         private BookiePagerAdapter() {
             super(getSupportFragmentManager());
+        }
+
+        public Fragment[] getFragments() {
+            return fragments;
         }
 
         @Override
@@ -210,7 +224,8 @@ public class BookmarkListsActivity extends FragmentActivity {
         observer.add(allFragment);
         observer.add(searchFragment);
 
-        pager.setAdapter(new BookiePagerAdapter());
+        tabsPagerAdapter = new BookiePagerAdapter();
+        pager.setAdapter(tabsPagerAdapter);
 
         ActionBar actionBar = getActionBar();
         for(int i = 0; i < titleIds.length; i++) {
@@ -220,6 +235,11 @@ public class BookmarkListsActivity extends FragmentActivity {
             tab.setTabListener(tabListener);
             actionBar.addTab(tab);
         }
+    }
 
+    private void refreshActiveFragment() {
+        BookmarkListFragment activeFragment =
+                (BookmarkListFragment) tabsPagerAdapter.getFragments()[pager.getCurrentItem()];
+        activeFragment.refresh();
     }
 }

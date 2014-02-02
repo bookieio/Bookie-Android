@@ -49,5 +49,6 @@
     <string name="field_new_bookmark_tags_hint">Tags</string>
     <string name="error_access_denied">access denied</string>
     <string name="message_user_not_logged_in">Please enter your username and API key in the Settings</string>
+    <string name="title_refresh">refresh</string>
 
 </resources>
