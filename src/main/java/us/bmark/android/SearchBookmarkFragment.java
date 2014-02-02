@@ -27,12 +27,7 @@ public class SearchBookmarkFragment extends BookmarkListFragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    protected void refresh() {
+    void refresh() {
         String searchBoxContents = currentQuery;
         if (TextUtils.isEmpty(searchBoxContents)) return;
 

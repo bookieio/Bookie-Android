@@ -28,7 +28,7 @@ public class BookmarkListsActivity extends FragmentActivity {
     private SearchBookmarkFragment searchFragment;
     private ViewPager pager;
 
-    ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+    private ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -197,8 +197,8 @@ public class BookmarkListsActivity extends FragmentActivity {
         }
     }
 
-    final static int[] iconIds = {R.drawable.fa_tag,R.drawable.fa_tags,R.drawable.ic_action_search};
-    final static int[] titleIds = {R.string.title_mine, R.string.title_all, R.string.title_search};
+    private final static int[] iconIds = {R.drawable.fa_tag,R.drawable.fa_tags,R.drawable.ic_action_search};
+    private final static int[] titleIds = {R.string.title_mine, R.string.title_all, R.string.title_search};
 
     private void createFragments() {
         observer = new MultiRefreshStateObserver();

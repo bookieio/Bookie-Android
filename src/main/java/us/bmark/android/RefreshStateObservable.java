@@ -1,5 +1,6 @@
 package us.bmark.android;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,7 +8,7 @@ public class RefreshStateObservable {
 
     private boolean inProgress = false;
 
-    private final Set<RefreshActivityObserver> observers = new HashSet<RefreshActivityObserver>(1);
+    private final Collection<RefreshActivityObserver> observers = new HashSet<RefreshActivityObserver>(1);
 
     public void addObserver(RefreshActivityObserver observer) {
         observers.add(observer);

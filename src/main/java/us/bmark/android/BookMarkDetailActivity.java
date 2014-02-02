@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 
 import us.bmark.android.prefs.SharedPrefsBackedUserSettings;
 import us.bmark.android.utils.IntentConstants;
@@ -43,8 +44,7 @@ public class BookMarkDetailActivity extends AbstractActivity {
             final String json = intent.getStringExtra(IntentConstants.EXTRAS_KEY_BMARK);
             Bookmark bmark = (new Gson()).fromJson(json, Bookmark.class);
             populateFields(bmark);
-
-        } catch (JsonParseException e) {
+        } catch (JsonSyntaxException e) {
             Log.e(TAG, "Error getting bookmark detail", e);
         }
     }

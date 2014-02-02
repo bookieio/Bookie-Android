@@ -17,7 +17,7 @@ import us.bmark.android.UserSettings;
 
 public class JustDisplayToastErrorHandler implements ErrorHandler {
 
-    static final String TAG = JustDisplayToastErrorHandler.class.getName();
+    private static final String TAG = JustDisplayToastErrorHandler.class.getName();
     static final int ERROR_TOAST_DURATION = 3000;
 
     private final UserSettings settings;
@@ -80,7 +80,7 @@ public class JustDisplayToastErrorHandler implements ErrorHandler {
         Toast.makeText(ctx, message, ERROR_TOAST_DURATION).show();
     }
 
-    private void displayErrorMessage(String message) {
+    private void displayErrorMessage(CharSequence message) {
         Toast.makeText(ctx, message, ERROR_TOAST_DURATION).show();
     }
 }
