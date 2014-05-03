@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -23,6 +24,9 @@ import us.bmark.android.prefs.SettingsActivity;
 public class BookmarkListsActivity extends FragmentActivity {
 
     private static final String TAG = BookmarkListsActivity.class.getName();
+    private static final String ALL_FRAG_KEY = "all-bmarks-fragment";
+    private static final String MINE_FRAG_KEY = "mine-bmarks-fragment";
+    private static final String SEARCH_FRAG_KEY = "search-bmarks-fragment";
     private BookmarkListFragment mineFragment;
     private BookmarkListFragment allFragment;
     private SearchBookmarkFragment searchFragment;
@@ -54,7 +58,7 @@ public class BookmarkListsActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main);
         pager = (ViewPager) findViewById(R.id.pager);
-        createFragments();
+        createFragments(savedInstanceState);
 
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);   // Hides the '<' button in the ActionBar
@@ -214,11 +218,27 @@ public class BookmarkListsActivity extends FragmentActivity {
     private final static int[] iconIds = {R.drawable.fa_tag,R.drawable.fa_tags,R.drawable.ic_action_search};
     private final static int[] titleIds = {R.string.title_mine, R.string.title_all, R.string.title_search};
 
-    private void createFragments() {
+    private void createFragments(Bundle savedInstanceState) {
         observer = new MultiRefreshStateObserver();
-        mineFragment = new MineBookmarkListFragment();
-        allFragment = new AllBookmarkListFragment();
-        searchFragment = new SearchBookmarkFragment();
+
+
+        if(savedInstanceState==null) {
+            mineFragment = new MineBookmarkListFragment();
+
+            allFragment = new AllBookmarkListFragment();
+
+            searchFragment = new SearchBookmarkFragment();
+        } else {
+            String mineTag = savedInstanceState.getString(MINE_FRAG_KEY);
+            String allTag = savedInstanceState.getString(ALL_FRAG_KEY);
+            String searchTag = savedInstanceState.getString(SEARCH_FRAG_KEY);
+            FragmentManager fm = getSupportFragmentManager();
+
+            mineFragment= (BookmarkListFragment) fm.findFragmentByTag(mineTag);
+            allFragment = (BookmarkListFragment) fm.findFragmentByTag(allTag);
+            searchFragment= (SearchBookmarkFragment) fm.findFragmentByTag(searchTag);
+
+        }
 
         observer.add(mineFragment);
         observer.add(allFragment);
@@ -235,6 +255,14 @@ public class BookmarkListsActivity extends FragmentActivity {
             tab.setTabListener(tabListener);
             actionBar.addTab(tab);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ALL_FRAG_KEY, allFragment.getTag());
+        outState.putString(MINE_FRAG_KEY, mineFragment.getTag());
+        outState.putString(SEARCH_FRAG_KEY,searchFragment.getTag());
     }
 
     private void refreshActiveFragment() {
